@@ -9,6 +9,8 @@ Functional Requirements
 6. If a subscriber fails to process a message, the system should retry the delivery.
 7. After a configurable number of failed attempts, the message should be discarded or moved to a dead-letter queue.
 That's enough for the core LLD.
+
+
 Non-Functional Requirements
 1. Thread safety — multiple publishers and subscribers can operate concurrently without corrupting shared state.
 2. Low publishing latency — publish() should return quickly and should not be blocked by slow subscribers.
@@ -26,6 +28,11 @@ Subscriber
 Subscription
 MessageBroker / Dispatcher
 RetryPolicy
+
+<img width="1596" height="918" alt="image" src="https://github.com/user-attachments/assets/b493c632-104c-4935-a4b6-1bbd6a81ae01" />
+
+
+
 
 classDiagram
 
@@ -118,6 +125,7 @@ classDiagram
 
     note for Subscriber "OBSERVER PATTERN"
     note for RetryPolicy "STRATEGY PATTERN"
+
 
 import java.util.*;
 import java.util.concurrent.*;
