@@ -15,21 +15,34 @@ class HomeShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final index = _tabs.indexWhere((t) => t == location).clamp(0, _tabs.length - 1);
+    final index =
+        _tabs.indexWhere((t) => t == location).clamp(0, _tabs.length - 1);
     return GlowBackground(
       child: Scaffold(
-      backgroundColor: Colors.transparent,
-      body: child,
-      bottomNavigationBar: AppNavBar(
-        index: index,
-        onChanged: (i) => context.go(_tabs[i]),
-        items: const [
-          AppNavItem(icon: Icons.home_outlined, selectedIcon: Icons.home, label: 'Home'),
-          AppNavItem(icon: Icons.description_outlined, selectedIcon: Icons.description, label: 'ITR'),
-          AppNavItem(icon: Icons.receipt_long_outlined, selectedIcon: Icons.receipt_long, label: 'GST'),
-          AppNavItem(icon: Icons.chat_bubble_outline, selectedIcon: Icons.chat_bubble, label: 'Assist'),
-        ],
-      ),
+        backgroundColor: Colors.transparent,
+        body: child,
+        bottomNavigationBar: AppNavBar(
+          index: index,
+          onChanged: (i) => context.go(_tabs[i]),
+          items: const [
+            AppNavItem(
+                icon: Icons.home_outlined,
+                selectedIcon: Icons.home,
+                label: 'Home'),
+            AppNavItem(
+                icon: Icons.description_outlined,
+                selectedIcon: Icons.description,
+                label: 'ITR'),
+            AppNavItem(
+                icon: Icons.receipt_long_outlined,
+                selectedIcon: Icons.receipt_long,
+                label: 'GST'),
+            AppNavItem(
+                icon: Icons.chat_bubble_outline,
+                selectedIcon: Icons.chat_bubble,
+                label: 'Assist'),
+          ],
+        ),
       ),
     );
   }

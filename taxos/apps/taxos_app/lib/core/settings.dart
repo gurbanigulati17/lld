@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AppSettings {
   const AppSettings({
-    this.themeMode = ThemeMode.dark,
+    this.themeMode = ThemeMode.light,
     this.reducedEffects = false,
     this.apiBaseUrl = 'http://localhost:8080',
   });
@@ -31,7 +31,8 @@ class SettingsNotifier extends Notifier<AppSettings> {
   AppSettings build() => const AppSettings();
 
   void toggleTheme() {
-    final next = state.themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+    final next =
+        state.themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
     state = state.copyWith(themeMode: next);
   }
 

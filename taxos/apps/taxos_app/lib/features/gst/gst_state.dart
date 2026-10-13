@@ -56,7 +56,8 @@ Gstr3bInput copyGstr3b(
     Gstr3bInput(
       period: period ?? i.period,
       outwardSupplies: outwardSupplies ?? i.outwardSupplies,
-      reverseChargeLiability: reverseChargeLiability ?? i.reverseChargeLiability,
+      reverseChargeLiability:
+          reverseChargeLiability ?? i.reverseChargeLiability,
       itcAvailable: itcAvailable ?? i.itcAvailable,
       itcReversal: itcReversal ?? i.itcReversal,
       openingCreditLedger: openingCreditLedger ?? i.openingCreditLedger,

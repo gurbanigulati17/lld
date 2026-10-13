@@ -29,7 +29,7 @@ class AppButton extends StatelessWidget {
     final t = context.ui;
     final enabled = onPressed != null && !loading;
     final fg = switch (style) {
-      AppButtonStyle.primary => t.onAccentGradient,
+      AppButtonStyle.primary => t.onPrimary,
       AppButtonStyle.secondary => t.text,
       AppButtonStyle.ghost => t.text,
     };
@@ -51,12 +51,12 @@ class AppButton extends StatelessWidget {
           style: Theme.of(context).textTheme.labelLarge?.copyWith(
                 color: fg,
                 fontSize: 15,
-                fontWeight: style == AppButtonStyle.primary ? FontWeight.w700 : FontWeight.w600,
+                fontWeight: FontWeight.w600,
               ),
         ),
       ],
     );
-    final shape = RoundedRectangleBorder(borderRadius: BorderRadius.circular(14));
+    final shape = RoundedRectangleBorder(borderRadius: BorderRadius.circular(12));
     const pad = EdgeInsets.symmetric(horizontal: 20, vertical: 14);
 
     final button = switch (style) {
@@ -64,13 +64,13 @@ class AppButton extends StatelessWidget {
           opacity: enabled ? 1 : 0.45,
           child: DecoratedBox(
             decoration: BoxDecoration(
-              gradient: t.accent,
-              borderRadius: BorderRadius.circular(14),
+              color: t.primary,
+              borderRadius: BorderRadius.circular(12),
             ),
             child: Material(
               color: Colors.transparent,
               child: InkWell(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(12),
                 onTap: enabled ? onPressed : null,
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(minHeight: 52),

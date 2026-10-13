@@ -9,17 +9,20 @@ import '../widgets.dart';
 class DeductionsSection extends ConsumerWidget {
   const DeductionsSection({super.key});
 
-  void _set(WidgetRef ref, Deductions Function(Deductions) fn) =>
-      ref.read(itrDraftProvider.notifier).update((d) => d.copyWith(deductions: fn(d.deductions)));
+  void _set(WidgetRef ref, Deductions Function(Deductions) fn) => ref
+      .read(itrDraftProvider.notifier)
+      .update((d) => d.copyWith(deductions: fn(d.deductions)));
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final d = ref.watch(itrDraftProvider.select((x) => x.deductions));
     final cmp = ref.watch(comparisonProvider);
-    final muted = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6);
+    final muted =
+        Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6);
     return SectionScaffold(
       title: 'Deductions',
-      subtitle: 'Chapter VI-A applies in the old regime only (employer NPS is the exception). Enter what you paid; the engine applies the caps.',
+      subtitle:
+          'Chapter VI-A applies in the old regime only (employer NPS is the exception). Enter what you paid; the engine applies the caps.',
       children: [
         Surface(
           radius: 18,
@@ -31,7 +34,10 @@ class DeductionsSection extends ConsumerWidget {
                 child: Text(
                   'Old regime allows ${formatInr(cmp.oldRegime.chapterVIADeductions)} of deductions. '
                   '${cmp.recommended == TaxRegime.newRegime ? 'Even so, the new regime is cheaper for you.' : 'That makes the old regime cheaper for you.'}',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: muted),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall
+                      ?.copyWith(color: muted),
                 ),
               ),
             ],
@@ -39,7 +45,8 @@ class DeductionsSection extends ConsumerWidget {
         ),
         AmountField(
           label: '80C investments',
-          helper: 'PPF, ELSS, EPF, LIC, tuition, home-loan principal · cap ₹1,50,000',
+          helper:
+              'PPF, ELSS, EPF, LIC, tuition, home-loan principal · cap ₹1,50,000',
           value: d.section80C,
           onChanged: (v) => _set(ref, (d) => _copy(d, section80C: v)),
         ),

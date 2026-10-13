@@ -10,8 +10,8 @@ class AppTheme {
   /// shipped inside a library package.
   static const fontFamily = 'packages/taxos_ui/Poppins';
 
-  static ThemeData light() => _build(Brightness.light, UiTokens.copperLight);
-  static ThemeData dark() => _build(Brightness.dark, UiTokens.copperNoir);
+  static ThemeData light() => _build(Brightness.light, UiTokens.trustBlue);
+  static ThemeData dark() => _build(Brightness.dark, UiTokens.softNight);
 
   static ThemeData _build(Brightness b, UiTokens t) {
     final scheme = ColorScheme(
@@ -42,17 +42,17 @@ class AppTheme {
     return base.copyWith(
       textTheme: text.copyWith(
         displayLarge: text.displayLarge?.copyWith(
-          fontWeight: FontWeight.w700,
+          fontWeight: FontWeight.w600,
           letterSpacing: -1.0,
           fontFeatures: const [FontFeature.tabularFigures()],
         ),
         headlineMedium: text.headlineMedium?.copyWith(
-          fontWeight: FontWeight.w700,
+          fontWeight: FontWeight.w600,
           letterSpacing: -0.6,
           fontFeatures: const [FontFeature.tabularFigures()],
         ),
         titleLarge: text.titleLarge?.copyWith(
-          fontWeight: FontWeight.w700,
+          fontWeight: FontWeight.w600,
           fontFeatures: const [FontFeature.tabularFigures()],
         ),
         titleMedium: text.titleMedium?.copyWith(fontWeight: FontWeight.w600),
@@ -67,7 +67,7 @@ class AppTheme {
         elevation: 0,
         scrolledUnderElevation: 0,
         centerTitle: false,
-        titleTextStyle: text.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+        titleTextStyle: text.titleLarge?.copyWith(fontWeight: FontWeight.w600),
       ),
       dividerTheme: DividerThemeData(color: t.hairline, space: 1, thickness: 1),
       inputDecorationTheme: const InputDecorationTheme(

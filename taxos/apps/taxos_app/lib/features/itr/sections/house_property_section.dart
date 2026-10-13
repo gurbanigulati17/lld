@@ -23,7 +23,8 @@ class HousePropertySection extends ConsumerWidget {
     final text = Theme.of(context).textTheme;
     return SectionScaffold(
       title: 'House property',
-      subtitle: 'Self-occupied: home-loan interest up to ₹2L (old regime). Let-out: rent less municipal tax, 30% standard deduction and full interest.',
+      subtitle:
+          'Self-occupied: home-loan interest up to ₹2L (old regime). Let-out: rent less municipal tax, 30% standard deduction and full interest.',
       children: [
         for (var i = 0; i < props.length; i++)
           Surface(
@@ -32,19 +33,26 @@ class HousePropertySection extends ConsumerWidget {
               children: [
                 Row(
                   children: [
-                    Expanded(child: Text('Property ${i + 1}', style: text.titleMedium)),
+                    Expanded(
+                        child:
+                            Text('Property ${i + 1}', style: text.titleMedium)),
                     IconButton(
-                      onPressed: () => ref.read(itrDraftProvider.notifier).update(
-                            (d) => d.copyWith(
-                              houseProperties: [...d.houseProperties]..removeAt(i),
-                            ),
-                          ),
+                      onPressed: () =>
+                          ref.read(itrDraftProvider.notifier).update(
+                                (d) => d.copyWith(
+                                  houseProperties: [...d.houseProperties]
+                                    ..removeAt(i),
+                                ),
+                              ),
                       icon: const Icon(Icons.delete_outline),
                     ),
                   ],
                 ),
                 Segmented<HousePropertyType>(
-                  values: const [HousePropertyType.selfOccupied, HousePropertyType.letOut],
+                  values: const [
+                    HousePropertyType.selfOccupied,
+                    HousePropertyType.letOut
+                  ],
                   labels: const ['Self-occupied', 'Let out'],
                   selected: props[i].type == HousePropertyType.deemedLetOut
                       ? HousePropertyType.letOut
@@ -56,13 +64,15 @@ class HousePropertySection extends ConsumerWidget {
                   AmountField(
                     label: 'Annual rent received',
                     value: props[i].annualRent,
-                    onChanged: (v) => _setAt(ref, i, _copy(props[i], annualRent: v)),
+                    onChanged: (v) =>
+                        _setAt(ref, i, _copy(props[i], annualRent: v)),
                   ),
                   const SizedBox(height: 12),
                   AmountField(
                     label: 'Municipal taxes paid',
                     value: props[i].municipalTaxesPaid,
-                    onChanged: (v) => _setAt(ref, i, _copy(props[i], municipalTaxesPaid: v)),
+                    onChanged: (v) =>
+                        _setAt(ref, i, _copy(props[i], municipalTaxesPaid: v)),
                   ),
                   const SizedBox(height: 12),
                 ],
@@ -70,13 +80,15 @@ class HousePropertySection extends ConsumerWidget {
                   label: 'Home loan interest this year',
                   helper: 's.24(b)',
                   value: props[i].interestOnLoan,
-                  onChanged: (v) => _setAt(ref, i, _copy(props[i], interestOnLoan: v)),
+                  onChanged: (v) =>
+                      _setAt(ref, i, _copy(props[i], interestOnLoan: v)),
                 ),
                 const SizedBox(height: 12),
                 AmountField(
                   label: 'Pre-construction interest (1/5th)',
                   value: props[i].preConstructionInterest,
-                  onChanged: (v) => _setAt(ref, i, _copy(props[i], preConstructionInterest: v)),
+                  onChanged: (v) => _setAt(
+                      ref, i, _copy(props[i], preConstructionInterest: v)),
                 ),
               ],
             ),
@@ -110,6 +122,7 @@ class HousePropertySection extends ConsumerWidget {
         annualRent: annualRent ?? h.annualRent,
         municipalTaxesPaid: municipalTaxesPaid ?? h.municipalTaxesPaid,
         interestOnLoan: interestOnLoan ?? h.interestOnLoan,
-        preConstructionInterest: preConstructionInterest ?? h.preConstructionInterest,
+        preConstructionInterest:
+            preConstructionInterest ?? h.preConstructionInterest,
       );
 }

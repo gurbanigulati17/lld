@@ -28,7 +28,7 @@ class AppNavBar extends StatelessWidget {
     final t = context.ui;
     final text = Theme.of(context).textTheme;
     return Material(
-      color: Color.alphaBlend(t.surface.withValues(alpha: 0.6), t.ground),
+      color: t.surface,
       child: DecoratedBox(
         decoration: BoxDecoration(border: Border(top: BorderSide(color: t.hairline))),
         child: SafeArea(
@@ -41,6 +41,8 @@ class AppNavBar extends StatelessWidget {
                   Expanded(
                     child: InkWell(
                       onTap: () => onChanged(i),
+                      hoverColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
                       child: Semantics(
                         selected: i == index,
                         button: true,

@@ -28,7 +28,7 @@ class StatTile extends StatelessWidget {
     final text = Theme.of(context).textTheme;
     return Surface(
       onTap: onTap,
-      padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,

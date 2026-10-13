@@ -45,8 +45,10 @@ class Segmented<T> extends StatelessWidget {
                     width: w,
                     child: DecoratedBox(
                       decoration: BoxDecoration(
-                        gradient: t.accent,
-                        borderRadius: BorderRadius.circular(8),
+                        color: t.surface,
+                        borderRadius: BorderRadius.circular(9),
+                        boxShadow: t.cardShadow,
+                        border: t.cardBorder == null ? null : Border.all(color: t.cardBorder!),
                       ),
                     ),
                   ),
@@ -61,7 +63,7 @@ class Segmented<T> extends StatelessWidget {
                             child: AnimatedDefaultTextStyle(
                               duration: const Duration(milliseconds: 160),
                               style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                                    color: i == idx ? t.onAccentGradient : t.text,
+                                    color: i == idx ? t.primary : t.textMuted,
                                   ),
                               child: Text(labels[i]),
                             ),

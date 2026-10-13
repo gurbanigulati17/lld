@@ -17,14 +17,18 @@ class SalarySection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final s = ref.watch(itrDraftProvider.select((d) => d.salary)) ?? const SalaryIncome();
+    final s = ref.watch(itrDraftProvider.select((d) => d.salary)) ??
+        const SalaryIncome();
     return SectionScaffold(
       title: 'Salary',
-      subtitle: 'Copy from Form 16 Part B. HRA and allowances only matter in the old regime; the engine applies the right standard deduction for each.',
+      subtitle:
+          'Copy from Form 16 Part B. HRA and allowances only matter in the old regime; the engine applies the right standard deduction for each.',
       actions: [
         IconButton(
           tooltip: 'Remove salary',
-          onPressed: () => ref.read(itrDraftProvider.notifier).update((d) => d.copyWith(clearSalary: true)),
+          onPressed: () => ref
+              .read(itrDraftProvider.notifier)
+              .update((d) => d.copyWith(clearSalary: true)),
           icon: const Icon(Icons.delete_outline),
         ),
       ],
@@ -48,7 +52,8 @@ class SalarySection extends ConsumerWidget {
           label: 'Other taxable components',
           helper: 'Special allowance, bonus, taxable LTA',
           value: s.otherTaxableComponents,
-          onChanged: (v) => _set(ref, (s) => _copy(s, otherTaxableComponents: v)),
+          onChanged: (v) =>
+              _set(ref, (s) => _copy(s, otherTaxableComponents: v)),
         ),
         AmountField(
           label: 'Perquisites',
@@ -69,7 +74,8 @@ class SalarySection extends ConsumerWidget {
         ),
         SwitchTile(
           label: 'Metro city',
-          helper: 'Delhi, Mumbai, Kolkata, Chennai: 50% of basic instead of 40%',
+          helper:
+              'Delhi, Mumbai, Kolkata, Chennai: 50% of basic instead of 40%',
           value: s.isMetroCity,
           onChanged: (v) => _set(ref, (s) => _copy(s, isMetroCity: v)),
         ),
@@ -83,7 +89,8 @@ class SalarySection extends ConsumerWidget {
           label: 'Employer NPS contribution',
           helper: 's.80CCD(2): allowed in both regimes',
           value: s.employerNpsContribution,
-          onChanged: (v) => _set(ref, (s) => _copy(s, employerNpsContribution: v)),
+          onChanged: (v) =>
+              _set(ref, (s) => _copy(s, employerNpsContribution: v)),
         ),
         AmountField(
           label: 'TDS on salary',
@@ -113,13 +120,15 @@ class SalarySection extends ConsumerWidget {
         basic: basic ?? s.basic,
         dearnessAllowance: dearnessAllowance ?? s.dearnessAllowance,
         hraReceived: hraReceived ?? s.hraReceived,
-        otherTaxableComponents: otherTaxableComponents ?? s.otherTaxableComponents,
+        otherTaxableComponents:
+            otherTaxableComponents ?? s.otherTaxableComponents,
         exemptAllowances: exemptAllowances ?? s.exemptAllowances,
         perquisites: perquisites ?? s.perquisites,
         rentPaid: rentPaid ?? s.rentPaid,
         isMetroCity: isMetroCity ?? s.isMetroCity,
         professionalTax: professionalTax ?? s.professionalTax,
-        employerNpsContribution: employerNpsContribution ?? s.employerNpsContribution,
+        employerNpsContribution:
+            employerNpsContribution ?? s.employerNpsContribution,
         tdsOnSalary: tdsOnSalary ?? s.tdsOnSalary,
       );
 }

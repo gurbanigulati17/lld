@@ -35,7 +35,7 @@ class SplitStat extends StatelessWidget {
                 v.value,
                 style: (large ? text.headlineSmall : text.titleMedium)?.copyWith(
                   color: v.color ?? t.text,
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.w600,
                   letterSpacing: large ? -0.5 : 0,
                   fontFeatures: const [FontFeature.tabularFigures()],
                 ),
@@ -51,8 +51,8 @@ class SplitStat extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Expanded(child: Padding(padding: const EdgeInsets.only(right: 14), child: cell(left))),
-          Container(width: 1.5, color: t.splitDivider),
+          Expanded(child: Padding(padding: const EdgeInsets.only(right: 16), child: cell(left))),
+          Container(width: 1, color: t.splitDivider),
           Expanded(child: Padding(padding: const EdgeInsets.only(left: 16), child: cell(right))),
         ],
       ),

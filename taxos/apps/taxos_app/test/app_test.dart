@@ -80,5 +80,13 @@ void main() {
     expect(brain.answer('Old or new regime?'), contains(formatInr(cmp.newRegime.totalTaxLiability)));
     expect(brain.answer('Which ITR form?'), contains('ITR-1'));
     expect(brain.answer('Do I owe interest?'), contains('interest'));
+
+    final october = AssistantBrain(
+      input: input,
+      comparison: cmp,
+      form: selectForm(input, totalIncome: cmp.best.totalIncome),
+      today: DateTime(2026, 10, 13),
+    );
+    expect(october.answer('When is the deadline?'), contains('belated return until 31/12/2026'));
   });
 }

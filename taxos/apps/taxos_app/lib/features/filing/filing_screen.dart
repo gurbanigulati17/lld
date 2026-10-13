@@ -30,7 +30,8 @@ class _FilingScreenState extends ConsumerState<FilingScreen> {
       _error = null;
     });
     try {
-      final api = TaxosApiClient(baseUrl: ref.read(settingsProvider).apiBaseUrl);
+      final api =
+          TaxosApiClient(baseUrl: ref.read(settingsProvider).apiBaseUrl);
       final v = await api.verifyItr(ref.read(itrDraftProvider));
       setState(() => _verification = v);
     } catch (e) {
@@ -49,12 +50,14 @@ class _FilingScreenState extends ConsumerState<FilingScreen> {
     final sections = ref.watch(sectionStatusProvider);
     final t = context.ui;
     final text = Theme.of(context).textTheme;
-    final muted = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.65);
+    final muted =
+        Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.65);
 
     final checks = <({String label, bool ok, String detail})>[
       (
         label: 'PAN and name',
-        ok: RegExp(r'^[A-Z]{5}[0-9]{4}[A-Z]$').hasMatch(draft.profile.pan) && draft.profile.name.isNotEmpty,
+        ok: RegExp(r'^[A-Z]{5}[0-9]{4}[A-Z]$').hasMatch(draft.profile.pan) &&
+            draft.profile.name.isNotEmpty,
         detail: 'Needed to prefill and e-verify',
       ),
       (
@@ -65,7 +68,8 @@ class _FilingScreenState extends ConsumerState<FilingScreen> {
       (
         label: 'Regime chosen',
         ok: true,
-        detail: '${cmp.recommended == TaxRegime.newRegime ? 'New' : 'Old'} regime (recommended) saves ${formatInr(cmp.savings)}',
+        detail:
+            '${cmp.recommended == TaxRegime.newRegime ? 'New' : 'Old'} regime (recommended) saves ${formatInr(cmp.savings)}',
       ),
       (
         label: 'Form selected',
@@ -74,7 +78,8 @@ class _FilingScreenState extends ConsumerState<FilingScreen> {
       ),
       (
         label: 'Server verification',
-        ok: _verification != null && _verification!.totalTaxLiability == best.totalTaxLiability,
+        ok: _verification != null &&
+            _verification!.totalTaxLiability == best.totalTaxLiability,
         detail: _verification == null
             ? 'Run the same engine on the server before filing'
             : _verification!.totalTaxLiability == best.totalTaxLiability
@@ -93,20 +98,25 @@ class _FilingScreenState extends ConsumerState<FilingScreen> {
     return AppScaffold(
       title: 'Review and file',
       body: ListView(
-        padding: EdgeInsets.fromLTRB(16, 8, 16, 32),
+        padding: EdgeInsets.fromLTRB(Space.gutter, 8, Space.gutter, 32),
         children: [
           Surface(
             emphasis: true,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('${draft.assessmentYear.label} · ${form.form.label}', style: text.labelLarge?.copyWith(color: muted)),
+                Text('${draft.assessmentYear.label} · ${form.form.label}',
+                    style: text.labelLarge?.copyWith(color: muted)),
                 const SizedBox(height: 4),
                 Text(
-                  best.isRefund ? 'Refund ${formatInr(best.refundDue)}' : 'Pay ${formatInr(best.netPayable)}',
-                  style: text.headlineMedium?.copyWith(color: best.isRefund ? t.positive : null),
+                  best.isRefund
+                      ? 'Refund ${formatInr(best.refundDue)}'
+                      : 'Pay ${formatInr(best.netPayable)}',
+                  style: text.headlineMedium
+                      ?.copyWith(color: best.isRefund ? t.positive : null),
                 ),
-                Text('$filled of ${sections.length} sections filled', style: text.bodySmall?.copyWith(color: muted)),
+                Text('$filled of ${sections.length} sections filled',
+                    style: text.bodySmall?.copyWith(color: muted)),
               ],
             ),
           ),
@@ -118,7 +128,8 @@ class _FilingScreenState extends ConsumerState<FilingScreen> {
               padding: const EdgeInsets.only(bottom: 8),
               child: Surface(
                 radius: 18,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 child: Row(
                   children: [
                     Icon(
@@ -131,7 +142,8 @@ class _FilingScreenState extends ConsumerState<FilingScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(c.label, style: text.titleSmall),
-                          Text(c.detail, style: text.bodySmall?.copyWith(color: muted)),
+                          Text(c.detail,
+                              style: text.bodySmall?.copyWith(color: muted)),
                         ],
                       ),
                     ),
@@ -142,7 +154,8 @@ class _FilingScreenState extends ConsumerState<FilingScreen> {
           if (_error != null)
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
-              child: Text(_error!, style: text.bodySmall?.copyWith(color: t.negative)),
+              child: Text(_error!,
+                  style: text.bodySmall?.copyWith(color: t.negative)),
             ),
           AppButton(
             label: 'Verify with server',
@@ -160,7 +173,8 @@ class _FilingScreenState extends ConsumerState<FilingScreen> {
             onPressed: ready
                 ? () => ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('ERI submission is wired on the server side and needs ITD credentials. '
+                        content: Text(
+                            'ERI submission is wired on the server side and needs ITD credentials. '
                             'Your return JSON is ready; export it from the API service.'),
                       ),
                     )

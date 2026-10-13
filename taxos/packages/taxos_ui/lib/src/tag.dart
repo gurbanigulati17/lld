@@ -18,7 +18,7 @@ class Tag extends StatelessWidget {
     final t = context.ui;
     final (Color bg, Color fg) = switch (tone) {
       TagTone.neutral => (t.surfaceAlt, t.text),
-      TagTone.primary => (t.primary, t.onPrimary),
+      TagTone.primary => (t.tint, t.onTint),
       TagTone.positive => (t.positive, t.onPositive),
       TagTone.negative => (t.negative, t.onNegative),
       TagTone.warning => (t.warning, t.onWarning),

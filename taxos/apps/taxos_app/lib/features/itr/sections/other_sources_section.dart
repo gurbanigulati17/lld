@@ -9,8 +9,11 @@ import '../widgets.dart';
 class OtherSourcesSection extends ConsumerWidget {
   const OtherSourcesSection({super.key});
 
-  void _set(WidgetRef ref, OtherSourcesIncome Function(OtherSourcesIncome) fn) =>
-      ref.read(itrDraftProvider.notifier).update((d) => d.copyWith(otherSources: fn(d.otherSources)));
+  void _set(
+          WidgetRef ref, OtherSourcesIncome Function(OtherSourcesIncome) fn) =>
+      ref
+          .read(itrDraftProvider.notifier)
+          .update((d) => d.copyWith(otherSources: fn(d.otherSources)));
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -18,7 +21,8 @@ class OtherSourcesSection extends ConsumerWidget {
     final d = ref.watch(itrDraftProvider);
     return SectionScaffold(
       title: 'Other sources',
-      subtitle: 'From AIS / Form 26AS. Savings interest gets s.80TTA (₹10,000) or s.80TTB (₹50,000 for seniors) in the old regime.',
+      subtitle:
+          'From AIS / Form 26AS. Savings interest gets s.80TTA (₹10,000) or s.80TTB (₹50,000 for seniors) in the old regime.',
       children: [
         AmountField(
           label: 'Savings account interest',
@@ -50,18 +54,24 @@ class OtherSourcesSection extends ConsumerWidget {
           label: 'Agricultural income',
           helper: 'Exempt, but above ₹5,000 it raises the rate on other income',
           value: d.agriculturalIncome,
-          onChanged: (v) => ref.read(itrDraftProvider.notifier).update((d) => d.copyWith(agriculturalIncome: v)),
+          onChanged: (v) => ref
+              .read(itrDraftProvider.notifier)
+              .update((d) => d.copyWith(agriculturalIncome: v)),
         ),
         SwitchTile(
           label: 'Foreign assets or income',
           helper: 'Requires Schedule FA (ITR-2/3)',
           value: d.hasForeignAssetsOrIncome,
-          onChanged: (v) => ref.read(itrDraftProvider.notifier).update((d) => d.copyWith(hasForeignAssetsOrIncome: v)),
+          onChanged: (v) => ref
+              .read(itrDraftProvider.notifier)
+              .update((d) => d.copyWith(hasForeignAssetsOrIncome: v)),
         ),
         SwitchTile(
           label: 'Director or unlisted shares',
           value: d.isDirectorOrHoldsUnlistedShares,
-          onChanged: (v) => ref.read(itrDraftProvider.notifier).update((d) => d.copyWith(isDirectorOrHoldsUnlistedShares: v)),
+          onChanged: (v) => ref
+              .read(itrDraftProvider.notifier)
+              .update((d) => d.copyWith(isDirectorOrHoldsUnlistedShares: v)),
         ),
       ],
     );

@@ -67,7 +67,11 @@ final formRecommendationProvider = Provider<FormRecommendation>((ref) {
 
 /// Which sections have data, for the wizard checklist.
 class SectionStatus {
-  const SectionStatus({required this.id, required this.title, required this.done, required this.summary});
+  const SectionStatus(
+      {required this.id,
+      required this.title,
+      required this.done,
+      required this.summary});
   final String id;
   final String title;
   final bool done;
@@ -83,49 +87,66 @@ final sectionStatusProvider = Provider<List<SectionStatus>>((ref) {
       id: 'profile',
       title: 'Profile',
       done: d.profile.name.isNotEmpty && d.profile.pan.length == 10,
-      summary: d.profile.name.isEmpty ? 'Name, PAN, date of birth' : '${d.profile.name} · ${d.profile.pan}',
+      summary: d.profile.name.isEmpty
+          ? 'Name, PAN, date of birth'
+          : '${d.profile.name} · ${d.profile.pan}',
     ),
     SectionStatus(
       id: 'salary',
       title: 'Salary',
       done: d.salary != null && d.salary!.grossSalary > 0,
-      summary: d.salary == null ? 'Form 16 details' : 'Taxable ${inr(c.incomeFromSalary)}',
+      summary: d.salary == null
+          ? 'Form 16 details'
+          : 'Taxable ${inr(c.incomeFromSalary)}',
     ),
     SectionStatus(
       id: 'houseProperty',
       title: 'House property',
       done: d.houseProperties.isNotEmpty,
-      summary: d.houseProperties.isEmpty ? 'Home loan, rent received' : '${d.houseProperties.length} propert${d.houseProperties.length == 1 ? 'y' : 'ies'} · ${inr(c.incomeFromHouseProperty)}',
+      summary: d.houseProperties.isEmpty
+          ? 'Home loan, rent received'
+          : '${d.houseProperties.length} propert${d.houseProperties.length == 1 ? 'y' : 'ies'} · ${inr(c.incomeFromHouseProperty)}',
     ),
     SectionStatus(
       id: 'capitalGains',
       title: 'Capital gains',
       done: d.capitalGains.isNotEmpty,
-      summary: d.capitalGains.isEmpty ? 'Shares, mutual funds, property' : '${d.capitalGains.length} entries · ${inr(c.incomeFromCapitalGains)}',
+      summary: d.capitalGains.isEmpty
+          ? 'Shares, mutual funds, property'
+          : '${d.capitalGains.length} entries · ${inr(c.incomeFromCapitalGains)}',
     ),
     SectionStatus(
       id: 'business',
       title: 'Business / profession',
       done: d.business != null,
-      summary: d.business == null ? 'Freelance, presumptive, books' : inr(c.incomeFromBusiness),
+      summary: d.business == null
+          ? 'Freelance, presumptive, books'
+          : inr(c.incomeFromBusiness),
     ),
     SectionStatus(
       id: 'otherSources',
       title: 'Other sources',
       done: d.otherSources.total > 0,
-      summary: d.otherSources.total == 0 ? 'Interest, dividends' : inr(c.incomeFromOtherSources),
+      summary: d.otherSources.total == 0
+          ? 'Interest, dividends'
+          : inr(c.incomeFromOtherSources),
     ),
     SectionStatus(
       id: 'deductions',
       title: 'Deductions',
-      done: d.deductions.section80C > 0 || d.deductions.section80D > 0 || d.deductions.section80CCD1B > 0,
-      summary: c.chapterVIADeductions == 0 ? '80C, 80D, NPS' : 'Allowed ${inr(c.chapterVIADeductions)}',
+      done: d.deductions.section80C > 0 ||
+          d.deductions.section80D > 0 ||
+          d.deductions.section80CCD1B > 0,
+      summary: c.chapterVIADeductions == 0
+          ? '80C, 80D, NPS'
+          : 'Allowed ${inr(c.chapterVIADeductions)}',
     ),
     SectionStatus(
       id: 'taxesPaid',
       title: 'Taxes paid',
       done: c.tdsAndTcs + c.advanceTaxPaid + c.selfAssessmentTaxPaid > 0,
-      summary: 'TDS, advance tax · ${inr(c.tdsAndTcs + c.advanceTaxPaid + c.selfAssessmentTaxPaid)}',
+      summary:
+          'TDS, advance tax · ${inr(c.tdsAndTcs + c.advanceTaxPaid + c.selfAssessmentTaxPaid)}',
     ),
   ];
 });

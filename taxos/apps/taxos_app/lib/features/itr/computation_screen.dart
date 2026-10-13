@@ -21,7 +21,8 @@ class ComputationScreen extends ConsumerWidget {
     final form = ref.watch(formRecommendationProvider);
     final t = context.ui;
     final text = Theme.of(context).textTheme;
-    final muted = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.65);
+    final muted =
+        Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.65);
     final explanation = const ExplanationBuilder().explain(c);
 
     final groups = <LineGroup, List<LineItem>>{};
@@ -32,13 +33,14 @@ class ComputationScreen extends ConsumerWidget {
     return AppScaffold(
       title: 'Computation',
       body: ListView(
-        padding: EdgeInsets.fromLTRB(16, 8, 16, 32),
+        padding: EdgeInsets.fromLTRB(Space.gutter, 8, Space.gutter, 32),
         children: [
           Segmented<TaxRegime?>(
             values: const [null, TaxRegime.oldRegime, TaxRegime.newRegime],
             labels: const ['Best', 'Old', 'New'],
             selected: selected,
-            onChanged: (v) => ref.read(selectedRegimeProvider.notifier).state = v,
+            onChanged: (v) =>
+                ref.read(selectedRegimeProvider.notifier).state = v,
           ),
           const SizedBox(height: 12),
           Row(
@@ -70,13 +72,16 @@ class ComputationScreen extends ConsumerWidget {
               children: [
                 Row(
                   children: [
-                    Expanded(child: Text(c.isRefund ? 'Refund due' : 'Tax payable', style: text.labelLarge?.copyWith(color: muted))),
+                    Expanded(
+                        child: Text(c.isRefund ? 'Refund due' : 'Tax payable',
+                            style: text.labelLarge?.copyWith(color: muted))),
                     Tag(label: form.form.label, tone: TagTone.primary),
                   ],
                 ),
                 Text(
                   formatInr(c.isRefund ? c.refundDue : c.netPayable),
-                  style: text.displayLarge?.copyWith(fontSize: 40, color: c.isRefund ? t.positive : null),
+                  style: text.displayLarge?.copyWith(
+                      fontSize: 40, color: c.isRefund ? t.positive : null),
                 ),
                 const SizedBox(height: 10),
                 for (final line in explanation)
@@ -112,7 +117,8 @@ class ComputationScreen extends ConsumerWidget {
           const SizedBox(height: 16),
           Text('Line by line', style: text.titleMedium),
           const SizedBox(height: 6),
-          Text('Every amount carries its statutory section so you can check it against Form 16, AIS, or the ITD utility.',
+          Text(
+              'Every amount carries its statutory section so you can check it against Form 16, AIS, or the ITD utility.',
               style: text.bodySmall?.copyWith(color: muted)),
           const SizedBox(height: 12),
           for (final g in LineGroup.values)
@@ -123,7 +129,8 @@ class ComputationScreen extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(_groupTitle(g), style: text.titleSmall?.copyWith(color: muted)),
+                      Text(_groupTitle(g),
+                          style: text.titleSmall?.copyWith(color: muted)),
                       const SizedBox(height: 4),
                       for (final l in items)
                         AmountRow(
@@ -131,7 +138,10 @@ class ComputationScreen extends ConsumerWidget {
                           amount: l.amount,
                           section: l.section,
                           note: l.note,
-                          bold: l.code == 'TI' || l.code == 'GTI' || l.code == 'TAX.TOTAL' || l.code.startsWith('NET.'),
+                          bold: l.code == 'TI' ||
+                              l.code == 'GTI' ||
+                              l.code == 'TAX.TOTAL' ||
+                              l.code.startsWith('NET.'),
                         ),
                     ],
                   ),
@@ -146,7 +156,9 @@ class ComputationScreen extends ConsumerWidget {
                 Text(form.form.label, style: text.titleSmall),
                 const SizedBox(height: 6),
                 for (final r in form.reasons)
-                  Padding(padding: const EdgeInsets.only(bottom: 4), child: Text('• $r', style: text.bodySmall)),
+                  Padding(
+                      padding: const EdgeInsets.only(bottom: 4),
+                      child: Text('• $r', style: text.bodySmall)),
               ],
             ),
           ),
@@ -193,7 +205,8 @@ class _RegimeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final t = context.ui;
     final text = Theme.of(context).textTheme;
-    final muted = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.65);
+    final muted =
+        Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.65);
     return Surface(
       emphasis: active,
       tint: active ? t.primary.withValues(alpha: 0.10) : null,
@@ -203,13 +216,19 @@ class _RegimeCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Expanded(child: Text(title, style: text.labelLarge?.copyWith(color: muted))),
-              if (recommended) Icon(Icons.auto_awesome, size: 16, color: t.positive),
+              Expanded(
+                  child: Text(title,
+                      style: text.labelLarge?.copyWith(color: muted))),
+              if (recommended)
+                Icon(Icons.auto_awesome, size: 16, color: t.positive),
             ],
           ),
           const SizedBox(height: 6),
-          FittedBox(child: Text(formatInr(computation.totalTaxLiability), style: text.titleLarge)),
-          Text('${computation.effectiveRatePercent}% effective', style: text.bodySmall?.copyWith(color: muted)),
+          FittedBox(
+              child: Text(formatInr(computation.totalTaxLiability),
+                  style: text.titleLarge)),
+          Text('${computation.effectiveRatePercent}% effective',
+              style: text.bodySmall?.copyWith(color: muted)),
         ],
       ),
     );

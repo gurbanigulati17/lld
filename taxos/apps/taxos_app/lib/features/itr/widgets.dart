@@ -24,7 +24,8 @@ class SectionScaffold extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final muted = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.65);
+    final muted =
+        Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.65);
     return AppScaffold(
       title: title,
       actions: actions,
@@ -32,12 +33,8 @@ class SectionScaffold extends ConsumerWidget {
         children: [
           Expanded(
             child: ListView(
-              padding: EdgeInsets.fromLTRB(
-                16,
-                8,
-                16,
-                24,
-              ),
+              padding: const EdgeInsets.fromLTRB(
+                  Space.gutter, 8, Space.gutter, Space.section),
               children: [
                 if (subtitle != null) ...[
                   Text(subtitle!, style: TextStyle(color: muted)),
@@ -63,13 +60,15 @@ class LiveLiabilityBar extends ConsumerWidget {
     final cmp = ref.watch(comparisonProvider);
     final c = ref.watch(activeComputationProvider);
     final text = Theme.of(context).textTheme;
-    final muted = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.65);
+    final muted =
+        Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.65);
     return SafeArea(
       top: false,
-      minimum: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+      minimum:
+          const EdgeInsets.fromLTRB(Space.gutter, 0, Space.gutter, Space.gap),
       child: Surface(
         emphasis: true,
-        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+        padding: const EdgeInsets.all(Space.card),
         child: Row(
           children: [
             Expanded(
@@ -126,7 +125,8 @@ class AmountRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
-    final muted = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6);
+    final muted =
+        Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6);
     final style = bold ? text.titleMedium : text.bodyMedium;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
@@ -140,7 +140,8 @@ class AmountRow extends StatelessWidget {
                 Text(label, style: style),
                 if (section != null || note != null)
                   Text(
-                    [if (section != null) section!, if (note != null) note!].join(' · '),
+                    [if (section != null) section!, if (note != null) note!]
+                        .join(' · '),
                     style: text.bodySmall?.copyWith(color: muted),
                   ),
               ],
@@ -167,10 +168,12 @@ class SectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.fromLTRB(4, 8, 4, 8),
+        padding: const EdgeInsets.symmetric(vertical: Space.sm),
         child: Row(
           children: [
-            Expanded(child: Text(title, style: Theme.of(context).textTheme.titleMedium)),
+            Expanded(
+                child: Text(title,
+                    style: Theme.of(context).textTheme.titleMedium)),
             if (trailing != null) trailing!,
           ],
         ),

@@ -3,7 +3,10 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 /// Semantic colour and shape tokens, attached to [ThemeData] as an
-/// extension. Dark is "Copper Noir" (the default), light is "Copper Light".
+/// extension. Light is "Trust Blue" (the default), dark is "Soft Night".
+///
+/// Both avoid pure black and pure white text, saturated gradients and
+/// glows, so long sessions stay easy on the eyes.
 class UiTokens extends ThemeExtension<UiTokens> {
   const UiTokens({
     required this.ground,
@@ -15,10 +18,8 @@ class UiTokens extends ThemeExtension<UiTokens> {
     required this.textMuted,
     required this.primary,
     required this.onPrimary,
-    required this.accentGradient,
-    required this.onAccentGradient,
-    required this.secondaryGradient,
-    required this.onSecondaryGradient,
+    required this.tint,
+    required this.onTint,
     required this.glow,
     required this.splitDivider,
     required this.positive,
@@ -38,7 +39,7 @@ class UiTokens extends ThemeExtension<UiTokens> {
   /// Card background.
   final Color surface;
 
-  /// Inset fills, neutral chips, segmented track.
+  /// Inset fills, neutral pills, segmented track.
   final Color surfaceAlt;
 
   /// 1px dividers.
@@ -49,19 +50,15 @@ class UiTokens extends ThemeExtension<UiTokens> {
   final Color text;
   final Color textMuted;
 
-  /// The accent: highlighted numbers, selected states, solid fills.
+  /// The one accent: buttons, selected states, headline figures.
   final Color primary;
   final Color onPrimary;
 
-  /// Primary buttons and the headline label bar.
-  final List<Color> accentGradient;
-  final Color onAccentGradient;
+  /// Soft accent wash for label bars and icon wells.
+  final Color tint;
+  final Color onTint;
 
-  /// Secondary label bars (the "silver" bar).
-  final List<Color> secondaryGradient;
-  final Color onSecondaryGradient;
-
-  /// Soft radial light behind the content.
+  /// Optional radial light behind pages; transparent in both themes.
   final Color glow;
 
   /// Vertical divider inside a split stat.
@@ -76,66 +73,57 @@ class UiTokens extends ThemeExtension<UiTokens> {
   final List<BoxShadow> cardShadow;
   final Color? cardBorder;
 
-  LinearGradient get accent => LinearGradient(colors: accentGradient);
-  LinearGradient get secondary => LinearGradient(colors: secondaryGradient);
-
-  static const copperNoir = UiTokens(
-    ground: Color(0xFF0E0E0F),
-    surface: Color(0xFF1A1A1B),
-    surfaceAlt: Color(0xFF2A2A2C),
-    hairline: Color(0xFF262628),
-    border: Color(0xFF34343A),
-    text: Color(0xFFF5F2EF),
-    textMuted: Color(0xFFA29C97),
-    primary: Color(0xFFEFA283),
-    onPrimary: Color(0xFF1E0F09),
-    accentGradient: [Color(0xFFE07B5A), Color(0xFFF2B8A2)],
-    onAccentGradient: Color(0xFF1E0F09),
-    secondaryGradient: [Color(0xFFE9E6E3), Color(0xFF9C9893)],
-    onSecondaryGradient: Color(0xFF141414),
-    glow: Color(0x42E07B5A),
-    splitDivider: Color(0xFF5A3427),
-    positive: Color(0xFF6BD6A6),
-    onPositive: Color(0xFF062A1B),
-    negative: Color(0xFFE5484D),
+  static const trustBlue = UiTokens(
+    ground: Color(0xFFF5F7FB),
+    surface: Color(0xFFFFFFFF),
+    surfaceAlt: Color(0xFFEEF2F8),
+    hairline: Color(0xFFE8EDF4),
+    border: Color(0xFFD8E0EB),
+    text: Color(0xFF1B2A41),
+    textMuted: Color(0xFF5F6B7E),
+    primary: Color(0xFF2F6FED),
+    onPrimary: Color(0xFFFFFFFF),
+    tint: Color(0xFFE8F0FE),
+    onTint: Color(0xFF1E4FC2),
+    glow: Color(0x002F6FED),
+    splitDivider: Color(0xFFE1E7F0),
+    positive: Color(0xFF12805C),
+    onPositive: Color(0xFFFFFFFF),
+    negative: Color(0xFFCF3B3B),
     onNegative: Color(0xFFFFFFFF),
-    warning: Color(0xFFF2C46D),
-    onWarning: Color(0xFF2A1B00),
-    radius: 18,
+    warning: Color(0xFFF5C451),
+    onWarning: Color(0xFF3D2800),
+    radius: 16,
     cardShadow: [
-      BoxShadow(color: Color(0x73000000), blurRadius: 40, offset: Offset(0, 16), spreadRadius: -12),
+      BoxShadow(color: Color(0x0D1B2A41), blurRadius: 2, offset: Offset(0, 1)),
+      BoxShadow(color: Color(0x0F1B2A41), blurRadius: 16, offset: Offset(0, 6), spreadRadius: -4),
     ],
-    cardBorder: Color(0xFF2A2A2C),
+    cardBorder: Color(0xFFE8EDF4),
   );
 
-  static const copperLight = UiTokens(
-    ground: Color(0xFFFAF6F2),
-    surface: Color(0xFFFFFFFF),
-    surfaceAlt: Color(0xFFF2EAE4),
-    hairline: Color(0xFFEFE6DF),
-    border: Color(0xFFE2D5CA),
-    text: Color(0xFF1F1A17),
-    textMuted: Color(0xFF6E6259),
-    primary: Color(0xFFB4552F),
-    onPrimary: Color(0xFFFFFFFF),
-    accentGradient: [Color(0xFFA94E2A), Color(0xFFC9643F)],
-    onAccentGradient: Color(0xFFFFFFFF),
-    secondaryGradient: [Color(0xFF3A3330), Color(0xFF6E6259)],
-    onSecondaryGradient: Color(0xFFFFFFFF),
-    glow: Color(0x24E07B5A),
-    splitDivider: Color(0xFFEBC9B8),
-    positive: Color(0xFF1E7A50),
-    onPositive: Color(0xFFFFFFFF),
-    negative: Color(0xFFC8302F),
-    onNegative: Color(0xFFFFFFFF),
-    warning: Color(0xFFF2C46D),
-    onWarning: Color(0xFF2A1B00),
-    radius: 18,
-    cardShadow: [
-      BoxShadow(color: Color(0x141F1A17), blurRadius: 2, offset: Offset(0, 1)),
-      BoxShadow(color: Color(0x141F1A17), blurRadius: 24, offset: Offset(0, 10), spreadRadius: -6),
-    ],
-    cardBorder: null,
+  static const softNight = UiTokens(
+    ground: Color(0xFF141922),
+    surface: Color(0xFF1C2330),
+    surfaceAlt: Color(0xFF262F3F),
+    hairline: Color(0xFF2A3344),
+    border: Color(0xFF364154),
+    text: Color(0xFFE4E9F2),
+    textMuted: Color(0xFF9AA5B8),
+    primary: Color(0xFF8AB0FF),
+    onPrimary: Color(0xFF0F1A33),
+    tint: Color(0xFF23324F),
+    onTint: Color(0xFFB9CDFF),
+    glow: Color(0x008AB0FF),
+    splitDivider: Color(0xFF2F3A4E),
+    positive: Color(0xFF6FCF9F),
+    onPositive: Color(0xFF0B2A1C),
+    negative: Color(0xFFF08080),
+    onNegative: Color(0xFF2A0B0B),
+    warning: Color(0xFFE9C46A),
+    onWarning: Color(0xFF2A1D00),
+    radius: 16,
+    cardShadow: [],
+    cardBorder: Color(0xFF262F3F),
   );
 
   @override
@@ -149,10 +137,8 @@ class UiTokens extends ThemeExtension<UiTokens> {
         textMuted: textMuted,
         primary: primary ?? this.primary,
         onPrimary: onPrimary,
-        accentGradient: accentGradient,
-        onAccentGradient: onAccentGradient,
-        secondaryGradient: secondaryGradient,
-        onSecondaryGradient: onSecondaryGradient,
+        tint: tint,
+        onTint: onTint,
         glow: glow,
         splitDivider: splitDivider,
         positive: positive,
@@ -170,8 +156,6 @@ class UiTokens extends ThemeExtension<UiTokens> {
   UiTokens lerp(ThemeExtension<UiTokens>? other, double t) {
     if (other is! UiTokens) return this;
     Color c(Color a, Color b) => Color.lerp(a, b, t)!;
-    List<Color> g(List<Color> a, List<Color> b) =>
-        [for (var i = 0; i < a.length; i++) c(a[i], b[i % b.length])];
     return UiTokens(
       ground: c(ground, other.ground),
       surface: c(surface, other.surface),
@@ -182,10 +166,8 @@ class UiTokens extends ThemeExtension<UiTokens> {
       textMuted: c(textMuted, other.textMuted),
       primary: c(primary, other.primary),
       onPrimary: c(onPrimary, other.onPrimary),
-      accentGradient: g(accentGradient, other.accentGradient),
-      onAccentGradient: c(onAccentGradient, other.onAccentGradient),
-      secondaryGradient: g(secondaryGradient, other.secondaryGradient),
-      onSecondaryGradient: c(onSecondaryGradient, other.onSecondaryGradient),
+      tint: c(tint, other.tint),
+      onTint: c(onTint, other.onTint),
       glow: c(glow, other.glow),
       splitDivider: c(splitDivider, other.splitDivider),
       positive: c(positive, other.positive),
@@ -204,7 +186,5 @@ class UiTokens extends ThemeExtension<UiTokens> {
 extension UiThemeX on BuildContext {
   UiTokens get ui =>
       Theme.of(this).extension<UiTokens>() ??
-      (Theme.of(this).brightness == Brightness.dark
-          ? UiTokens.copperNoir
-          : UiTokens.copperLight);
+      (Theme.of(this).brightness == Brightness.dark ? UiTokens.softNight : UiTokens.trustBlue);
 }

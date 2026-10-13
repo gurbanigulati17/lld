@@ -72,24 +72,28 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
         Expanded(
           child: ListView(
             controller: _scroll,
-            padding: EdgeInsets.fromLTRB(16, top + 16, 16, 16),
+            padding: EdgeInsets.fromLTRB(
+                Space.gutter, top + 16, Space.gutter, Space.gutter),
             children: [
               Text('Assistant', style: text.headlineMedium),
               const SizedBox(height: 12),
               for (final m in _messages)
                 Align(
-                  alignment: m.me ? Alignment.centerRight : Alignment.centerLeft,
+                  alignment:
+                      m.me ? Alignment.centerRight : Alignment.centerLeft,
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 420),
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 10),
                       child: Surface(
                         radius: 20,
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 12),
                         tint: m.me ? t.primary : null,
                         child: Text(
                           m.text,
-                          style: text.bodyMedium?.copyWith(color: m.me ? t.onPrimary : t.text),
+                          style: text.bodyMedium
+                              ?.copyWith(color: m.me ? t.onPrimary : t.text),
                         ),
                       ),
                     ),
@@ -108,7 +112,8 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
                         backgroundColor: t.surface,
                         side: BorderSide(color: t.border),
                         shape: const StadiumBorder(),
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 8),
                         minimumSize: const Size(0, 36),
                         textStyle: text.labelMedium,
                       ),
@@ -125,7 +130,8 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
             border: Border(top: BorderSide(color: t.hairline)),
           ),
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
+            padding:
+                const EdgeInsets.fromLTRB(Space.gutter, 10, Space.gutter, 10),
             child: Row(
               children: [
                 Expanded(
@@ -146,7 +152,8 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
                     style: IconButton.styleFrom(
                       backgroundColor: t.primary,
                       foregroundColor: t.onPrimary,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
                     ),
                     onPressed: () => _send(_ctrl.text),
                     icon: const Icon(Icons.arrow_upward),

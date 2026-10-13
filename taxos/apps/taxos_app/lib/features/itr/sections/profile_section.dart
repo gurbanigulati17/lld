@@ -34,7 +34,9 @@ class _ProfileSectionState extends ConsumerState<ProfileSection> {
   }
 
   void _update(TaxpayerProfile Function(TaxpayerProfile) fn) {
-    ref.read(itrDraftProvider.notifier).update((d) => d.copyWith(profile: fn(d.profile)));
+    ref
+        .read(itrDraftProvider.notifier)
+        .update((d) => d.copyWith(profile: fn(d.profile)));
   }
 
   @override
@@ -44,7 +46,8 @@ class _ProfileSectionState extends ConsumerState<ProfileSection> {
     final panOk = RegExp(r'^[A-Z]{5}[0-9]{4}[A-Z]$').hasMatch(p.pan);
     return SectionScaffold(
       title: 'Profile',
-      subtitle: 'Your age on 31 March decides the basic exemption; residency decides which incomes are taxed here.',
+      subtitle:
+          'Your age on 31 March decides the basic exemption; residency decides which incomes are taxed here.',
       children: [
         AppTextField(
           label: 'Full name (as on PAN)',
@@ -108,7 +111,8 @@ class _ProfileSectionState extends ConsumerState<ProfileSection> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Date of birth', style: Theme.of(context).textTheme.labelMedium),
+                    Text('Date of birth',
+                        style: Theme.of(context).textTheme.labelMedium),
                     const SizedBox(height: 4),
                     Text(
                       p.dateOfBirth == null

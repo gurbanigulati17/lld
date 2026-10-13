@@ -10,11 +10,15 @@ class AssistantBrain {
     required this.input,
     required this.comparison,
     required this.form,
+    this.today,
   });
 
   final ItrInput input;
   final RegimeComparison comparison;
   final FormRecommendation form;
+
+  /// Overrides the clock in tests.
+  final DateTime? today;
 
   String answer(String question) {
     final q = question.toLowerCase();
@@ -24,7 +28,10 @@ class AssistantBrain {
     if (q.contains('regime')) {
       return const ExplanationBuilder().explainComparison(comparison).join(' ');
     }
-    if (q.contains('form') || q.contains('itr-') || q.contains('sahaj') || q.contains('sugam')) {
+    if (q.contains('form') ||
+        q.contains('itr-') ||
+        q.contains('sahaj') ||
+        q.contains('sugam')) {
       return '${form.form.label}. ${form.reasons.join(' ')}';
     }
     if (q.contains('hra')) {
@@ -32,16 +39,26 @@ class AssistantBrain {
       if (s == null || s.hraReceived == 0) {
         return 'You have not entered HRA. Add HRA received and rent paid in the salary section and I will compute the exemption under s.10(13A).';
       }
-      final old = comparison.oldRegime.lineItems.where((l) => l.code == 'SAL.HRA_EXEMPT');
+      final old = comparison.oldRegime.lineItems
+          .where((l) => l.code == 'SAL.HRA_EXEMPT');
       final amt = old.isEmpty ? 0 : -old.first.amount;
       return 'Your HRA exemption is ${formatInr(amt)} in the old regime: the least of HRA received (${formatInr(s.hraReceived)}), rent paid less 10% of basic and DA, and ${s.isMetroCity ? 50 : 40}% of basic and DA. The new regime does not allow it.';
     }
-    if (q.contains('deadline') || q.contains('due date') || q.contains('when')) {
+    if (q.contains('deadline') ||
+        q.contains('due date') ||
+        q.contains('when')) {
       final d = rp.dueDateNonAudit;
-      return 'For ${input.assessmentYear.label} the non-audit due date is ${d.day}/${d.month}/${d.year}. Filing later attracts s.234A interest at 1% per month on unpaid tax and a late fee under s.234F.';
+      final b = input.assessmentYear.belatedReturnLastDate;
+      final now = today ?? DateTime.now();
+      if (now.isAfter(d)) {
+        return 'The ${input.assessmentYear.label} due date of ${d.day}/${d.month}/${d.year} has passed. You can still file a belated return until ${b.day}/${b.month}/${b.year}, with s.234A interest at 1% per month on unpaid tax and a late fee under s.234F.';
+      }
+      return 'For ${input.assessmentYear.label} the non-audit due date is ${d.day}/${d.month}/${d.year}. After that a belated return is allowed until ${b.day}/${b.month}/${b.year}, with s.234A interest and a late fee under s.234F.';
     }
     if (q.contains('interest') || q.contains('234')) {
-      if (best.totalInterest == 0) return 'No interest is due on the current draft.';
+      if (best.totalInterest == 0) {
+        return 'No interest is due on the current draft.';
+      }
       final notes = best.warnings.where((w) => w.contains('234')).join(' ');
       return 'Interest totals ${formatInr(best.totalInterest)}: s.234A ${formatInr(best.interest234A)}, s.234B ${formatInr(best.interest234B)}, s.234C ${formatInr(best.interest234C)}. $notes';
     }

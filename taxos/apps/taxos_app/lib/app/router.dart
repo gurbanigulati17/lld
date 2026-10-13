@@ -45,7 +45,8 @@ final routerProvider = Provider<GoRouter>((ref) {
           child: child,
         ),
         routes: [
-          GoRoute(path: Routes.home, builder: (_, __) => const DashboardScreen()),
+          GoRoute(
+              path: Routes.home, builder: (_, __) => const DashboardScreen()),
           GoRoute(path: Routes.itr, builder: (_, __) => const ItrScreen()),
           GoRoute(path: Routes.gst, builder: (_, __) => const GstScreen()),
           GoRoute(
@@ -54,16 +55,28 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
         ],
       ),
-      GoRoute(path: Routes.computation, builder: (_, __) => const ComputationScreen()),
+      GoRoute(
+          path: Routes.computation,
+          builder: (_, __) => const ComputationScreen()),
       GoRoute(path: Routes.filing, builder: (_, __) => const FilingScreen()),
       GoRoute(path: Routes.profile, builder: (_, __) => const ProfileSection()),
       GoRoute(path: Routes.salary, builder: (_, __) => const SalarySection()),
-      GoRoute(path: Routes.houseProperty, builder: (_, __) => const HousePropertySection()),
-      GoRoute(path: Routes.capitalGains, builder: (_, __) => const CapitalGainsSection()),
-      GoRoute(path: Routes.business, builder: (_, __) => const BusinessSection()),
-      GoRoute(path: Routes.otherSources, builder: (_, __) => const OtherSourcesSection()),
-      GoRoute(path: Routes.deductions, builder: (_, __) => const DeductionsSection()),
-      GoRoute(path: Routes.taxesPaid, builder: (_, __) => const TaxesPaidSection()),
+      GoRoute(
+          path: Routes.houseProperty,
+          builder: (_, __) => const HousePropertySection()),
+      GoRoute(
+          path: Routes.capitalGains,
+          builder: (_, __) => const CapitalGainsSection()),
+      GoRoute(
+          path: Routes.business, builder: (_, __) => const BusinessSection()),
+      GoRoute(
+          path: Routes.otherSources,
+          builder: (_, __) => const OtherSourcesSection()),
+      GoRoute(
+          path: Routes.deductions,
+          builder: (_, __) => const DeductionsSection()),
+      GoRoute(
+          path: Routes.taxesPaid, builder: (_, __) => const TaxesPaidSection()),
     ],
   );
 });

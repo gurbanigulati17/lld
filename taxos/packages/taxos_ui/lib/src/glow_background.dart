@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'tokens.dart';
 
-/// Ground colour with one soft, static radial light, the way premium
-/// finance apps lift a dark page without a busy gradient. It never
-/// animates, so it costs nothing per frame.
+/// Page ground, with an optional static radial light from the theme's
+/// glow token. Both shipped themes keep the glow transparent.
 class GlowBackground extends StatelessWidget {
   const GlowBackground({
     super.key,

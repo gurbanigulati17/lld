@@ -100,7 +100,7 @@ void main() {
   });
 
   test('status tags are solid with contrasting labels', () {
-    const t = UiTokens.copperNoir;
+    for (final t in const [UiTokens.trustBlue, UiTokens.softNight]) {
     double lum(Color c) {
       double ch(double v) => v <= 0.03928 ? v / 12.92 : math.pow((v + 0.055) / 1.055, 2.4).toDouble();
       return 0.2126 * ch(c.r) + 0.7152 * ch(c.g) + 0.0722 * ch(c.b);
@@ -111,7 +111,12 @@ void main() {
     }
     expect(ratio(t.warning, t.onWarning), greaterThan(4.5));
     expect(ratio(t.positive, t.onPositive), greaterThan(4.5));
-    expect(ratio(t.negative, t.onNegative), greaterThan(3.0));
+    expect(ratio(t.negative, t.onNegative), greaterThan(4.5));
+    expect(ratio(t.surface, t.text), greaterThan(7));
+    expect(ratio(t.surface, t.textMuted), greaterThan(4.5));
+    expect(ratio(t.tint, t.onTint), greaterThan(4.5));
+    expect(ratio(t.primary, t.onPrimary), greaterThan(4.5));
+    }
   });
 
   testWidgets('GlowBackground paints the ground colour under the glow', (tester) async {
@@ -122,6 +127,6 @@ void main() {
     final box = tester.widget<ColoredBox>(
       find.descendant(of: find.byType(GlowBackground), matching: find.byType(ColoredBox)).first,
     );
-    expect(box.color, UiTokens.copperNoir.ground);
+    expect(box.color, UiTokens.softNight.ground);
   });
 }

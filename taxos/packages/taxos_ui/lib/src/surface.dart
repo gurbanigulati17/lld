@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 
+import 'space.dart';
 import 'tokens.dart';
 
-/// The card. Dark theme outlines it with a hairline and a deep shadow;
-/// light theme lifts it with a soft shadow. [emphasis] strengthens the
-/// border for the one card on a screen that matters most.
+/// The card: hairline border plus a soft shadow in light mode, hairline
+/// only in dark mode. Default padding is [Space.card] so content in every
+/// card shares one inset. [emphasis] strengthens the border.
 class Surface extends StatelessWidget {
   const Surface({
     super.key,
     required this.child,
-    this.padding = const EdgeInsets.all(16),
+    this.padding = const EdgeInsets.all(Space.card),
     this.margin,
     this.radius,
     this.onTap,

@@ -17,30 +17,30 @@ class GstScreen extends ConsumerWidget {
     final r = ref.watch(gstr3bResultProvider);
     final t = context.ui;
     final text = Theme.of(context).textTheme;
-    final muted = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.65);
+    final muted =
+        Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.65);
     final top = MediaQuery.paddingOf(context).top;
-    void set(Gstr3bInput Function(Gstr3bInput) fn) => ref.read(gstDraftProvider.notifier).update(fn);
+    void set(Gstr3bInput Function(Gstr3bInput) fn) =>
+        ref.read(gstDraftProvider.notifier).update(fn);
 
     return ListView(
-      padding: EdgeInsets.fromLTRB(16, top + 16, 16, 24),
+      padding: EdgeInsets.fromLTRB(
+          Space.gutter, top + 16, Space.gutter, Space.section),
       children: [
         Text('GST', style: text.headlineMedium),
-        Text('GSTR-3B for ${input.period}', style: text.bodyMedium?.copyWith(color: muted)),
+        Text('GSTR-3B for ${input.period}',
+            style: text.bodyMedium?.copyWith(color: muted)),
         const SizedBox(height: 16),
         Surface(
           emphasis: true,
-          padding: const EdgeInsets.fromLTRB(14, 14, 14, 16),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const LabelBar('GSTR-3B · cash payable'),
-              const SizedBox(height: 12),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 6),
-                child: Text(
-                  formatInr(r.totalCashOutflow),
-                  style: text.displaySmall?.copyWith(color: t.primary, fontWeight: FontWeight.w700),
-                ),
+              const SizedBox(height: Space.gap),
+              Text(
+                formatInr(r.totalCashOutflow),
+                style: text.headlineMedium?.copyWith(color: t.primary),
               ),
               const SizedBox(height: 10),
               Wrap(
@@ -50,8 +50,14 @@ class GstScreen extends ConsumerWidget {
                   Tag(label: 'IGST ${formatInr(r.cashPayable.igst)}'),
                   Tag(label: 'CGST ${formatInr(r.cashPayable.cgst)}'),
                   Tag(label: 'SGST ${formatInr(r.cashPayable.sgst)}'),
-                  if (r.lateFee > 0) Tag(label: 'Late fee ${formatInr(r.lateFee)}', tone: TagTone.warning),
-                  if (r.interest > 0) Tag(label: 'Interest ${formatInr(r.interest)}', tone: TagTone.negative),
+                  if (r.lateFee > 0)
+                    Tag(
+                        label: 'Late fee ${formatInr(r.lateFee)}',
+                        tone: TagTone.warning),
+                  if (r.interest > 0)
+                    Tag(
+                        label: 'Interest ${formatInr(r.interest)}',
+                        tone: TagTone.negative),
                 ],
               ),
             ],
@@ -63,7 +69,8 @@ class GstScreen extends ConsumerWidget {
           trailing: TextButton.icon(
             onPressed: () => set((i) => copyGstr3b(i, outwardSupplies: [
                   ...i.outwardSupplies,
-                  const OutwardSupply(taxableValue: 0, ratePercent: 18, interState: false),
+                  const OutwardSupply(
+                      taxableValue: 0, ratePercent: 18, interState: false),
                 ])),
             icon: const Icon(Icons.add, size: 18),
             label: const Text('Add'),
@@ -79,7 +86,8 @@ class GstScreen extends ConsumerWidget {
                 list[i] = s;
                 return copyGstr3b(inp, outwardSupplies: list);
               }),
-              onRemove: () => set((inp) => copyGstr3b(inp, outwardSupplies: [...inp.outwardSupplies]..removeAt(i))),
+              onRemove: () => set((inp) => copyGstr3b(inp,
+                  outwardSupplies: [...inp.outwardSupplies]..removeAt(i))),
             ),
           ),
         const SectionHeader('Input tax credit (from GSTR-2B)'),
@@ -120,13 +128,16 @@ class GstScreen extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Filing date', style: text.labelMedium?.copyWith(color: muted)),
+                    Text('Filing date',
+                        style: text.labelMedium?.copyWith(color: muted)),
                     Text(_fmt(input.filingDate), style: text.titleMedium),
-                    Text('Due ${_fmt(input.dueDate)}', style: text.bodySmall?.copyWith(color: muted)),
+                    Text('Due ${_fmt(input.dueDate)}',
+                        style: text.bodySmall?.copyWith(color: muted)),
                   ],
                 ),
               ),
-              if (r.daysLate > 0) Tag(label: '${r.daysLate} days late', tone: TagTone.warning),
+              if (r.daysLate > 0)
+                Tag(label: '${r.daysLate} days late', tone: TagTone.warning),
             ],
           ),
         ),
@@ -137,13 +148,19 @@ class GstScreen extends ConsumerWidget {
           child: Column(
             children: [
               for (final l in r.lineItems)
-                AmountRow(label: l.label, amount: l.amount, section: l.section, note: l.note, bold: l.code == 'GST.CASH'),
+                AmountRow(
+                    label: l.label,
+                    amount: l.amount,
+                    section: l.section,
+                    note: l.note,
+                    bold: l.code == 'GST.CASH'),
               if (r.notes.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(top: 6),
                   child: Align(
                     alignment: Alignment.centerLeft,
-                    child: Text(r.notes.join('\n'), style: text.bodySmall?.copyWith(color: t.positive)),
+                    child: Text(r.notes.join('\n'),
+                        style: text.bodySmall?.copyWith(color: t.positive)),
                   ),
                 ),
             ],
@@ -155,11 +172,13 @@ class GstScreen extends ConsumerWidget {
     );
   }
 
-  static String _fmt(DateTime? d) => d == null ? '—' : '${d.day}/${d.month}/${d.year}';
+  static String _fmt(DateTime? d) =>
+      d == null ? '—' : '${d.day}/${d.month}/${d.year}';
 }
 
 class _SupplyCard extends StatelessWidget {
-  const _SupplyCard({required this.supply, required this.onChanged, required this.onRemove});
+  const _SupplyCard(
+      {required this.supply, required this.onChanged, required this.onRemove});
   final OutwardSupply supply;
   final ValueChanged<OutwardSupply> onChanged;
   final VoidCallback onRemove;
@@ -169,7 +188,7 @@ class _SupplyCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Surface(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(Space.card),
       child: Column(
         children: [
           Row(
@@ -187,7 +206,8 @@ class _SupplyCard extends StatelessWidget {
                   )),
                 ),
               ),
-              IconButton(onPressed: onRemove, icon: const Icon(Icons.delete_outline)),
+              IconButton(
+                  onPressed: onRemove, icon: const Icon(Icons.delete_outline)),
             ],
           ),
           const SizedBox(height: 10),
@@ -211,13 +231,19 @@ class _SupplyCard extends StatelessWidget {
                 flex: 2,
                 child: Surface(
                   radius: 18,
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<double>(
-                      value: _rates.contains(supply.ratePercent) ? supply.ratePercent : 18,
+                      value: _rates.contains(supply.ratePercent)
+                          ? supply.ratePercent
+                          : 18,
                       isExpanded: true,
                       dropdownColor: Theme.of(context).colorScheme.surface,
-                      items: [for (final r in _rates) DropdownMenuItem(value: r, child: Text('$r%'))],
+                      items: [
+                        for (final r in _rates)
+                          DropdownMenuItem(value: r, child: Text('$r%'))
+                      ],
                       onChanged: (r) => onChanged(OutwardSupply(
                         taxableValue: supply.taxableValue,
                         ratePercent: r!,
@@ -249,7 +275,8 @@ class _HeadsEditor extends StatelessWidget {
           child: AmountField(
             label: 'IGST',
             value: heads.igst,
-            onChanged: (v) => onChanged(GstHeads(igst: v, cgst: heads.cgst, sgst: heads.sgst, cess: heads.cess)),
+            onChanged: (v) => onChanged(GstHeads(
+                igst: v, cgst: heads.cgst, sgst: heads.sgst, cess: heads.cess)),
           ),
         ),
         const SizedBox(width: 8),
@@ -257,7 +284,8 @@ class _HeadsEditor extends StatelessWidget {
           child: AmountField(
             label: 'CGST',
             value: heads.cgst,
-            onChanged: (v) => onChanged(GstHeads(igst: heads.igst, cgst: v, sgst: heads.sgst, cess: heads.cess)),
+            onChanged: (v) => onChanged(GstHeads(
+                igst: heads.igst, cgst: v, sgst: heads.sgst, cess: heads.cess)),
           ),
         ),
         const SizedBox(width: 8),
@@ -265,7 +293,8 @@ class _HeadsEditor extends StatelessWidget {
           child: AmountField(
             label: 'SGST',
             value: heads.sgst,
-            onChanged: (v) => onChanged(GstHeads(igst: heads.igst, cgst: heads.cgst, sgst: v, cess: heads.cess)),
+            onChanged: (v) => onChanged(GstHeads(
+                igst: heads.igst, cgst: heads.cgst, sgst: v, cess: heads.cess)),
           ),
         ),
       ],
@@ -289,7 +318,8 @@ class _RegistrationAdvisorState extends State<_RegistrationAdvisor> {
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
-    final muted = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.65);
+    final muted =
+        Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.65);
     final advice = const GstRegistrationAdvisor().advise(GstRegistrationInput(
       aggregateTurnover: _turnover,
       nature: _nature,
@@ -314,9 +344,15 @@ class _RegistrationAdvisorState extends State<_RegistrationAdvisor> {
           onChanged: (v) => setState(() => _nature = v),
         ),
         const SizedBox(height: 10),
-        SwitchTile(label: 'Inter-state supplies', value: _interState, onChanged: (v) => setState(() => _interState = v)),
+        SwitchTile(
+            label: 'Inter-state supplies',
+            value: _interState,
+            onChanged: (v) => setState(() => _interState = v)),
         const SizedBox(height: 10),
-        SwitchTile(label: 'Sell via e-commerce', value: _ecommerce, onChanged: (v) => setState(() => _ecommerce = v)),
+        SwitchTile(
+            label: 'Sell via e-commerce',
+            value: _ecommerce,
+            onChanged: (v) => setState(() => _ecommerce = v)),
         const SizedBox(height: 10),
         Surface(
           child: Column(
@@ -327,16 +363,26 @@ class _RegistrationAdvisorState extends State<_RegistrationAdvisor> {
                 runSpacing: 8,
                 children: [
                   Tag(
-                    label: advice.registrationRequired ? 'Registration required' : 'Optional',
-                    tone: advice.registrationRequired ? TagTone.warning : TagTone.positive,
+                    label: advice.registrationRequired
+                        ? 'Registration required'
+                        : 'Optional',
+                    tone: advice.registrationRequired
+                        ? TagTone.warning
+                        : TagTone.positive,
                   ),
-                  if (advice.compositionEligible) const Tag(label: 'Composition eligible', tone: TagTone.primary),
-                  if (advice.eInvoicingRequired) const Tag(label: 'e-Invoicing', tone: TagTone.negative),
+                  if (advice.compositionEligible)
+                    const Tag(
+                        label: 'Composition eligible', tone: TagTone.primary),
+                  if (advice.eInvoicingRequired)
+                    const Tag(label: 'e-Invoicing', tone: TagTone.negative),
                 ],
               ),
               const SizedBox(height: 8),
               for (final r in advice.reasons)
-                Padding(padding: const EdgeInsets.only(bottom: 4), child: Text('• $r', style: text.bodySmall?.copyWith(color: muted))),
+                Padding(
+                    padding: const EdgeInsets.only(bottom: 4),
+                    child: Text('• $r',
+                        style: text.bodySmall?.copyWith(color: muted))),
             ],
           ),
         ),

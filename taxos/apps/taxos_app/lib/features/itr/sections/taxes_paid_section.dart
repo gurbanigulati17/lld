@@ -9,8 +9,9 @@ import '../widgets.dart';
 class TaxesPaidSection extends ConsumerWidget {
   const TaxesPaidSection({super.key});
 
-  void _set(WidgetRef ref, TaxesPaid Function(TaxesPaid) fn) =>
-      ref.read(itrDraftProvider.notifier).update((d) => d.copyWith(taxesPaid: fn(d.taxesPaid)));
+  void _set(WidgetRef ref, TaxesPaid Function(TaxesPaid) fn) => ref
+      .read(itrDraftProvider.notifier)
+      .update((d) => d.copyWith(taxesPaid: fn(d.taxesPaid)));
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -18,27 +19,47 @@ class TaxesPaidSection extends ConsumerWidget {
     final draft = ref.watch(itrDraftProvider);
     final c = ref.watch(activeComputationProvider);
     final text = Theme.of(context).textTheme;
-    final muted = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6);
+    final muted =
+        Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6);
     final rp = ItrRulePack.forYear(draft.assessmentYear);
     return SectionScaffold(
       title: 'Taxes paid',
-      subtitle: 'TDS on salary comes from the salary section. Add other TDS from Form 26AS, advance-tax challans, and your planned filing date for interest.',
+      subtitle:
+          'TDS on salary comes from the salary section. Add other TDS from Form 26AS, advance-tax challans, and your planned filing date for interest.',
       children: [
         AmountField(
           label: 'TDS other than salary',
           helper: 'Bank interest, professional fees (Form 26AS)',
           value: tp.tdsOther,
-          onChanged: (v) => _set(ref, (t) => TaxesPaid(tdsOther: v, tcs: t.tcs, advanceTax: t.advanceTax, selfAssessmentTax: t.selfAssessmentTax)),
+          onChanged: (v) => _set(
+              ref,
+              (t) => TaxesPaid(
+                  tdsOther: v,
+                  tcs: t.tcs,
+                  advanceTax: t.advanceTax,
+                  selfAssessmentTax: t.selfAssessmentTax)),
         ),
         AmountField(
           label: 'TCS',
           value: tp.tcs,
-          onChanged: (v) => _set(ref, (t) => TaxesPaid(tdsOther: t.tdsOther, tcs: v, advanceTax: t.advanceTax, selfAssessmentTax: t.selfAssessmentTax)),
+          onChanged: (v) => _set(
+              ref,
+              (t) => TaxesPaid(
+                  tdsOther: t.tdsOther,
+                  tcs: v,
+                  advanceTax: t.advanceTax,
+                  selfAssessmentTax: t.selfAssessmentTax)),
         ),
         AmountField(
           label: 'Self-assessment tax paid',
           value: tp.selfAssessmentTax,
-          onChanged: (v) => _set(ref, (t) => TaxesPaid(tdsOther: t.tdsOther, tcs: t.tcs, advanceTax: t.advanceTax, selfAssessmentTax: v)),
+          onChanged: (v) => _set(
+              ref,
+              (t) => TaxesPaid(
+                  tdsOther: t.tdsOther,
+                  tcs: t.tcs,
+                  advanceTax: t.advanceTax,
+                  selfAssessmentTax: v)),
         ),
         const SectionHeader('Advance tax challans'),
         for (var i = 0; i < tp.advanceTax.length; i++)
@@ -50,19 +71,26 @@ class TaxesPaidSection extends ConsumerWidget {
                 Expanded(
                   child: Surface(
                     radius: 14,
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     onTap: () async {
                       final picked = await showDatePicker(
                         context: context,
                         initialDate: tp.advanceTax[i].date,
                         firstDate: draft.assessmentYear.fyStartDate,
-                        lastDate: draft.assessmentYear.fyEndDate.add(const Duration(days: 180)),
+                        lastDate: draft.assessmentYear.fyEndDate
+                            .add(const Duration(days: 180)),
                       );
                       if (picked != null) {
                         _set(ref, (t) {
                           final list = [...t.advanceTax];
-                          list[i] = AdvanceTaxPayment(date: picked, amount: list[i].amount);
-                          return TaxesPaid(tdsOther: t.tdsOther, tcs: t.tcs, advanceTax: list, selfAssessmentTax: t.selfAssessmentTax);
+                          list[i] = AdvanceTaxPayment(
+                              date: picked, amount: list[i].amount);
+                          return TaxesPaid(
+                              tdsOther: t.tdsOther,
+                              tcs: t.tcs,
+                              advanceTax: list,
+                              selfAssessmentTax: t.selfAssessmentTax);
                         });
                       }
                     },
@@ -80,18 +108,25 @@ class TaxesPaidSection extends ConsumerWidget {
                     value: tp.advanceTax[i].amount,
                     onChanged: (v) => _set(ref, (t) {
                       final list = [...t.advanceTax];
-                      list[i] = AdvanceTaxPayment(date: list[i].date, amount: v);
-                      return TaxesPaid(tdsOther: t.tdsOther, tcs: t.tcs, advanceTax: list, selfAssessmentTax: t.selfAssessmentTax);
+                      list[i] =
+                          AdvanceTaxPayment(date: list[i].date, amount: v);
+                      return TaxesPaid(
+                          tdsOther: t.tdsOther,
+                          tcs: t.tcs,
+                          advanceTax: list,
+                          selfAssessmentTax: t.selfAssessmentTax);
                     }),
                   ),
                 ),
                 IconButton(
-                  onPressed: () => _set(ref, (t) => TaxesPaid(
-                        tdsOther: t.tdsOther,
-                        tcs: t.tcs,
-                        advanceTax: [...t.advanceTax]..removeAt(i),
-                        selfAssessmentTax: t.selfAssessmentTax,
-                      )),
+                  onPressed: () => _set(
+                      ref,
+                      (t) => TaxesPaid(
+                            tdsOther: t.tdsOther,
+                            tcs: t.tcs,
+                            advanceTax: [...t.advanceTax]..removeAt(i),
+                            selfAssessmentTax: t.selfAssessmentTax,
+                          )),
                   icon: const Icon(Icons.delete_outline),
                 ),
               ],
@@ -102,15 +137,19 @@ class TaxesPaidSection extends ConsumerWidget {
           icon: Icons.add,
           style: AppButtonStyle.secondary,
           expand: true,
-          onPressed: () => _set(ref, (t) => TaxesPaid(
-                tdsOther: t.tdsOther,
-                tcs: t.tcs,
-                advanceTax: [
-                  ...t.advanceTax,
-                  AdvanceTaxPayment(date: DateTime(draft.assessmentYear.fyStart, 6, 15), amount: 0),
-                ],
-                selfAssessmentTax: t.selfAssessmentTax,
-              )),
+          onPressed: () => _set(
+              ref,
+              (t) => TaxesPaid(
+                    tdsOther: t.tdsOther,
+                    tcs: t.tcs,
+                    advanceTax: [
+                      ...t.advanceTax,
+                      AdvanceTaxPayment(
+                          date: DateTime(draft.assessmentYear.fyStart, 6, 15),
+                          amount: 0),
+                    ],
+                    selfAssessmentTax: t.selfAssessmentTax,
+                  )),
         ),
         const SectionHeader('Filing date'),
         Surface(
@@ -121,10 +160,13 @@ class TaxesPaidSection extends ConsumerWidget {
               context: context,
               initialDate: draft.filingDate ?? rp.dueDateNonAudit,
               firstDate: draft.assessmentYear.fyEndDate,
-              lastDate: draft.assessmentYear.fyEndDate.add(const Duration(days: 365)),
+              lastDate:
+                  draft.assessmentYear.fyEndDate.add(const Duration(days: 365)),
             );
             if (picked != null) {
-              ref.read(itrDraftProvider.notifier).update((d) => d.copyWith(filingDate: picked));
+              ref
+                  .read(itrDraftProvider.notifier)
+                  .update((d) => d.copyWith(filingDate: picked));
             }
           },
           child: Row(
@@ -133,17 +175,21 @@ class TaxesPaidSection extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Planned filing date', style: text.labelMedium?.copyWith(color: muted)),
+                    Text('Planned filing date',
+                        style: text.labelMedium?.copyWith(color: muted)),
                     Text(
                       _fmt(draft.filingDate ?? rp.dueDateNonAudit),
                       style: text.titleMedium,
                     ),
-                    Text('Due date ${_fmt(rp.dueDateNonAudit)}', style: text.bodySmall?.copyWith(color: muted)),
+                    Text('Due date ${_fmt(rp.dueDateNonAudit)}',
+                        style: text.bodySmall?.copyWith(color: muted)),
                   ],
                 ),
               ),
               if (c.totalInterest > 0)
-                Tag(label: 'Interest ${formatInr(c.totalInterest)}', tone: TagTone.warning),
+                Tag(
+                    label: 'Interest ${formatInr(c.totalInterest)}',
+                    tone: TagTone.warning),
             ],
           ),
         ),

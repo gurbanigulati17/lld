@@ -20,10 +20,12 @@ class CapitalGainsSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final gains = ref.watch(itrDraftProvider.select((d) => d.capitalGains));
     final text = Theme.of(context).textTheme;
-    final muted = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6);
+    final muted =
+        Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6);
     return SectionScaffold(
       title: 'Capital gains',
-      subtitle: 'Enter the net gain per bucket (negative for a loss). The engine sets off losses in the order the Act allows and applies the ₹1.25L equity exemption.',
+      subtitle:
+          'Enter the net gain per bucket (negative for a loss). The engine sets off losses in the order the Act allows and applies the ₹1.25L equity exemption.',
       children: [
         for (var i = 0; i < gains.length; i++)
           Surface(
@@ -41,15 +43,25 @@ class CapitalGainsSection extends ConsumerWidget {
                           style: text.titleSmall,
                           items: [
                             for (final t in CapitalGainType.values)
-                              DropdownMenuItem(value: t, child: Text(_labels[t]!)),
+                              DropdownMenuItem(
+                                  value: t, child: Text(_labels[t]!)),
                           ],
-                          onChanged: (t) => _setAt(ref, i, CapitalGain(type: t!, gain: gains[i].gain, description: gains[i].description)),
+                          onChanged: (t) => _setAt(
+                              ref,
+                              i,
+                              CapitalGain(
+                                  type: t!,
+                                  gain: gains[i].gain,
+                                  description: gains[i].description)),
                         ),
                       ),
                     ),
                     IconButton(
-                      onPressed: () => ref.read(itrDraftProvider.notifier).update(
-                            (d) => d.copyWith(capitalGains: [...d.capitalGains]..removeAt(i)),
+                      onPressed: () => ref
+                          .read(itrDraftProvider.notifier)
+                          .update(
+                            (d) => d.copyWith(
+                                capitalGains: [...d.capitalGains]..removeAt(i)),
                           ),
                       icon: const Icon(Icons.delete_outline),
                     ),
@@ -58,10 +70,17 @@ class CapitalGainsSection extends ConsumerWidget {
                 const SizedBox(height: 8),
                 _SignedAmountField(
                   value: gains[i].gain,
-                  onChanged: (v) => _setAt(ref, i, CapitalGain(type: gains[i].type, gain: v, description: gains[i].description)),
+                  onChanged: (v) => _setAt(
+                      ref,
+                      i,
+                      CapitalGain(
+                          type: gains[i].type,
+                          gain: v,
+                          description: gains[i].description)),
                 ),
                 const SizedBox(height: 6),
-                Text('Import from broker P&L (Zerodha, Groww, Upstox) coming in the documents module.',
+                Text(
+                    'Import from broker P&L (Zerodha, Groww, Upstox) coming in the documents module.',
                     style: text.bodySmall?.copyWith(color: muted)),
               ],
             ),
