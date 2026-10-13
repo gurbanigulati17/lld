@@ -8,7 +8,9 @@ COPY packages/tax_engine ./packages/tax_engine
 COPY services/api ./services/api
 RUN mkdir -p /app && cd services/api && dart pub get && dart compile exe bin/server.dart -o /app/server
 
-FROM debian:bookworm-slim
+# Minimal runtime: the AOT binary plus the shared libraries the dart image
+# ships under /runtime for exactly this purpose (needs a scratch base).
+FROM scratch
 COPY --from=build /runtime/ /
 COPY --from=build /app/server /app/server
 ENV PORT=8080
