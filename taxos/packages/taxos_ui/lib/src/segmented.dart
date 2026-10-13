@@ -26,7 +26,7 @@ class Segmented<T> extends StatelessWidget {
       padding: const EdgeInsets.all(3),
       decoration: BoxDecoration(
         color: t.surfaceAlt,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: LayoutBuilder(
         builder: (context, c) {
@@ -45,7 +45,7 @@ class Segmented<T> extends StatelessWidget {
                     width: w,
                     child: DecoratedBox(
                       decoration: BoxDecoration(
-                        color: t.primary,
+                        gradient: t.accent,
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
@@ -61,7 +61,7 @@ class Segmented<T> extends StatelessWidget {
                             child: AnimatedDefaultTextStyle(
                               duration: const Duration(milliseconds: 160),
                               style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                                    color: i == idx ? t.onPrimary : t.text,
+                                    color: i == idx ? t.onAccentGradient : t.text,
                                   ),
                               child: Text(labels[i]),
                             ),

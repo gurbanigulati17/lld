@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
+import 'glow_background.dart';
 import 'tokens.dart';
 
-/// Scaffold on the ground colour with a flat app bar separated by a
-/// hairline. Nothing floats and nothing extends behind anything, so the
-/// keyboard, the input bars and the tab bar never overlap.
+/// Scaffold on the glowing ground with a transparent app bar separated by
+/// a hairline. Only the app bar overlays the glow; the body, the input
+/// bars and the tab bar never overlap each other.
 class AppScaffold extends StatelessWidget {
   const AppScaffold({
     super.key,
@@ -26,8 +27,9 @@ class AppScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = context.ui;
-    return Scaffold(
-      backgroundColor: t.ground,
+    return GlowBackground(
+      child: Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: title == null && actions == null && leading == null
           ? null
           : AppBar(
@@ -42,6 +44,7 @@ class AppScaffold extends StatelessWidget {
       body: body,
       bottomNavigationBar: bottomNavigationBar,
       floatingActionButton: floatingActionButton,
+      ),
     );
   }
 }

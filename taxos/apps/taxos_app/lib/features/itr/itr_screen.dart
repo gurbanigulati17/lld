@@ -89,35 +89,27 @@ class ItrScreen extends ConsumerWidget {
         const SizedBox(height: 12),
         Surface(
           emphasis: true,
+          padding: const EdgeInsets.fromLTRB(14, 14, 14, 16),
           onTap: () => context.push(Routes.computation),
-          child: Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '${active.regime == TaxRegime.newRegime ? 'New' : 'Old'} regime liability',
-                      style: text.labelLarge?.copyWith(color: muted),
-                    ),
-                    Text(formatInr(active.totalTaxLiability), style: text.headlineMedium),
-                    const SizedBox(height: 4),
-                    Text(
-                      cmp.savings == 0
-                          ? 'Both regimes cost the same'
-                          : '${cmp.recommended == TaxRegime.newRegime ? 'New' : 'Old'} regime saves ${formatInr(cmp.savings)}',
-                      style: text.bodySmall?.copyWith(color: t.positive),
-                    ),
-                  ],
+              LabelBar('${active.regime == TaxRegime.newRegime ? 'New' : 'Old'} regime · ${form.form.label}'),
+              const SizedBox(height: 14),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 6),
+                child: SplitStat(
+                  left: StatValue(
+                    label: 'Liability',
+                    value: formatInr(active.totalTaxLiability),
+                    color: t.primary,
+                  ),
+                  right: StatValue(
+                    label: 'Best regime saves',
+                    value: formatInr(cmp.savings),
+                    color: cmp.savings == 0 ? null : t.positive,
+                  ),
                 ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Tag(label: form.form.label, tone: TagTone.primary),
-                  const SizedBox(height: 8),
-                  const Icon(Icons.chevron_right),
-                ],
               ),
             ],
           ),

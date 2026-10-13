@@ -28,7 +28,7 @@ class AppNavBar extends StatelessWidget {
     final t = context.ui;
     final text = Theme.of(context).textTheme;
     return Material(
-      color: t.surface,
+      color: Color.alphaBlend(t.surface.withValues(alpha: 0.6), t.ground),
       child: DecoratedBox(
         decoration: BoxDecoration(border: Border(top: BorderSide(color: t.hairline))),
         child: SafeArea(
@@ -51,14 +51,14 @@ class AppNavBar extends StatelessWidget {
                             Icon(
                               i == index ? (items[i].selectedIcon ?? items[i].icon) : items[i].icon,
                               size: 22,
-                              color: i == index ? t.text : t.textMuted,
+                              color: i == index ? t.primary : t.textMuted,
                             ),
                             const SizedBox(height: 3),
                             Text(
                               items[i].label,
                               style: text.labelSmall?.copyWith(
-                                color: i == index ? t.text : t.textMuted,
-                                fontWeight: i == index ? FontWeight.w700 : FontWeight.w500,
+                                color: i == index ? t.primary : t.textMuted,
+                                fontWeight: i == index ? FontWeight.w600 : FontWeight.w400,
                               ),
                             ),
                           ],

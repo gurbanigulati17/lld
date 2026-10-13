@@ -8,10 +8,10 @@ class AppTheme {
 
   /// Bundled typeface; the package prefix is how Flutter addresses a font
   /// shipped inside a library package.
-  static const fontFamily = 'packages/taxos_ui/PublicSans';
+  static const fontFamily = 'packages/taxos_ui/Poppins';
 
-  static ThemeData light() => _build(Brightness.light, UiTokens.slate);
-  static ThemeData dark() => _build(Brightness.dark, UiTokens.graphite);
+  static ThemeData light() => _build(Brightness.light, UiTokens.copperLight);
+  static ThemeData dark() => _build(Brightness.dark, UiTokens.copperNoir);
 
   static ThemeData _build(Brightness b, UiTokens t) {
     final scheme = ColorScheme(
@@ -43,7 +43,7 @@ class AppTheme {
       textTheme: text.copyWith(
         displayLarge: text.displayLarge?.copyWith(
           fontWeight: FontWeight.w700,
-          letterSpacing: -1.2,
+          letterSpacing: -1.0,
           fontFeatures: const [FontFeature.tabularFigures()],
         ),
         headlineMedium: text.headlineMedium?.copyWith(
@@ -62,7 +62,7 @@ class AppTheme {
         bodySmall: text.bodySmall?.copyWith(height: 1.35),
       ),
       appBarTheme: AppBarTheme(
-        backgroundColor: t.ground,
+        backgroundColor: Colors.transparent,
         foregroundColor: t.text,
         elevation: 0,
         scrolledUnderElevation: 0,
@@ -77,7 +77,7 @@ class AppTheme {
       ),
       switchTheme: SwitchThemeData(
         thumbColor: WidgetStateProperty.resolveWith(
-          (s) => s.contains(WidgetState.selected) ? t.onPrimary : t.surface,
+          (s) => s.contains(WidgetState.selected) ? t.onPrimary : t.textMuted,
         ),
         trackColor: WidgetStateProperty.resolveWith(
           (s) => s.contains(WidgetState.selected) ? t.primary : t.surfaceAlt,
@@ -94,8 +94,8 @@ class AppTheme {
       datePickerTheme: DatePickerThemeData(backgroundColor: t.surface),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
-        backgroundColor: t.primary,
-        contentTextStyle: text.bodyMedium?.copyWith(color: t.onPrimary),
+        backgroundColor: t.surfaceAlt,
+        contentTextStyle: text.bodyMedium?.copyWith(color: t.text),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );

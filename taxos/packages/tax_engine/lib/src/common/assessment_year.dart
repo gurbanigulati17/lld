@@ -33,6 +33,10 @@ enum AssessmentYear {
   /// 31 March at the end of the financial year.
   DateTime get fyEndDate => DateTime(fyStart + 1, 3, 31);
 
+  /// Last date for a belated (s.139(4)) or revised (s.139(5)) return:
+  /// 31 December of the assessment year.
+  DateTime get belatedReturnLastDate => DateTime(fyStart + 1, 12, 31);
+
   static AssessmentYear get latest => AssessmentYear.ay2026_27;
 
   static AssessmentYear parse(String value) {

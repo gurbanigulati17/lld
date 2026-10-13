@@ -44,3 +44,25 @@ String formatInr(int amount, {bool symbol = true}) {
   final body = symbol ? '₹$grouped' : grouped;
   return negative ? '-$body' : body;
 }
+
+/// Short Indian-style amount for tight spaces: ₹950, ₹12.5K, ₹12.1L, ₹3.4Cr.
+String formatInrCompact(int amount) {
+  final negative = amount < 0;
+  final a = amount.abs();
+  String body;
+  String trim(double v) {
+    final s = v.toStringAsFixed(1);
+    return s.endsWith('.0') ? s.substring(0, s.length - 2) : s;
+  }
+
+  if (a >= 10000000) {
+    body = '${trim(a / 10000000)}Cr';
+  } else if (a >= 100000) {
+    body = '${trim(a / 100000)}L';
+  } else if (a >= 1000) {
+    body = '${trim(a / 1000)}K';
+  } else {
+    body = '$a';
+  }
+  return negative ? '-₹$body' : '₹$body';
+}

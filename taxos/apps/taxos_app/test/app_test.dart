@@ -18,7 +18,7 @@ void main() {
     addTearDown(tester.view.reset);
     await tester.pumpWidget(app());
     await tester.pump();
-    expect(find.text('Estimated tax'), findsOneWidget);
+    expect(find.textContaining('ESTIMATED TAX'), findsOneWidget);
     expect(find.text('₹0'), findsWidgets);
   });
 

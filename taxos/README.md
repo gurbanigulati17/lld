@@ -1,13 +1,13 @@
 # TaxOS
 
-ITR and GST filing for India, from a salaried ITR-1 to capital gains, presumptive business and GSTR-3B, with a monochrome, statement-like interface built in Flutter (Slate in light mode, Graphite in dark). The design goal is to replace the chartered accountant for the ~90% of filers who do not need an audit sign-off, and to explain every rupee rather than just compute it.
+ITR and GST filing for India, from a salaried ITR-1 to capital gains, presumptive business and GSTR-3B, with a modern dark interface built in Flutter (Copper Noir by default, Copper Light as the light theme). The design goal is to replace the chartered accountant for the ~90% of filers who do not need an audit sign-off, and to explain every rupee rather than just compute it.
 
 ## Layout
 
 ```text
 taxos/
   packages/tax_engine   pure-Dart rules engine (no Flutter): ITR, interest, forms, GST
-  packages/taxos_ui     design system: Slate (light) and Graphite (dark) tokens, surfaces, controls
+  packages/taxos_ui     design system: Copper Noir (dark) and Copper Light tokens, surfaces, controls
   apps/taxos_app        Flutter app (Android, iOS, web)
   services/api          Dart shelf service exposing the same engine over HTTP
   tool/ci.sh            everything CI runs, in one script

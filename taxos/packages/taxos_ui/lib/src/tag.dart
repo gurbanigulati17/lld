@@ -4,8 +4,8 @@ import 'tokens.dart';
 
 enum TagTone { neutral, primary, positive, negative, warning }
 
-/// Small status label. Neutral and primary are monochrome; the other three
-/// are the only places colour appears in the app.
+/// Small status pill. Every tone is a solid fill with a contrasting label
+/// so urgency reads at a glance.
 class Tag extends StatelessWidget {
   const Tag({super.key, required this.label, this.tone = TagTone.neutral, this.icon});
 
@@ -19,14 +19,14 @@ class Tag extends StatelessWidget {
     final (Color bg, Color fg) = switch (tone) {
       TagTone.neutral => (t.surfaceAlt, t.text),
       TagTone.primary => (t.primary, t.onPrimary),
-      TagTone.positive => (t.positive.withValues(alpha: 0.14), t.positive),
-      TagTone.negative => (t.negative.withValues(alpha: 0.14), t.negative),
-      TagTone.warning => (t.warning.withValues(alpha: 0.16), t.warning),
+      TagTone.positive => (t.positive, t.onPositive),
+      TagTone.negative => (t.negative, t.onNegative),
+      TagTone.warning => (t.warning, t.onWarning),
     };
     return DecoratedBox(
-      decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(6)),
+      decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(999)),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 5),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -38,8 +38,8 @@ class Tag extends StatelessWidget {
               label,
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
                     color: fg,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0.2,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12,
                   ),
             ),
           ],

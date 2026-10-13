@@ -29,12 +29,20 @@ class GstScreen extends ConsumerWidget {
         const SizedBox(height: 16),
         Surface(
           emphasis: true,
+          padding: const EdgeInsets.fromLTRB(14, 14, 14, 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Cash payable', style: text.labelLarge?.copyWith(color: muted)),
-              Text(formatInr(r.totalCashOutflow), style: text.displayLarge?.copyWith(fontSize: 40)),
-              const SizedBox(height: 8),
+              const LabelBar('GSTR-3B · cash payable'),
+              const SizedBox(height: 12),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 6),
+                child: Text(
+                  formatInr(r.totalCashOutflow),
+                  style: text.displaySmall?.copyWith(color: t.primary, fontWeight: FontWeight.w700),
+                ),
+              ),
+              const SizedBox(height: 10),
               Wrap(
                 spacing: 8,
                 runSpacing: 8,

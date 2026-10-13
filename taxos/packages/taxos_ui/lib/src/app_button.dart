@@ -29,7 +29,7 @@ class AppButton extends StatelessWidget {
     final t = context.ui;
     final enabled = onPressed != null && !loading;
     final fg = switch (style) {
-      AppButtonStyle.primary => t.onPrimary,
+      AppButtonStyle.primary => t.onAccentGradient,
       AppButtonStyle.secondary => t.text,
       AppButtonStyle.ghost => t.text,
     };
@@ -48,27 +48,37 @@ class AppButton extends StatelessWidget {
         if (icon != null || loading) const SizedBox(width: 10),
         Text(
           label,
-          style: Theme.of(context).textTheme.labelLarge?.copyWith(color: fg, fontSize: 15),
+          style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                color: fg,
+                fontSize: 15,
+                fontWeight: style == AppButtonStyle.primary ? FontWeight.w700 : FontWeight.w600,
+              ),
         ),
       ],
     );
-    final shape = RoundedRectangleBorder(borderRadius: BorderRadius.circular(10));
+    final shape = RoundedRectangleBorder(borderRadius: BorderRadius.circular(14));
     const pad = EdgeInsets.symmetric(horizontal: 20, vertical: 14);
 
     final button = switch (style) {
-      AppButtonStyle.primary => FilledButton(
-          onPressed: enabled ? onPressed : null,
-          style: FilledButton.styleFrom(
-            backgroundColor: t.primary,
-            foregroundColor: t.onPrimary,
-            disabledBackgroundColor: t.primary.withValues(alpha: 0.4),
-            disabledForegroundColor: t.onPrimary.withValues(alpha: 0.7),
-            shape: shape,
-            padding: pad,
-            minimumSize: const Size(0, 48),
-            elevation: 0,
+      AppButtonStyle.primary => Opacity(
+          opacity: enabled ? 1 : 0.45,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: t.accent,
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(14),
+                onTap: enabled ? onPressed : null,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(minHeight: 52),
+                  child: Padding(padding: pad, child: Center(widthFactor: expand ? null : 1, child: content)),
+                ),
+              ),
+            ),
           ),
-          child: content,
         ),
       AppButtonStyle.secondary => OutlinedButton(
           onPressed: enabled ? onPressed : null,

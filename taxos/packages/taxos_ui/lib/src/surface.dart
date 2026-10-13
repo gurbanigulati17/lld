@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'tokens.dart';
 
-/// The card. Light theme lifts it with a soft shadow; dark theme outlines
-/// it with a hairline. [emphasis] uses the primary colour as a wash for
-/// the one card on a screen that matters most.
+/// The card. Dark theme outlines it with a hairline and a deep shadow;
+/// light theme lifts it with a soft shadow. [emphasis] strengthens the
+/// border for the one card on a screen that matters most.
 class Surface extends StatelessWidget {
   const Surface({
     super.key,

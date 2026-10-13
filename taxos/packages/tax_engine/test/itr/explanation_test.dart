@@ -25,5 +25,11 @@ void main() {
     expect(roundTo10(30181), 30180);
     expect(roundTo10(30185), 30190);
     expect(floorTo100(109299), 109200);
+    expect(formatInrCompact(950), '₹950');
+    expect(formatInrCompact(12500), '₹12.5K');
+    expect(formatInrCompact(1210000), '₹12.1L');
+    expect(formatInrCompact(1200000), '₹12L');
+    expect(formatInrCompact(34000000), '₹3.4Cr');
+    expect(AssessmentYear.ay2026_27.belatedReturnLastDate, DateTime(2026, 12, 31));
   });
 }

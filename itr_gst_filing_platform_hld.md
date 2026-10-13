@@ -96,7 +96,7 @@ Interest 18% p.a. on the cash component only (proviso to s.50(1))
 ## Architecture
 ```text
 ┌──────────────────────── Flutter app (iOS / Android / web) ───────────────────────┐
-│ taxos_ui (Slate / Graphite)   Riverpod state   go_router   DraftStore (local)         │
+│ taxos_ui (Copper Noir / Copper Light)   Riverpod state   go_router   DraftStore (local)         │
 │                      ┌──────────── tax_engine (pure Dart) ────────────┐           │
 └──────────────────────┼─────────────────────────────────────────────────┼───────────┘
                        │  identical package                              │
@@ -141,4 +141,4 @@ Market context: ~9 crore ITR filers, ~1.5 crore GST registrations; the largest i
 | Gstr2bReconciler.reconcile | O(books + statement) with hash map | O(statement) |
 
 ## Final Summary
-Engine-first product: a versioned, deterministic, provenance-carrying tax engine shared by a monochrome Flutter app and a thin Dart API. Start as a modular monolith in Mumbai sized for 1M users and the deadline spike, with sharding and module extraction as the path to 10M.
+Engine-first product: a versioned, deterministic, provenance-carrying tax engine shared by a modern dark Flutter app and a thin Dart API. Start as a modular monolith in Mumbai sized for 1M users and the deadline spike, with sharding and module extraction as the path to 10M.
