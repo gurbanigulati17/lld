@@ -1,0 +1,12 @@
+name: taxos_workspace
+description: Pub workspace for the TaxOS monorepo (engine, design system, app, API).
+publish_to: none
+
+environment:
+  sdk: ^3.6.0
+
+workspace:
+  - packages/tax_engine
+  - packages/glass_ui
+  - apps/taxos_app
+  - services/api
