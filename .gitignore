@@ -11,3 +11,4 @@
 
 # Build outputs handed to the user; never commit binaries
 taxos/dist/
+TaxOS-Figma-frames.zip
