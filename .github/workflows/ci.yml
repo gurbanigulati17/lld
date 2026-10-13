@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+    paths: ['taxos/**', '.github/workflows/ci.yml']
+  pull_request:
+    paths: ['taxos/**', '.github/workflows/ci.yml']
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  engine:
+    name: Engine and API (pure Dart)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+      - run: taxos/tool/ci.sh engine
+
+  flutter:
+    name: Design system, app and web build
+    runs-on: ubuntu-latest
+    needs: engine
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: taxos/tool/ci.sh build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: taxos-web
+          path: taxos/apps/taxos_app/build/web
+          retention-days: 7
+
+  api-image:
+    name: API container builds
+    runs-on: ubuntu-latest
+    needs: engine
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -f taxos/services/api/Dockerfile taxos
