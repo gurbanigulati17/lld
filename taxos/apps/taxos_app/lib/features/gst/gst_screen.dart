@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:glass_ui/glass_ui.dart';
+import 'package:taxos_ui/taxos_ui.dart';
 import 'package:tax_engine/tax_engine.dart';
 
 import '../itr/widgets.dart';
@@ -15,19 +15,19 @@ class GstScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final input = ref.watch(gstDraftProvider);
     final r = ref.watch(gstr3bResultProvider);
-    final t = context.glass;
+    final t = context.ui;
     final text = Theme.of(context).textTheme;
     final muted = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.65);
     final top = MediaQuery.paddingOf(context).top;
     void set(Gstr3bInput Function(Gstr3bInput) fn) => ref.read(gstDraftProvider.notifier).update(fn);
 
     return ListView(
-      padding: EdgeInsets.fromLTRB(16, top + 16, 16, 120),
+      padding: EdgeInsets.fromLTRB(16, top + 16, 16, 24),
       children: [
         Text('GST', style: text.headlineMedium),
         Text('GSTR-3B for ${input.period}', style: text.bodyMedium?.copyWith(color: muted)),
         const SizedBox(height: 16),
-        GlassPanel(
+        Surface(
           emphasis: true,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -39,11 +39,11 @@ class GstScreen extends ConsumerWidget {
                 spacing: 8,
                 runSpacing: 8,
                 children: [
-                  GlassChip(label: 'IGST ${formatInr(r.cashPayable.igst)}'),
-                  GlassChip(label: 'CGST ${formatInr(r.cashPayable.cgst)}'),
-                  GlassChip(label: 'SGST ${formatInr(r.cashPayable.sgst)}'),
-                  if (r.lateFee > 0) GlassChip(label: 'Late fee ${formatInr(r.lateFee)}', tone: GlassChipTone.warning),
-                  if (r.interest > 0) GlassChip(label: 'Interest ${formatInr(r.interest)}', tone: GlassChipTone.negative),
+                  Tag(label: 'IGST ${formatInr(r.cashPayable.igst)}'),
+                  Tag(label: 'CGST ${formatInr(r.cashPayable.cgst)}'),
+                  Tag(label: 'SGST ${formatInr(r.cashPayable.sgst)}'),
+                  if (r.lateFee > 0) Tag(label: 'Late fee ${formatInr(r.lateFee)}', tone: TagTone.warning),
+                  if (r.interest > 0) Tag(label: 'Interest ${formatInr(r.interest)}', tone: TagTone.negative),
                 ],
               ),
             ],
@@ -80,21 +80,21 @@ class GstScreen extends ConsumerWidget {
           onChanged: (h) => set((i) => copyGstr3b(i, itcAvailable: h)),
         ),
         const SizedBox(height: 10),
-        GlassSwitchTile(
+        SwitchTile(
           label: 'Nil return',
           helper: 'No outward supplies this period (lower late fee)',
           value: input.isNilReturn,
           onChanged: (v) => set((i) => copyGstr3b(i, isNilReturn: v)),
         ),
         const SizedBox(height: 10),
-        GlassAmountField(
+        AmountField(
           label: 'Previous-year turnover',
           helper: 'Drives the late-fee cap',
           value: input.annualTurnover,
           onChanged: (v) => set((i) => copyGstr3b(i, annualTurnover: v)),
         ),
         const SizedBox(height: 10),
-        GlassPanel(
+        Surface(
           radius: 18,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           onTap: () async {
@@ -118,14 +118,14 @@ class GstScreen extends ConsumerWidget {
                   ],
                 ),
               ),
-              if (r.daysLate > 0) GlassChip(label: '${r.daysLate} days late', tone: GlassChipTone.warning),
+              if (r.daysLate > 0) Tag(label: '${r.daysLate} days late', tone: TagTone.warning),
             ],
           ),
         ),
         const SizedBox(height: 16),
         Text('Set-off (Rule 88A)', style: text.titleMedium),
         const SizedBox(height: 8),
-        GlassPanel(
+        Surface(
           child: Column(
             children: [
               for (final l in r.lineItems)
@@ -160,14 +160,14 @@ class _SupplyCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GlassPanel(
+    return Surface(
       padding: const EdgeInsets.all(14),
       child: Column(
         children: [
           Row(
             children: [
               Expanded(
-                child: GlassSegmented<bool>(
+                child: Segmented<bool>(
                   values: const [false, true],
                   labels: const ['Intra-state', 'Inter-state'],
                   selected: supply.interState,
@@ -187,7 +187,7 @@ class _SupplyCard extends StatelessWidget {
             children: [
               Expanded(
                 flex: 3,
-                child: GlassAmountField(
+                child: AmountField(
                   label: 'Taxable value',
                   value: supply.taxableValue,
                   onChanged: (v) => onChanged(OutwardSupply(
@@ -201,7 +201,7 @@ class _SupplyCard extends StatelessWidget {
               const SizedBox(width: 10),
               Expanded(
                 flex: 2,
-                child: GlassPanel(
+                child: Surface(
                   radius: 18,
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   child: DropdownButtonHideUnderline(
@@ -238,7 +238,7 @@ class _HeadsEditor extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: GlassAmountField(
+          child: AmountField(
             label: 'IGST',
             value: heads.igst,
             onChanged: (v) => onChanged(GstHeads(igst: v, cgst: heads.cgst, sgst: heads.sgst, cess: heads.cess)),
@@ -246,7 +246,7 @@ class _HeadsEditor extends StatelessWidget {
         ),
         const SizedBox(width: 8),
         Expanded(
-          child: GlassAmountField(
+          child: AmountField(
             label: 'CGST',
             value: heads.cgst,
             onChanged: (v) => onChanged(GstHeads(igst: heads.igst, cgst: v, sgst: heads.sgst, cess: heads.cess)),
@@ -254,7 +254,7 @@ class _HeadsEditor extends StatelessWidget {
         ),
         const SizedBox(width: 8),
         Expanded(
-          child: GlassAmountField(
+          child: AmountField(
             label: 'SGST',
             value: heads.sgst,
             onChanged: (v) => onChanged(GstHeads(igst: heads.igst, cgst: heads.cgst, sgst: v, cess: heads.cess)),
@@ -293,24 +293,24 @@ class _RegistrationAdvisorState extends State<_RegistrationAdvisor> {
       children: [
         Text('Do I need to register?', style: text.titleMedium),
         const SizedBox(height: 8),
-        GlassAmountField(
+        AmountField(
           label: 'Expected annual turnover',
           value: _turnover,
           onChanged: (v) => setState(() => _turnover = v),
         ),
         const SizedBox(height: 10),
-        GlassSegmented<SupplyNature>(
+        Segmented<SupplyNature>(
           values: SupplyNature.values,
           labels: const ['Goods', 'Services', 'Both'],
           selected: _nature,
           onChanged: (v) => setState(() => _nature = v),
         ),
         const SizedBox(height: 10),
-        GlassSwitchTile(label: 'Inter-state supplies', value: _interState, onChanged: (v) => setState(() => _interState = v)),
+        SwitchTile(label: 'Inter-state supplies', value: _interState, onChanged: (v) => setState(() => _interState = v)),
         const SizedBox(height: 10),
-        GlassSwitchTile(label: 'Sell via e-commerce', value: _ecommerce, onChanged: (v) => setState(() => _ecommerce = v)),
+        SwitchTile(label: 'Sell via e-commerce', value: _ecommerce, onChanged: (v) => setState(() => _ecommerce = v)),
         const SizedBox(height: 10),
-        GlassPanel(
+        Surface(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -318,12 +318,12 @@ class _RegistrationAdvisorState extends State<_RegistrationAdvisor> {
                 spacing: 8,
                 runSpacing: 8,
                 children: [
-                  GlassChip(
+                  Tag(
                     label: advice.registrationRequired ? 'Registration required' : 'Optional',
-                    tone: advice.registrationRequired ? GlassChipTone.warning : GlassChipTone.positive,
+                    tone: advice.registrationRequired ? TagTone.warning : TagTone.positive,
                   ),
-                  if (advice.compositionEligible) const GlassChip(label: 'Composition eligible', tone: GlassChipTone.accent),
-                  if (advice.eInvoicingRequired) const GlassChip(label: 'e-Invoicing', tone: GlassChipTone.negative),
+                  if (advice.compositionEligible) const Tag(label: 'Composition eligible', tone: TagTone.primary),
+                  if (advice.eInvoicingRequired) const Tag(label: 'e-Invoicing', tone: TagTone.negative),
                 ],
               ),
               const SizedBox(height: 8),

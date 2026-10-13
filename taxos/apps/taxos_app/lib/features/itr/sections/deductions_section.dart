@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:glass_ui/glass_ui.dart';
+import 'package:taxos_ui/taxos_ui.dart';
 import 'package:tax_engine/tax_engine.dart';
 
 import '../itr_state.dart';
@@ -21,11 +21,11 @@ class DeductionsSection extends ConsumerWidget {
       title: 'Deductions',
       subtitle: 'Chapter VI-A applies in the old regime only (employer NPS is the exception). Enter what you paid; the engine applies the caps.',
       children: [
-        GlassPanel(
+        Surface(
           radius: 18,
           child: Row(
             children: [
-              Icon(Icons.info_outline, color: context.glass.accent),
+              Icon(Icons.info_outline, color: context.ui.textMuted),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
@@ -37,52 +37,52 @@ class DeductionsSection extends ConsumerWidget {
             ],
           ),
         ),
-        GlassAmountField(
+        AmountField(
           label: '80C investments',
           helper: 'PPF, ELSS, EPF, LIC, tuition, home-loan principal · cap ₹1,50,000',
           value: d.section80C,
           onChanged: (v) => _set(ref, (d) => _copy(d, section80C: v)),
         ),
-        GlassAmountField(
+        AmountField(
           label: '80CCD(1B) NPS self-contribution',
           helper: 'Cap ₹50,000 over and above 80C',
           value: d.section80CCD1B,
           onChanged: (v) => _set(ref, (d) => _copy(d, section80CCD1B: v)),
         ),
-        GlassAmountField(
+        AmountField(
           label: '80D health insurance (self & family)',
           helper: 'Cap ₹25,000 (₹50,000 if you are 60+)',
           value: d.section80D,
           onChanged: (v) => _set(ref, (d) => _copy(d, section80D: v)),
         ),
-        GlassAmountField(
+        AmountField(
           label: '80D health insurance (parents)',
           value: d.section80DParents,
           onChanged: (v) => _set(ref, (d) => _copy(d, section80DParents: v)),
         ),
-        GlassSwitchTile(
+        SwitchTile(
           label: 'Parents are senior citizens',
           helper: 'Raises the parents cap to ₹50,000',
           value: d.parentsAreSenior,
           onChanged: (v) => _set(ref, (d) => _copy(d, parentsAreSenior: v)),
         ),
-        GlassAmountField(
+        AmountField(
           label: '80E education loan interest',
           value: d.section80E,
           onChanged: (v) => _set(ref, (d) => _copy(d, section80E: v)),
         ),
-        GlassAmountField(
+        AmountField(
           label: '80G donations (eligible amount)',
           value: d.section80G,
           onChanged: (v) => _set(ref, (d) => _copy(d, section80G: v)),
         ),
-        GlassAmountField(
+        AmountField(
           label: '80EEA affordable housing interest',
           helper: 'Cap ₹1,50,000',
           value: d.section80EEA,
           onChanged: (v) => _set(ref, (d) => _copy(d, section80EEA: v)),
         ),
-        GlassAmountField(
+        AmountField(
           label: '80U disability',
           helper: '₹75,000 or ₹1,25,000',
           value: d.section80U,

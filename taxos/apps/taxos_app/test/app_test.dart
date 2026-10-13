@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:glass_ui/glass_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tax_engine/tax_engine.dart';
 import 'package:taxos_app/app/app.dart';
@@ -11,9 +10,7 @@ import 'package:taxos_app/features/itr/itr_state.dart';
 void main() {
   setUp(() => SharedPreferences.setMockInitialValues({}));
 
-  Widget app() => const ProviderScope(
-        child: GlassPerformance(reducedEffects: true, child: TaxosApp()),
-      );
+  Widget app() => const ProviderScope(child: TaxosApp());
 
   testWidgets('dashboard renders with a zero estimate on a fresh draft', (tester) async {
     tester.view.physicalSize = const Size(1080, 2400);
@@ -33,7 +30,7 @@ void main() {
     addTearDown(container.dispose);
     await tester.pumpWidget(UncontrolledProviderScope(
       container: container,
-      child: const GlassPerformance(reducedEffects: true, child: TaxosApp()),
+      child: const TaxosApp(),
     ));
     await tester.pump();
 

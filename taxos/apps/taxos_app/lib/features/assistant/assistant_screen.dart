@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:glass_ui/glass_ui.dart';
+import 'package:taxos_ui/taxos_ui.dart';
 import '../itr/itr_state.dart';
 import 'assistant_brain.dart';
 
@@ -64,7 +64,7 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final t = context.glass;
+    final t = context.ui;
     final text = Theme.of(context).textTheme;
     final top = MediaQuery.paddingOf(context).top;
     return Column(
@@ -83,11 +83,14 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
                     constraints: const BoxConstraints(maxWidth: 420),
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 10),
-                      child: GlassPanel(
+                      child: Surface(
                         radius: 20,
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                        tint: m.me ? t.accent.withValues(alpha: 0.18) : null,
-                        child: Text(m.text, style: text.bodyMedium),
+                        tint: m.me ? t.primary : null,
+                        child: Text(
+                          m.text,
+                          style: text.bodyMedium?.copyWith(color: m.me ? t.onPrimary : t.text),
+                        ),
                       ),
                     ),
                   ),
@@ -98,30 +101,59 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
                 runSpacing: 8,
                 children: [
                   for (final s in _suggestions)
-                    GestureDetector(
-                      onTap: () => _send(s),
-                      child: GlassChip(label: s, tone: GlassChipTone.accent),
+                    OutlinedButton(
+                      onPressed: () => _send(s),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: t.text,
+                        backgroundColor: t.surface,
+                        side: BorderSide(color: t.border),
+                        shape: const StadiumBorder(),
+                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                        minimumSize: const Size(0, 36),
+                        textStyle: text.labelMedium,
+                      ),
+                      child: Text(s),
                     ),
                 ],
               ),
             ],
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 96),
-          child: Row(
-            children: [
-              Expanded(
-                child: GlassTextField(
-                  label: 'Ask TaxOS',
-                  controller: _ctrl,
-                  hint: 'Why is my tax this much?',
-                  onChanged: (_) {},
+        DecoratedBox(
+          decoration: BoxDecoration(
+            color: t.ground,
+            border: Border(top: BorderSide(color: t.hairline)),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
+            child: Row(
+              children: [
+                Expanded(
+                  child: AppTextField(
+                    label: 'Ask TaxOS',
+                    showLabel: false,
+                    controller: _ctrl,
+                    hint: 'Ask TaxOS',
+                    onSubmitted: _send,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 10),
-              GlassButton(label: 'Send', icon: Icons.arrow_upward, onPressed: () => _send(_ctrl.text)),
-            ],
+                const SizedBox(width: 10),
+                SizedBox(
+                  width: 48,
+                  height: 48,
+                  child: IconButton.filled(
+                    tooltip: 'Send',
+                    style: IconButton.styleFrom(
+                      backgroundColor: t.primary,
+                      foregroundColor: t.onPrimary,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    ),
+                    onPressed: () => _send(_ctrl.text),
+                    icon: const Icon(Icons.arrow_upward),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ],

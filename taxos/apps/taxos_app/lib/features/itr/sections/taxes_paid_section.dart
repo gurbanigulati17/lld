@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:glass_ui/glass_ui.dart';
+import 'package:taxos_ui/taxos_ui.dart';
 import 'package:tax_engine/tax_engine.dart';
 
 import '../itr_state.dart';
@@ -24,31 +24,31 @@ class TaxesPaidSection extends ConsumerWidget {
       title: 'Taxes paid',
       subtitle: 'TDS on salary comes from the salary section. Add other TDS from Form 26AS, advance-tax challans, and your planned filing date for interest.',
       children: [
-        GlassAmountField(
+        AmountField(
           label: 'TDS other than salary',
           helper: 'Bank interest, professional fees (Form 26AS)',
           value: tp.tdsOther,
           onChanged: (v) => _set(ref, (t) => TaxesPaid(tdsOther: v, tcs: t.tcs, advanceTax: t.advanceTax, selfAssessmentTax: t.selfAssessmentTax)),
         ),
-        GlassAmountField(
+        AmountField(
           label: 'TCS',
           value: tp.tcs,
           onChanged: (v) => _set(ref, (t) => TaxesPaid(tdsOther: t.tdsOther, tcs: v, advanceTax: t.advanceTax, selfAssessmentTax: t.selfAssessmentTax)),
         ),
-        GlassAmountField(
+        AmountField(
           label: 'Self-assessment tax paid',
           value: tp.selfAssessmentTax,
           onChanged: (v) => _set(ref, (t) => TaxesPaid(tdsOther: t.tdsOther, tcs: t.tcs, advanceTax: t.advanceTax, selfAssessmentTax: v)),
         ),
         const SectionHeader('Advance tax challans'),
         for (var i = 0; i < tp.advanceTax.length; i++)
-          GlassPanel(
+          Surface(
             radius: 18,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             child: Row(
               children: [
                 Expanded(
-                  child: GlassPanel(
+                  child: Surface(
                     radius: 14,
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     onTap: () async {
@@ -75,7 +75,7 @@ class TaxesPaidSection extends ConsumerWidget {
                 const SizedBox(width: 10),
                 Expanded(
                   flex: 2,
-                  child: GlassAmountField(
+                  child: AmountField(
                     label: 'Amount',
                     value: tp.advanceTax[i].amount,
                     onChanged: (v) => _set(ref, (t) {
@@ -97,10 +97,10 @@ class TaxesPaidSection extends ConsumerWidget {
               ],
             ),
           ),
-        GlassButton(
+        AppButton(
           label: 'Add challan',
           icon: Icons.add,
-          style: GlassButtonStyle.secondary,
+          style: AppButtonStyle.secondary,
           expand: true,
           onPressed: () => _set(ref, (t) => TaxesPaid(
                 tdsOther: t.tdsOther,
@@ -113,7 +113,7 @@ class TaxesPaidSection extends ConsumerWidget {
               )),
         ),
         const SectionHeader('Filing date'),
-        GlassPanel(
+        Surface(
           radius: 18,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           onTap: () async {
@@ -143,7 +143,7 @@ class TaxesPaidSection extends ConsumerWidget {
                 ),
               ),
               if (c.totalInterest > 0)
-                GlassChip(label: 'Interest ${formatInr(c.totalInterest)}', tone: GlassChipTone.warning),
+                Tag(label: 'Interest ${formatInr(c.totalInterest)}', tone: TagTone.warning),
             ],
           ),
         ),

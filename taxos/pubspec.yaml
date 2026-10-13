@@ -7,6 +7,6 @@ environment:
 
 workspace:
   - packages/tax_engine
-  - packages/glass_ui
+  - packages/taxos_ui
   - apps/taxos_app
   - services/api

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
-import 'glass_panel.dart';
+import 'surface.dart';
+import 'tokens.dart';
 
-/// KPI tile: small caption, big number, optional trailing chip.
-class GlassStat extends StatelessWidget {
-  const GlassStat({
+/// KPI tile: small caption, big tabular number, optional trailing tag.
+class StatTile extends StatelessWidget {
+  const StatTile({
     super.key,
     required this.caption,
     required this.value,
@@ -23,11 +24,11 @@ class GlassStat extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.ui;
     final text = Theme.of(context).textTheme;
-    final muted = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.62);
-    return GlassPanel(
+    return Surface(
       onTap: onTap,
-      padding: const EdgeInsets.fromLTRB(18, 16, 18, 16),
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -35,27 +36,24 @@ class GlassStat extends StatelessWidget {
           Row(
             children: [
               if (icon != null) ...[
-                Icon(icon, size: 16, color: muted),
+                Icon(icon, size: 15, color: t.textMuted),
                 const SizedBox(width: 6),
               ],
               Expanded(
                 child: Text(
                   caption,
-                  style: text.labelMedium?.copyWith(color: muted),
+                  style: text.labelMedium?.copyWith(color: t.textMuted),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
               if (trailing != null) trailing!,
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 6),
           FittedBox(
             fit: BoxFit.scaleDown,
             alignment: Alignment.centerLeft,
-            child: Text(
-              value,
-              style: text.headlineMedium?.copyWith(color: valueColor),
-            ),
+            child: Text(value, style: text.titleLarge?.copyWith(color: valueColor, fontSize: 22)),
           ),
         ],
       ),

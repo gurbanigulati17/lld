@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:glass_ui/glass_ui.dart';
+import 'package:taxos_ui/taxos_ui.dart';
 import 'package:tax_engine/tax_engine.dart';
 
 import '../itr_state.dart';
@@ -46,7 +46,7 @@ class _ProfileSectionState extends ConsumerState<ProfileSection> {
       title: 'Profile',
       subtitle: 'Your age on 31 March decides the basic exemption; residency decides which incomes are taxed here.',
       children: [
-        GlassTextField(
+        AppTextField(
           label: 'Full name (as on PAN)',
           controller: _name,
           textCapitalization: TextCapitalization.words,
@@ -58,7 +58,7 @@ class _ProfileSectionState extends ConsumerState<ProfileSection> {
                 residentialStatus: p.residentialStatus,
               )),
         ),
-        GlassTextField(
+        AppTextField(
           label: 'PAN',
           controller: _pan,
           hint: 'ABCDE1234F',
@@ -83,7 +83,7 @@ class _ProfileSectionState extends ConsumerState<ProfileSection> {
                 residentialStatus: p.residentialStatus,
               )),
         ),
-        GlassPanel(
+        Surface(
           radius: 18,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           onTap: () async {
@@ -119,19 +119,19 @@ class _ProfileSectionState extends ConsumerState<ProfileSection> {
                   ],
                 ),
               ),
-              GlassChip(
+              Tag(
                 label: switch (p.ageCategoryFor(ay)) {
                   AgeCategory.below60 => 'Below 60',
                   AgeCategory.senior => 'Senior citizen',
                   AgeCategory.superSenior => 'Super senior',
                 },
-                tone: GlassChipTone.accent,
+                tone: TagTone.primary,
               ),
             ],
           ),
         ),
         const SectionHeader('Residential status'),
-        GlassSegmented<ResidentialStatus>(
+        Segmented<ResidentialStatus>(
           values: ResidentialStatus.values,
           labels: const ['Resident', 'RNOR', 'Non-resident'],
           selected: p.residentialStatus,

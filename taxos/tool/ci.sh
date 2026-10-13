@@ -26,11 +26,11 @@ run_engine() {
 
 run_flutter() {
   if ! have_flutter; then
-    echo "flutter not on PATH; skipping glass_ui and taxos_app (run tool/ci.sh engine for Dart-only checks)" >&2
+    echo "flutter not on PATH; skipping taxos_ui and taxos_app (run tool/ci.sh engine for Dart-only checks)" >&2
     return 1
   fi
-  echo "== glass_ui"
-  (cd packages/glass_ui && flutter analyze --fatal-infos && flutter test --reporter compact)
+  echo "== taxos_ui"
+  (cd packages/taxos_ui && flutter analyze --fatal-infos && flutter test --reporter compact)
   echo "== taxos_app"
   (cd apps/taxos_app && flutter analyze --fatal-infos && flutter test --reporter compact)
 }

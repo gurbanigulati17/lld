@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:glass_ui/glass_ui.dart';
+import 'package:taxos_ui/taxos_ui.dart';
 import 'package:tax_engine/tax_engine.dart';
 
 import '../itr_state.dart';
@@ -20,45 +20,45 @@ class OtherSourcesSection extends ConsumerWidget {
       title: 'Other sources',
       subtitle: 'From AIS / Form 26AS. Savings interest gets s.80TTA (₹10,000) or s.80TTB (₹50,000 for seniors) in the old regime.',
       children: [
-        GlassAmountField(
+        AmountField(
           label: 'Savings account interest',
           value: o.savingsInterest,
           onChanged: (v) => _set(ref, (o) => _copy(o, savingsInterest: v)),
         ),
-        GlassAmountField(
+        AmountField(
           label: 'Fixed / recurring deposit interest',
           value: o.fixedDepositInterest,
           onChanged: (v) => _set(ref, (o) => _copy(o, fixedDepositInterest: v)),
         ),
-        GlassAmountField(
+        AmountField(
           label: 'Dividends',
           value: o.dividends,
           onChanged: (v) => _set(ref, (o) => _copy(o, dividends: v)),
         ),
-        GlassAmountField(
+        AmountField(
           label: 'Family pension',
           value: o.familyPension,
           onChanged: (v) => _set(ref, (o) => _copy(o, familyPension: v)),
         ),
-        GlassAmountField(
+        AmountField(
           label: 'Any other income',
           value: o.other,
           onChanged: (v) => _set(ref, (o) => _copy(o, other: v)),
         ),
         const SectionHeader('Exempt and special'),
-        GlassAmountField(
+        AmountField(
           label: 'Agricultural income',
           helper: 'Exempt, but above ₹5,000 it raises the rate on other income',
           value: d.agriculturalIncome,
           onChanged: (v) => ref.read(itrDraftProvider.notifier).update((d) => d.copyWith(agriculturalIncome: v)),
         ),
-        GlassSwitchTile(
+        SwitchTile(
           label: 'Foreign assets or income',
           helper: 'Requires Schedule FA (ITR-2/3)',
           value: d.hasForeignAssetsOrIncome,
           onChanged: (v) => ref.read(itrDraftProvider.notifier).update((d) => d.copyWith(hasForeignAssetsOrIncome: v)),
         ),
-        GlassSwitchTile(
+        SwitchTile(
           label: 'Director or unlisted shares',
           value: d.isDirectorOrHoldsUnlistedShares,
           onChanged: (v) => ref.read(itrDraftProvider.notifier).update((d) => d.copyWith(isDirectorOrHoldsUnlistedShares: v)),

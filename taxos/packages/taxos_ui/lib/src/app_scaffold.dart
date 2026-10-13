@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
-import 'liquid_background.dart';
+import 'tokens.dart';
 
-/// A scaffold that puts the liquid backdrop behind everything and keeps the
-/// body transparent so glass panels can refract it.
-class GlassScaffold extends StatelessWidget {
-  const GlassScaffold({
+/// Scaffold on the ground colour with a flat app bar separated by a
+/// hairline. Nothing floats and nothing extends behind anything, so the
+/// keyboard, the input bars and the tab bar never overlap.
+class AppScaffold extends StatelessWidget {
+  const AppScaffold({
     super.key,
     required this.body,
     this.title,
@@ -13,7 +14,6 @@ class GlassScaffold extends StatelessWidget {
     this.leading,
     this.bottomNavigationBar,
     this.floatingActionButton,
-    this.showBackdrop = true,
   });
 
   final Widget body;
@@ -22,27 +22,26 @@ class GlassScaffold extends StatelessWidget {
   final Widget? leading;
   final Widget? bottomNavigationBar;
   final Widget? floatingActionButton;
-  final bool showBackdrop;
 
   @override
   Widget build(BuildContext context) {
-    final scaffold = Scaffold(
-      backgroundColor: Colors.transparent,
-      extendBody: true,
-      extendBodyBehindAppBar: true,
+    final t = context.ui;
+    return Scaffold(
+      backgroundColor: t.ground,
       appBar: title == null && actions == null && leading == null
           ? null
           : AppBar(
               title: title == null ? null : Text(title!),
               actions: actions,
               leading: leading,
-              backgroundColor: Colors.transparent,
+              bottom: PreferredSize(
+                preferredSize: const Size.fromHeight(1),
+                child: Divider(height: 1, color: t.hairline),
+              ),
             ),
       body: body,
       bottomNavigationBar: bottomNavigationBar,
       floatingActionButton: floatingActionButton,
     );
-    if (!showBackdrop) return scaffold;
-    return LiquidBackground(child: scaffold);
   }
 }

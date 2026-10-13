@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:glass_ui/glass_ui.dart';
+import 'package:taxos_ui/taxos_ui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tax_engine/tax_engine.dart';
 
@@ -42,14 +42,14 @@ class ItrScreen extends ConsumerWidget {
     final active = ref.watch(activeComputationProvider);
     final form = ref.watch(formRecommendationProvider);
     final draft = ref.watch(itrDraftProvider);
-    final t = context.glass;
+    final t = context.ui;
     final text = Theme.of(context).textTheme;
     final muted = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.65);
     final top = MediaQuery.paddingOf(context).top;
     final done = sections.where((s) => s.done).length;
 
     return ListView(
-      padding: EdgeInsets.fromLTRB(16, top + 16, 16, 120),
+      padding: EdgeInsets.fromLTRB(16, top + 16, 16, 24),
       children: [
         Row(
           children: [
@@ -80,14 +80,14 @@ class ItrScreen extends ConsumerWidget {
         Text('${draft.assessmentYear.label} · $done of ${sections.length} sections',
             style: text.bodyMedium?.copyWith(color: muted)),
         const SizedBox(height: 16),
-        GlassSegmented<TaxRegime?>(
+        Segmented<TaxRegime?>(
           values: const [null, TaxRegime.oldRegime, TaxRegime.newRegime],
           labels: const ['Best', 'Old', 'New'],
           selected: selected,
           onChanged: (v) => ref.read(selectedRegimeProvider.notifier).state = v,
         ),
         const SizedBox(height: 12),
-        GlassPanel(
+        Surface(
           emphasis: true,
           onTap: () => context.push(Routes.computation),
           child: Row(
@@ -114,7 +114,7 @@ class ItrScreen extends ConsumerWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  GlassChip(label: form.form.label, tone: GlassChipTone.accent),
+                  Tag(label: form.form.label, tone: TagTone.primary),
                   const SizedBox(height: 8),
                   const Icon(Icons.chevron_right),
                 ],
@@ -126,7 +126,7 @@ class ItrScreen extends ConsumerWidget {
         for (final s in sections)
           Padding(
             padding: const EdgeInsets.only(bottom: 10),
-            child: GlassPanel(
+            child: Surface(
               radius: 20,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               onTap: () => context.push(_routes[s.id]!),
@@ -137,12 +137,12 @@ class ItrScreen extends ConsumerWidget {
                     height: 40,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: (s.done ? t.positive : t.accent).withValues(alpha: 0.14),
+                      color: (s.done ? t.positive : t.primary).withValues(alpha: 0.14),
                     ),
                     child: Icon(
                       s.done ? Icons.check : _icons[s.id],
                       size: 20,
-                      color: s.done ? t.positive : t.accent,
+                      color: s.done ? t.positive : t.primary,
                     ),
                   ),
                   const SizedBox(width: 14),
@@ -161,7 +161,7 @@ class ItrScreen extends ConsumerWidget {
             ),
           ),
         const SizedBox(height: 8),
-        GlassButton(
+        AppButton(
           label: 'Review and file',
           icon: Icons.send_outlined,
           expand: true,

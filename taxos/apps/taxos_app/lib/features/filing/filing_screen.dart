@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:glass_ui/glass_ui.dart';
+import 'package:taxos_ui/taxos_ui.dart';
 import 'package:tax_engine/tax_engine.dart';
 
 import '../../core/api_client.dart';
@@ -47,7 +47,7 @@ class _FilingScreenState extends ConsumerState<FilingScreen> {
     final best = cmp.best;
     final form = ref.watch(formRecommendationProvider);
     final sections = ref.watch(sectionStatusProvider);
-    final t = context.glass;
+    final t = context.ui;
     final text = Theme.of(context).textTheme;
     final muted = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.65);
 
@@ -90,12 +90,12 @@ class _FilingScreenState extends ConsumerState<FilingScreen> {
     final ready = checks.every((c) => c.ok);
     final filled = sections.where((s) => s.done).length;
 
-    return GlassScaffold(
+    return AppScaffold(
       title: 'Review and file',
       body: ListView(
-        padding: EdgeInsets.fromLTRB(16, MediaQuery.paddingOf(context).top + kToolbarHeight + 8, 16, 32),
+        padding: EdgeInsets.fromLTRB(16, 8, 16, 32),
         children: [
-          GlassPanel(
+          Surface(
             emphasis: true,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -116,7 +116,7 @@ class _FilingScreenState extends ConsumerState<FilingScreen> {
           for (final c in checks)
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
-              child: GlassPanel(
+              child: Surface(
                 radius: 18,
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 child: Row(
@@ -144,16 +144,16 @@ class _FilingScreenState extends ConsumerState<FilingScreen> {
               padding: const EdgeInsets.only(bottom: 8),
               child: Text(_error!, style: text.bodySmall?.copyWith(color: t.negative)),
             ),
-          GlassButton(
+          AppButton(
             label: 'Verify with server',
             icon: Icons.cloud_done_outlined,
-            style: GlassButtonStyle.secondary,
+            style: AppButtonStyle.secondary,
             expand: true,
             loading: _verifying,
             onPressed: _verify,
           ),
           const SizedBox(height: 10),
-          GlassButton(
+          AppButton(
             label: 'Submit via e-filing (ERI)',
             icon: Icons.send,
             expand: true,

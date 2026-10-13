@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:glass_ui/glass_ui.dart';
+import 'package:taxos_ui/taxos_ui.dart';
 import 'package:tax_engine/tax_engine.dart';
 
 import 'itr_state.dart';
@@ -25,7 +25,7 @@ class SectionScaffold extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final muted = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.65);
-    return GlassScaffold(
+    return AppScaffold(
       title: title,
       actions: actions,
       body: Column(
@@ -34,7 +34,7 @@ class SectionScaffold extends ConsumerWidget {
             child: ListView(
               padding: EdgeInsets.fromLTRB(
                 16,
-                MediaQuery.paddingOf(context).top + kToolbarHeight + 8,
+                8,
                 16,
                 24,
               ),
@@ -67,7 +67,7 @@ class LiveLiabilityBar extends ConsumerWidget {
     return SafeArea(
       top: false,
       minimum: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-      child: GlassPanel(
+      child: Surface(
         emphasis: true,
         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
         child: Row(
@@ -92,53 +92,13 @@ class LiveLiabilityBar extends ConsumerWidget {
               ),
             ),
             if (cmp.savings > 0)
-              GlassChip(
+              Tag(
                 label: 'Saves ${formatInr(cmp.savings)}',
-                tone: GlassChipTone.positive,
-                icon: Icons.auto_awesome,
+                tone: TagTone.positive,
+                icon: Icons.swap_horiz,
               ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-/// Toggle row for booleans on glass.
-class GlassSwitchTile extends StatelessWidget {
-  const GlassSwitchTile({
-    super.key,
-    required this.label,
-    required this.value,
-    required this.onChanged,
-    this.helper,
-  });
-
-  final String label;
-  final String? helper;
-  final bool value;
-  final ValueChanged<bool> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    final muted = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6);
-    return GlassPanel(
-      radius: 18,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(label, style: Theme.of(context).textTheme.titleSmall),
-                if (helper != null)
-                  Text(helper!, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: muted)),
-              ],
-            ),
-          ),
-          Switch.adaptive(value: value, onChanged: onChanged),
-        ],
       ),
     );
   }
@@ -190,7 +150,7 @@ class AmountRow extends StatelessWidget {
           Text(
             formatInr(amount),
             style: style?.copyWith(
-              color: color ?? (amount < 0 ? context.glass.positive : null),
+              color: color ?? (amount < 0 ? context.ui.positive : null),
               fontFeatures: const [FontFeature.tabularFigures()],
             ),
           ),

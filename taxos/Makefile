@@ -7,7 +7,7 @@ deps:
 analyze:
 	cd packages/tax_engine && dart analyze --fatal-infos
 	cd services/api && dart analyze --fatal-infos
-	cd packages/glass_ui && flutter analyze --fatal-infos
+	cd packages/taxos_ui && flutter analyze --fatal-infos
 	cd apps/taxos_app && flutter analyze --fatal-infos
 
 test-engine:
@@ -15,7 +15,7 @@ test-engine:
 	cd services/api && dart test
 
 test: test-engine
-	cd packages/glass_ui && flutter test
+	cd packages/taxos_ui && flutter test
 	cd apps/taxos_app && flutter test
 
 build-web:

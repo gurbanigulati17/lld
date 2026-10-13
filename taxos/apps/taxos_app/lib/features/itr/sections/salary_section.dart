@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:glass_ui/glass_ui.dart';
+import 'package:taxos_ui/taxos_ui.dart';
 import 'package:tax_engine/tax_engine.dart';
 
 import '../itr_state.dart';
@@ -29,63 +29,63 @@ class SalarySection extends ConsumerWidget {
         ),
       ],
       children: [
-        GlassAmountField(
+        AmountField(
           label: 'Basic salary',
           value: s.basic,
           onChanged: (v) => _set(ref, (s) => _copy(s, basic: v)),
         ),
-        GlassAmountField(
+        AmountField(
           label: 'Dearness allowance',
           value: s.dearnessAllowance,
           onChanged: (v) => _set(ref, (s) => _copy(s, dearnessAllowance: v)),
         ),
-        GlassAmountField(
+        AmountField(
           label: 'HRA received',
           value: s.hraReceived,
           onChanged: (v) => _set(ref, (s) => _copy(s, hraReceived: v)),
         ),
-        GlassAmountField(
+        AmountField(
           label: 'Other taxable components',
           helper: 'Special allowance, bonus, taxable LTA',
           value: s.otherTaxableComponents,
           onChanged: (v) => _set(ref, (s) => _copy(s, otherTaxableComponents: v)),
         ),
-        GlassAmountField(
+        AmountField(
           label: 'Perquisites',
           value: s.perquisites,
           onChanged: (v) => _set(ref, (s) => _copy(s, perquisites: v)),
         ),
-        GlassAmountField(
+        AmountField(
           label: 'Exempt allowances (old regime)',
           helper: 's.10(14): LTA claimed, children education, uniform',
           value: s.exemptAllowances,
           onChanged: (v) => _set(ref, (s) => _copy(s, exemptAllowances: v)),
         ),
         const SectionHeader('Rent (for HRA exemption)'),
-        GlassAmountField(
+        AmountField(
           label: 'Annual rent paid',
           value: s.rentPaid,
           onChanged: (v) => _set(ref, (s) => _copy(s, rentPaid: v)),
         ),
-        GlassSwitchTile(
+        SwitchTile(
           label: 'Metro city',
           helper: 'Delhi, Mumbai, Kolkata, Chennai: 50% of basic instead of 40%',
           value: s.isMetroCity,
           onChanged: (v) => _set(ref, (s) => _copy(s, isMetroCity: v)),
         ),
         const SectionHeader('Employer deductions'),
-        GlassAmountField(
+        AmountField(
           label: 'Professional tax',
           value: s.professionalTax,
           onChanged: (v) => _set(ref, (s) => _copy(s, professionalTax: v)),
         ),
-        GlassAmountField(
+        AmountField(
           label: 'Employer NPS contribution',
           helper: 's.80CCD(2): allowed in both regimes',
           value: s.employerNpsContribution,
           onChanged: (v) => _set(ref, (s) => _copy(s, employerNpsContribution: v)),
         ),
-        GlassAmountField(
+        AmountField(
           label: 'TDS on salary',
           helper: 'Form 16 Part A',
           value: s.tdsOnSalary,

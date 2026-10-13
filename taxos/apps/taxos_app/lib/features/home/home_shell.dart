@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:glass_ui/glass_ui.dart';
+import 'package:taxos_ui/taxos_ui.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/router.dart';
@@ -16,21 +16,18 @@ class HomeShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final index = _tabs.indexWhere((t) => t == location).clamp(0, _tabs.length - 1);
-    return LiquidBackground(
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        extendBody: true,
-        body: child,
-        bottomNavigationBar: GlassNavBar(
-          index: index,
-          onChanged: (i) => context.go(_tabs[i]),
-          items: const [
-            GlassNavItem(icon: Icons.home_outlined, selectedIcon: Icons.home, label: 'Home'),
-            GlassNavItem(icon: Icons.description_outlined, selectedIcon: Icons.description, label: 'ITR'),
-            GlassNavItem(icon: Icons.receipt_long_outlined, selectedIcon: Icons.receipt_long, label: 'GST'),
-            GlassNavItem(icon: Icons.auto_awesome_outlined, selectedIcon: Icons.auto_awesome, label: 'Assist'),
-          ],
-        ),
+    return Scaffold(
+      backgroundColor: context.ui.ground,
+      body: child,
+      bottomNavigationBar: AppNavBar(
+        index: index,
+        onChanged: (i) => context.go(_tabs[i]),
+        items: const [
+          AppNavItem(icon: Icons.home_outlined, selectedIcon: Icons.home, label: 'Home'),
+          AppNavItem(icon: Icons.description_outlined, selectedIcon: Icons.description, label: 'ITR'),
+          AppNavItem(icon: Icons.receipt_long_outlined, selectedIcon: Icons.receipt_long, label: 'GST'),
+          AppNavItem(icon: Icons.chat_bubble_outline, selectedIcon: Icons.chat_bubble, label: 'Assist'),
+        ],
       ),
     );
   }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:glass_ui/glass_ui.dart';
+import 'package:taxos_ui/taxos_ui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tax_engine/tax_engine.dart';
 
@@ -19,14 +19,14 @@ class DashboardScreen extends ConsumerWidget {
     final best = cmp.best;
     final form = ref.watch(formRecommendationProvider);
     final gst = ref.watch(gstr3bResultProvider);
-    final t = context.glass;
+    final t = context.ui;
     final text = Theme.of(context).textTheme;
     final muted = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.65);
     final top = MediaQuery.paddingOf(context).top;
     final name = draft.profile.name.isEmpty ? 'there' : draft.profile.name.split(' ').first;
 
     return ListView(
-      padding: EdgeInsets.fromLTRB(16, top + 16, 16, 120),
+      padding: EdgeInsets.fromLTRB(16, top + 16, 16, 24),
       children: [
         Row(
           children: [
@@ -48,7 +48,7 @@ class DashboardScreen extends ConsumerWidget {
           ],
         ),
         const SizedBox(height: 16),
-        GlassPanel(
+        Surface(
           emphasis: true,
           onTap: () => context.push(Routes.computation),
           child: Column(
@@ -60,9 +60,9 @@ class DashboardScreen extends ConsumerWidget {
                     child: Text('Estimated tax', style: text.labelLarge?.copyWith(color: muted)),
                   ),
                   const SizedBox(width: 8),
-                  GlassChip(
+                  Tag(
                     label: cmp.recommended == TaxRegime.newRegime ? 'New regime' : 'Old regime',
-                    tone: GlassChipTone.accent,
+                    tone: TagTone.primary,
                   ),
                 ],
               ),
@@ -98,9 +98,9 @@ class DashboardScreen extends ConsumerWidget {
         Row(
           children: [
             Expanded(
-              child: GlassStat(
+              child: StatTile(
                 caption: 'Regime savings',
-                icon: Icons.auto_awesome,
+                icon: Icons.swap_horiz,
                 value: formatInr(cmp.savings),
                 valueColor: t.positive,
                 onTap: () => context.push(Routes.computation),
@@ -108,7 +108,7 @@ class DashboardScreen extends ConsumerWidget {
             ),
             const SizedBox(width: 12),
             Expanded(
-              child: GlassStat(
+              child: StatTile(
                 caption: 'GSTR-3B cash',
                 icon: Icons.receipt_long,
                 value: formatInr(gst.cashPayable.total),
@@ -131,11 +131,11 @@ class DashboardScreen extends ConsumerWidget {
         const SizedBox(height: 20),
         Text('Get started', style: text.titleMedium),
         const SizedBox(height: 10),
-        GlassPanel(
+        Surface(
           onTap: () => context.go(Routes.itr),
           child: Row(
             children: [
-              Icon(Icons.description_outlined, color: t.accent),
+              Icon(Icons.description_outlined, color: t.primary),
               const SizedBox(width: 14),
               Expanded(
                 child: Column(
@@ -152,11 +152,11 @@ class DashboardScreen extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: 12),
-        GlassPanel(
+        Surface(
           onTap: () => context.go(Routes.gst),
           child: Row(
             children: [
-              Icon(Icons.receipt_long_outlined, color: t.accentSecondary),
+              Icon(Icons.receipt_long_outlined, color: t.primary),
               const SizedBox(width: 14),
               Expanded(
                 child: Column(
@@ -225,14 +225,14 @@ class _Deadline extends StatelessWidget {
     final muted = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6);
     final days = date.difference(DateTime.now()).inDays;
     final tone = days < 0
-        ? GlassChipTone.negative
+        ? TagTone.negative
         : days <= 7
-            ? GlassChipTone.warning
-            : GlassChipTone.neutral;
+            ? TagTone.warning
+            : TagTone.neutral;
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
-      child: GlassPanel(
+      child: Surface(
         radius: 18,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Row(
@@ -249,7 +249,7 @@ class _Deadline extends StatelessWidget {
                 ],
               ),
             ),
-            GlassChip(
+            Tag(
               label: days < 0 ? 'Overdue' : days == 0 ? 'Today' : 'In $days d',
               tone: tone,
             ),

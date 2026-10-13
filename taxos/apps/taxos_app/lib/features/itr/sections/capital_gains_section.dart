@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:glass_ui/glass_ui.dart';
+import 'package:taxos_ui/taxos_ui.dart';
 import 'package:tax_engine/tax_engine.dart';
 
 import '../itr_state.dart';
@@ -26,7 +26,7 @@ class CapitalGainsSection extends ConsumerWidget {
       subtitle: 'Enter the net gain per bucket (negative for a loss). The engine sets off losses in the order the Act allows and applies the ₹1.25L equity exemption.',
       children: [
         for (var i = 0; i < gains.length; i++)
-          GlassPanel(
+          Surface(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -66,10 +66,10 @@ class CapitalGainsSection extends ConsumerWidget {
               ],
             ),
           ),
-        GlassButton(
+        AppButton(
           label: 'Add gain or loss',
           icon: Icons.add,
-          style: GlassButtonStyle.secondary,
+          style: AppButtonStyle.secondary,
           expand: true,
           onPressed: () => ref.read(itrDraftProvider.notifier).update(
                 (d) => d.copyWith(capitalGains: [
@@ -102,14 +102,14 @@ class _SignedAmountField extends StatelessWidget {
     final isLoss = value < 0;
     return Column(
       children: [
-        GlassSegmented<bool>(
+        Segmented<bool>(
           values: const [false, true],
           labels: const ['Gain', 'Loss'],
           selected: isLoss,
           onChanged: (loss) => onChanged(loss ? -value.abs() : value.abs()),
         ),
         const SizedBox(height: 10),
-        GlassAmountField(
+        AmountField(
           label: isLoss ? 'Loss amount' : 'Gain amount',
           value: value.abs(),
           onChanged: (v) => onChanged(isLoss ? -v : v),

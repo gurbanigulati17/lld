@@ -18,8 +18,8 @@ dependencies:
   intl: ^0.20.1
   tax_engine:
     path: ../../packages/tax_engine
-  glass_ui:
-    path: ../../packages/glass_ui
+  taxos_ui:
+    path: ../../packages/taxos_ui
 
 dev_dependencies:
   flutter_test:

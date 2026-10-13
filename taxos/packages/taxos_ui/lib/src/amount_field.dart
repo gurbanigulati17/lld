@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'glass_text_field.dart';
+import 'app_text_field.dart';
+import 'tokens.dart';
 
 /// Formats digits into Indian grouping (12,34,567) as the user types.
 class IndianAmountFormatter extends TextInputFormatter {
@@ -40,8 +41,8 @@ class IndianAmountFormatter extends TextInputFormatter {
 }
 
 /// Rupee input with Indian digit grouping and a ₹ prefix.
-class GlassAmountField extends StatefulWidget {
-  const GlassAmountField({
+class AmountField extends StatefulWidget {
+  const AmountField({
     super.key,
     required this.label,
     required this.value,
@@ -57,16 +58,16 @@ class GlassAmountField extends StatefulWidget {
   final String hint;
 
   @override
-  State<GlassAmountField> createState() => _GlassAmountFieldState();
+  State<AmountField> createState() => _AmountFieldState();
 }
 
-class _GlassAmountFieldState extends State<GlassAmountField> {
+class _AmountFieldState extends State<AmountField> {
   late final TextEditingController _ctrl = TextEditingController(
     text: widget.value == 0 ? '' : IndianAmountFormatter.format(widget.value),
   );
 
   @override
-  void didUpdateWidget(GlassAmountField old) {
+  void didUpdateWidget(AmountField old) {
     super.didUpdateWidget(old);
     if (old.value != widget.value &&
         IndianAmountFormatter.parse(_ctrl.text) != widget.value) {
@@ -83,14 +84,17 @@ class _GlassAmountFieldState extends State<GlassAmountField> {
 
   @override
   Widget build(BuildContext context) {
-    return GlassTextField(
+    return AppTextField(
       label: widget.label,
       controller: _ctrl,
       hint: widget.hint,
       helper: widget.helper,
       keyboardType: const TextInputType.numberWithOptions(decimal: false),
       inputFormatters: const [IndianAmountFormatter()],
-      prefix: Text('₹', style: Theme.of(context).textTheme.titleMedium),
+      prefix: Text(
+        '₹',
+        style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: context.ui.textMuted),
+      ),
       onChanged: (s) => widget.onChanged(IndianAmountFormatter.parse(s)),
     );
   }

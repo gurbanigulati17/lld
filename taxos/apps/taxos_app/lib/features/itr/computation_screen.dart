@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:glass_ui/glass_ui.dart';
+import 'package:taxos_ui/taxos_ui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tax_engine/tax_engine.dart';
 
@@ -19,7 +19,7 @@ class ComputationScreen extends ConsumerWidget {
     final selected = ref.watch(selectedRegimeProvider);
     final c = ref.watch(activeComputationProvider);
     final form = ref.watch(formRecommendationProvider);
-    final t = context.glass;
+    final t = context.ui;
     final text = Theme.of(context).textTheme;
     final muted = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.65);
     final explanation = const ExplanationBuilder().explain(c);
@@ -29,12 +29,12 @@ class ComputationScreen extends ConsumerWidget {
       groups.putIfAbsent(l.group, () => []).add(l);
     }
 
-    return GlassScaffold(
+    return AppScaffold(
       title: 'Computation',
       body: ListView(
-        padding: EdgeInsets.fromLTRB(16, MediaQuery.paddingOf(context).top + kToolbarHeight + 8, 16, 32),
+        padding: EdgeInsets.fromLTRB(16, 8, 16, 32),
         children: [
-          GlassSegmented<TaxRegime?>(
+          Segmented<TaxRegime?>(
             values: const [null, TaxRegime.oldRegime, TaxRegime.newRegime],
             labels: const ['Best', 'Old', 'New'],
             selected: selected,
@@ -63,7 +63,7 @@ class ComputationScreen extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 12),
-          GlassPanel(
+          Surface(
             emphasis: true,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,7 +71,7 @@ class ComputationScreen extends ConsumerWidget {
                 Row(
                   children: [
                     Expanded(child: Text(c.isRefund ? 'Refund due' : 'Tax payable', style: text.labelLarge?.copyWith(color: muted))),
-                    GlassChip(label: form.form.label, tone: GlassChipTone.accent),
+                    Tag(label: form.form.label, tone: TagTone.primary),
                   ],
                 ),
                 Text(
@@ -89,7 +89,7 @@ class ComputationScreen extends ConsumerWidget {
           ),
           if (c.warnings.isNotEmpty) ...[
             const SizedBox(height: 12),
-            GlassPanel(
+            Surface(
               tint: t.warning.withValues(alpha: 0.12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -119,7 +119,7 @@ class ComputationScreen extends ConsumerWidget {
             if (groups[g] case final items?)
               Padding(
                 padding: const EdgeInsets.only(bottom: 12),
-                child: GlassPanel(
+                child: Surface(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -139,7 +139,7 @@ class ComputationScreen extends ConsumerWidget {
               ),
           Text('Why this form', style: text.titleMedium),
           const SizedBox(height: 8),
-          GlassPanel(
+          Surface(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -151,7 +151,7 @@ class ComputationScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 16),
-          GlassButton(
+          AppButton(
             label: 'Continue to filing',
             icon: Icons.send_outlined,
             expand: true,
@@ -191,12 +191,12 @@ class _RegimeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final t = context.glass;
+    final t = context.ui;
     final text = Theme.of(context).textTheme;
     final muted = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.65);
-    return GlassPanel(
+    return Surface(
       emphasis: active,
-      tint: active ? t.accent.withValues(alpha: 0.10) : null,
+      tint: active ? t.primary.withValues(alpha: 0.10) : null,
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

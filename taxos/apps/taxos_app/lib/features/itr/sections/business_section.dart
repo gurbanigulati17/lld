@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:glass_ui/glass_ui.dart';
+import 'package:taxos_ui/taxos_ui.dart';
 import 'package:tax_engine/tax_engine.dart';
 
 import '../itr_state.dart';
@@ -28,7 +28,7 @@ class BusinessSection extends ConsumerWidget {
           ),
       ],
       children: [
-        GlassSegmented<BusinessIncomeKind?>(
+        Segmented<BusinessIncomeKind?>(
           values: const [null, BusinessIncomeKind.presumptive44ADA, BusinessIncomeKind.presumptive44AD, BusinessIncomeKind.regular],
           labels: const ['None', '44ADA', '44AD', 'Books'],
           selected: b?.kind,
@@ -46,13 +46,13 @@ class BusinessSection extends ConsumerWidget {
             child: Text('No business or professional income.', style: TextStyle(color: muted)),
           ),
         if (b?.kind == BusinessIncomeKind.presumptive44ADA) ...[
-          GlassAmountField(
+          AmountField(
             label: 'Gross professional receipts',
             helper: 'Up to ₹50L (₹75L if 95%+ digital)',
             value: b!.grossReceipts,
             onChanged: (v) => _set(ref, BusinessIncome(kind: b.kind, grossReceipts: v, declaredProfit: b.declaredProfit)),
           ),
-          GlassAmountField(
+          AmountField(
             label: 'Declare higher profit (optional)',
             helper: 'Engine uses the higher of 50% and this',
             value: b.declaredProfit ?? 0,
@@ -60,32 +60,32 @@ class BusinessSection extends ConsumerWidget {
           ),
         ],
         if (b?.kind == BusinessIncomeKind.presumptive44AD) ...[
-          GlassAmountField(
+          AmountField(
             label: 'Total turnover',
             helper: 'Up to ₹2 crore (₹3 crore if 95%+ digital)',
             value: b!.turnover,
             onChanged: (v) => _set(ref, BusinessIncome(kind: b.kind, turnover: v, digitalTurnover: b.digitalTurnover, declaredProfit: b.declaredProfit)),
           ),
-          GlassAmountField(
+          AmountField(
             label: 'Of which received digitally',
             helper: 'Deemed at 6% instead of 8%',
             value: b.digitalTurnover,
             onChanged: (v) => _set(ref, BusinessIncome(kind: b.kind, turnover: b.turnover, digitalTurnover: v, declaredProfit: b.declaredProfit)),
           ),
-          GlassAmountField(
+          AmountField(
             label: 'Declare higher profit (optional)',
             value: b.declaredProfit ?? 0,
             onChanged: (v) => _set(ref, BusinessIncome(kind: b.kind, turnover: b.turnover, digitalTurnover: b.digitalTurnover, declaredProfit: v == 0 ? null : v)),
           ),
         ],
         if (b?.kind == BusinessIncomeKind.regular) ...[
-          GlassAmountField(
+          AmountField(
             label: 'Net profit as per books',
             helper: 'After all allowable expenses and depreciation',
             value: b!.netProfit,
             onChanged: (v) => _set(ref, BusinessIncome(kind: b.kind, netProfit: v)),
           ),
-          GlassPanel(
+          Surface(
             radius: 18,
             child: Text(
               'Books-of-account cases need ITR-3 and, above the s.44AB turnover limits, a tax audit signed by a chartered accountant. TaxOS routes those to a partner CA for sign-off.',
