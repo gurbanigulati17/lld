@@ -26,7 +26,7 @@ make run-web             # flutter run -d chrome
 make build-web           # release build in apps/taxos_app/build/web
 ```
 
-Without Flutter installed you can still exercise the engine and API: `tool/ci.sh engine`.
+`tool/ci.sh engine` runs only the pure-Dart engine and API checks (fast). The Flutter tool is still needed to resolve the workspace.
 
 ## Engine in 30 seconds
 

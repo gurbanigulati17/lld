@@ -10,11 +10,18 @@ scope="${1:-all}"
 
 have_flutter() { command -v flutter >/dev/null 2>&1; }
 
+resolve() {
+  # The pub workspace includes Flutter packages, so resolution needs the
+  # Flutter tool even for the pure-Dart members.
+  if have_flutter; then flutter pub get >/dev/null; else dart pub get >/dev/null; fi
+}
+
 run_engine() {
+  resolve
   echo "== tax_engine"
-  (cd packages/tax_engine && dart pub get >/dev/null && dart analyze --fatal-infos && dart test --reporter compact)
+  (cd packages/tax_engine && dart analyze --fatal-infos && dart test --reporter compact)
   echo "== services/api"
-  (cd services/api && dart pub get >/dev/null && dart analyze --fatal-infos && dart test --reporter compact)
+  (cd services/api && dart analyze --fatal-infos && dart test --reporter compact)
 }
 
 run_flutter() {
@@ -22,7 +29,6 @@ run_flutter() {
     echo "flutter not on PATH; skipping glass_ui and taxos_app (run tool/ci.sh engine for Dart-only checks)" >&2
     return 1
   fi
-  flutter pub get >/dev/null
   echo "== glass_ui"
   (cd packages/glass_ui && flutter analyze --fatal-infos && flutter test --reporter compact)
   echo "== taxos_app"
