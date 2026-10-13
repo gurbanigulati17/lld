@@ -67,15 +67,24 @@ jobs:
           cache: true
       - run: flutter pub get
         working-directory: taxos
-      - run: flutter build apk --release
+      # One universal APK plus one per ABI (the arm64 one is what most
+      # phones need and is a third the size).
+      - run: flutter build apk --release && flutter build apk --release --split-per-abi
         working-directory: taxos/apps/taxos_app
       - uses: actions/upload-artifact@v4
         with:
           name: taxos-apk
-          path: taxos/apps/taxos_app/build/app/outputs/flutter-apk/app-release.apk
+          path: taxos/apps/taxos_app/build/app/outputs/flutter-apk/*.apk
           retention-days: 14
-      - name: Rename APK
-        run: cp taxos/apps/taxos_app/build/app/outputs/flutter-apk/app-release.apk TaxOS-${{ github.run_number }}.apk
+      - name: Rename APKs
+        run: |
+          out=taxos/apps/taxos_app/build/app/outputs/flutter-apk
+          n=${{ github.run_number }}
+          cp "$out/app-release.apk" "TaxOS-$n-universal.apk"
+          cp "$out/app-arm64-v8a-release.apk" "TaxOS-$n-arm64-v8a.apk"
+          cp "$out/app-armeabi-v7a-release.apk" "TaxOS-$n-armeabi-v7a.apk"
+          cp "$out/app-x86_64-release.apk" "TaxOS-$n-x86_64.apk"
+          ls -la TaxOS-*.apk
       # Every CI build on a branch publishes a pre-release so the APK has a
       # stable download link without needing a GitHub login.
       - uses: softprops/action-gh-release@v2
@@ -85,5 +94,6 @@ jobs:
           prerelease: true
           body: |
             Debug-signed release build of the TaxOS Flutter app from `${{ github.sha }}` on `${{ github.ref_name }}`.
-            Install on Android 5.0+ (allow installs from unknown sources).
-          files: TaxOS-${{ github.run_number }}.apk
+            Most phones: install the `arm64-v8a` APK. Older 32-bit phones: `armeabi-v7a`. Emulators: `x86_64`. The `universal` APK works everywhere but is three times larger.
+            Android 5.0+; allow installs from unknown sources.
+          files: TaxOS-${{ github.run_number }}-*.apk
