@@ -6,7 +6,7 @@ WORKDIR /src
 RUN printf 'name: taxos_workspace\nenvironment:\n  sdk: ^3.6.0\nworkspace:\n  - packages/tax_engine\n  - services/api\n' > pubspec.yaml
 COPY packages/tax_engine ./packages/tax_engine
 COPY services/api ./services/api
-RUN cd services/api && dart pub get && dart compile exe bin/server.dart -o /app/server
+RUN mkdir -p /app && cd services/api && dart pub get && dart compile exe bin/server.dart -o /app/server
 
 FROM debian:bookworm-slim
 COPY --from=build /runtime/ /
