@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'app_text_field.dart';
 import 'tokens.dart';
 
 /// Formats digits into Indian grouping (12,34,567) as the user types.
@@ -22,14 +21,10 @@ class IndianAmountFormatter extends TextInputFormatter {
     return '${parts.join(',')},$last3';
   }
 
-  static int parse(String text) =>
-      int.tryParse(text.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0;
+  static int parse(String text) => int.tryParse(text.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0;
 
   @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
     final raw = newValue.text.replaceAll(RegExp(r'[^0-9]'), '');
     if (raw.isEmpty) return const TextEditingValue();
     final formatted = format(int.parse(raw));
@@ -40,7 +35,8 @@ class IndianAmountFormatter extends TextInputFormatter {
   }
 }
 
-/// Rupee input with Indian digit grouping and a ₹ prefix.
+/// A rupee field laid out as a row: the label (and optional helper) on the
+/// left, a pill-shaped input on the right. Rows sit inside a [FieldGroup].
 class AmountField extends StatefulWidget {
   const AmountField({
     super.key,
@@ -65,37 +61,92 @@ class _AmountFieldState extends State<AmountField> {
   late final TextEditingController _ctrl = TextEditingController(
     text: widget.value == 0 ? '' : IndianAmountFormatter.format(widget.value),
   );
+  final _focus = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    _focus.addListener(() => setState(() {}));
+  }
 
   @override
   void didUpdateWidget(AmountField old) {
     super.didUpdateWidget(old);
-    if (old.value != widget.value &&
-        IndianAmountFormatter.parse(_ctrl.text) != widget.value) {
-      _ctrl.text =
-          widget.value == 0 ? '' : IndianAmountFormatter.format(widget.value);
+    if (old.value != widget.value && IndianAmountFormatter.parse(_ctrl.text) != widget.value) {
+      _ctrl.text = widget.value == 0 ? '' : IndianAmountFormatter.format(widget.value);
     }
   }
 
   @override
   void dispose() {
     _ctrl.dispose();
+    _focus.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return AppTextField(
-      label: widget.label,
-      controller: _ctrl,
-      hint: widget.hint,
-      helper: widget.helper,
-      keyboardType: const TextInputType.numberWithOptions(decimal: false),
-      inputFormatters: const [IndianAmountFormatter()],
-      prefix: Text(
-        '₹',
-        style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: context.ui.textMuted),
+    final t = context.ui;
+    final focused = _focus.hasFocus;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(widget.label, style: TextStyle(fontSize: 16, color: t.text)),
+                if (widget.helper != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 2),
+                    child: Text(widget.helper!, style: TextStyle(fontSize: 13, color: t.textMuted, height: 1.3)),
+                  ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 12),
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 150),
+            width: 148,
+            height: 44,
+            padding: const EdgeInsets.symmetric(horizontal: 14),
+            decoration: BoxDecoration(
+              color: t.surface,
+              borderRadius: BorderRadius.circular(999),
+              border: Border.all(color: focused ? t.primary : t.border, width: focused ? 1.5 : 1),
+            ),
+            child: Row(
+              children: [
+                Text('₹', style: TextStyle(fontSize: 16, color: t.textMuted)),
+                const SizedBox(width: 4),
+                Expanded(
+                  child: Semantics(
+                    label: widget.label,
+                    child: TextField(
+                      controller: _ctrl,
+                      focusNode: _focus,
+                      textAlign: TextAlign.center,
+                      keyboardType: const TextInputType.numberWithOptions(decimal: false),
+                      inputFormatters: const [IndianAmountFormatter()],
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: t.text,
+                        fontFeatures: const [FontFeature.tabularFigures()],
+                      ),
+                      decoration: InputDecoration(
+                        hintText: widget.hint,
+                        hintStyle: TextStyle(fontSize: 16, color: t.textMuted.withValues(alpha: 0.6)),
+                      ),
+                      onChanged: (s) => widget.onChanged(IndianAmountFormatter.parse(s)),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
-      onChanged: (s) => widget.onChanged(IndianAmountFormatter.parse(s)),
     );
   }
 }

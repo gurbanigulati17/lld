@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'glow_background.dart';
 import 'tokens.dart';
 
-/// Scaffold on the glowing ground with a transparent app bar separated by
-/// a hairline. Only the app bar overlays the glow; the body, the input
-/// bars and the tab bar never overlap each other.
+/// Scaffold on the warm ground. The app bar carries only navigation; page
+/// titles are set in the body as serif headings.
 class AppScaffold extends StatelessWidget {
   const AppScaffold({
     super.key,
@@ -27,24 +25,19 @@ class AppScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = context.ui;
-    return GlowBackground(
-      child: Scaffold(
-      backgroundColor: Colors.transparent,
-      appBar: title == null && actions == null && leading == null
+    final canPop = Navigator.of(context).canPop();
+    return Scaffold(
+      backgroundColor: t.ground,
+      appBar: title == null && actions == null && leading == null && !canPop
           ? null
           : AppBar(
               title: title == null ? null : Text(title!),
               actions: actions,
               leading: leading,
-              bottom: PreferredSize(
-                preferredSize: const Size.fromHeight(1),
-                child: Divider(height: 1, color: t.hairline),
-              ),
             ),
       body: body,
       bottomNavigationBar: bottomNavigationBar,
       floatingActionButton: floatingActionButton,
-      ),
     );
   }
 }

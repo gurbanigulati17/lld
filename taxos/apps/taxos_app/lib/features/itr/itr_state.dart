@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tax_engine/tax_engine.dart';
 
+import '../../core/auth.dart';
 import '../../core/draft_store.dart';
 
 /// The ITR draft the user is editing. Every edit recomputes both regimes
@@ -10,6 +11,12 @@ class ItrDraftNotifier extends Notifier<ItrInput> {
 
   @override
   ItrInput build() {
+    // A new person signing in on this phone starts from a clean draft.
+    ref.listen(authProvider, (prev, next) {
+      if (prev?.valueOrNull != null && next.valueOrNull == null) ref.invalidateSelf();
+    });
+    _loaded = false;
+    _pending.clear();
     _restore();
     return ItrInput(
       assessmentYear: AssessmentYear.latest,
@@ -17,28 +24,42 @@ class ItrDraftNotifier extends Notifier<ItrInput> {
     );
   }
 
+  // Edits made before the saved draft has loaded are replayed on top of it,
+  // so neither the draft nor the edit is lost.
+  final _pending = <ItrInput Function(ItrInput)>[];
+  var _loaded = false;
+
   Future<void> _restore() async {
     final json = await _store.loadItr();
-    if (json == null) return;
-    try {
-      state = ItrInput.fromJson(json);
-    } catch (_) {
-      // Corrupt or outdated draft: keep the fresh one.
+    ItrInput? saved;
+    if (json != null) {
+      try {
+        saved = ItrInput.fromJson(json);
+      } catch (_) {
+        // Corrupt or outdated draft: keep the fresh one.
+      }
     }
+    _loaded = true;
+    if (saved != null) state = _pending.fold(saved, (s, fn) => fn(s));
+    if (_pending.isNotEmpty) _store.saveItr(state.toJson());
+    _pending.clear();
   }
 
   void update(ItrInput Function(ItrInput) fn) {
     state = fn(state);
+    if (!_loaded) {
+      _pending.add(fn);
+      return;
+    }
     _store.saveItr(state.toJson());
   }
 
-  void reset() {
-    state = ItrInput(
-      assessmentYear: AssessmentYear.latest,
-      profile: const TaxpayerProfile(ageCategory: AgeCategory.below60),
-    );
-    _store.saveItr(state.toJson());
-  }
+  void reset() => update(
+        (_) => ItrInput(
+          assessmentYear: AssessmentYear.latest,
+          profile: const TaxpayerProfile(ageCategory: AgeCategory.below60),
+        ),
+      );
 }
 
 final itrDraftProvider =
@@ -89,7 +110,7 @@ final sectionStatusProvider = Provider<List<SectionStatus>>((ref) {
       done: d.profile.name.isNotEmpty && d.profile.pan.length == 10,
       summary: d.profile.name.isEmpty
           ? 'Name, PAN, date of birth'
-          : '${d.profile.name} · ${d.profile.pan}',
+          : [d.profile.name, d.profile.pan].where((s) => s.isNotEmpty).join(' · '),
     ),
     SectionStatus(
       id: 'salary',

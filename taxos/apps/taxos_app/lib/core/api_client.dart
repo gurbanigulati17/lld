@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:tax_engine/tax_engine.dart';
 
-/// Thin client for the TaxOS API service. The server runs the same engine
+/// Thin client for the Kardo API service. The server runs the same engine
 /// package; this is used to confirm the on-device result before filing.
 class TaxosApiClient {
   TaxosApiClient({required this.baseUrl, http.Client? client})

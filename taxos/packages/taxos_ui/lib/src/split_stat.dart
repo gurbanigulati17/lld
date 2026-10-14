@@ -10,7 +10,7 @@ class StatValue {
   final Color? color;
 }
 
-/// Two figures side by side with a tinted vertical divider between them.
+/// Two figures side by side with a hairline between them.
 class SplitStat extends StatelessWidget {
   const SplitStat({super.key, required this.left, required this.right, this.large = true});
 
@@ -21,29 +21,28 @@ class SplitStat extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = context.ui;
-    final text = Theme.of(context).textTheme;
     Widget cell(StatValue v) => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(v.label, style: text.bodySmall?.copyWith(color: t.textMuted, fontSize: large ? 13 : 12)),
+            Text(v.label, style: TextStyle(fontSize: 14, color: t.textMuted)),
             const SizedBox(height: 2),
             FittedBox(
               fit: BoxFit.scaleDown,
               alignment: Alignment.centerLeft,
               child: Text(
                 v.value,
-                style: (large ? text.headlineSmall : text.titleMedium)?.copyWith(
+                style: TextStyle(
+                  fontSize: large ? 24 : 18,
+                  fontWeight: FontWeight.w700,
                   color: v.color ?? t.text,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: large ? -0.5 : 0,
                   fontFeatures: const [FontFeature.tabularFigures()],
                 ),
               ),
             ),
             if (v.note != null) ...[
               const SizedBox(height: 2),
-              Text(v.note!, style: text.labelSmall?.copyWith(color: t.textMuted)),
+              Text(v.note!, style: TextStyle(fontSize: 13, color: t.textMuted)),
             ],
           ],
         );

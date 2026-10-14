@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'tokens.dart';
 
-/// Segmented control: inset track, sliding solid thumb in the primary
-/// colour.
+/// Text tabs with a green underline under the selected one.
 class Segmented<T> extends StatelessWidget {
   const Segmented({
     super.key,
@@ -11,71 +10,53 @@ class Segmented<T> extends StatelessWidget {
     required this.labels,
     required this.selected,
     required this.onChanged,
+    this.center = true,
   }) : assert(values.length == labels.length);
 
   final List<T> values;
   final List<String> labels;
   final T selected;
   final ValueChanged<T> onChanged;
+  final bool center;
 
   @override
   Widget build(BuildContext context) {
     final t = context.ui;
-    final idx = values.indexOf(selected);
-    return Container(
-      padding: const EdgeInsets.all(3),
-      decoration: BoxDecoration(
-        color: t.surfaceAlt,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: LayoutBuilder(
-        builder: (context, c) {
-          final w = c.maxWidth / values.length;
-          return SizedBox(
-            height: 38,
-            child: Stack(
-              children: [
-                if (idx >= 0)
-                  AnimatedPositioned(
-                    duration: const Duration(milliseconds: 200),
-                    curve: Curves.easeOutCubic,
-                    left: w * idx,
-                    top: 0,
-                    bottom: 0,
-                    width: w,
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: t.surface,
-                        borderRadius: BorderRadius.circular(9),
-                        boxShadow: t.cardShadow,
-                        border: t.cardBorder == null ? null : Border.all(color: t.cardBorder!),
+    return DecoratedBox(
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: t.hairline))),
+      child: Row(
+        mainAxisAlignment: center ? MainAxisAlignment.center : MainAxisAlignment.start,
+        children: [
+          for (var i = 0; i < values.length; i++)
+            Semantics(
+              selected: values[i] == selected,
+              button: true,
+              child: InkWell(
+                onTap: () => onChanged(values[i]),
+                child: Container(
+                  constraints: const BoxConstraints(minWidth: 64, minHeight: 48),
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(
+                        color: values[i] == selected ? t.primary : Colors.transparent,
+                        width: 3,
                       ),
                     ),
                   ),
-                Row(
-                  children: [
-                    for (var i = 0; i < values.length; i++)
-                      Expanded(
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(8),
-                          onTap: () => onChanged(values[i]),
-                          child: Center(
-                            child: AnimatedDefaultTextStyle(
-                              duration: const Duration(milliseconds: 160),
-                              style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                                    color: i == idx ? t.primary : t.textMuted,
-                                  ),
-                              child: Text(labels[i]),
-                            ),
-                          ),
-                        ),
-                      ),
-                  ],
+                  child: Text(
+                    labels[i],
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: values[i] == selected ? FontWeight.w700 : FontWeight.w400,
+                      color: values[i] == selected ? t.text : t.textMuted,
+                    ),
+                  ),
                 ),
-              ],
+              ),
             ),
-          );
-        },
+        ],
       ),
     );
   }

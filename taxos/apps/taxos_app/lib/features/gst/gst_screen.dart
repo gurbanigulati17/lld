@@ -27,10 +27,8 @@ class GstScreen extends ConsumerWidget {
       padding: EdgeInsets.fromLTRB(
           Space.gutter, top + 16, Space.gutter, Space.section),
       children: [
-        Text('GST', style: text.headlineMedium),
-        Text('GSTR-3B for ${input.period}',
-            style: text.bodyMedium?.copyWith(color: muted)),
-        const SizedBox(height: 16),
+        PageHeading('GST', subtitle: 'GSTR-3B for ${input.period}'),
+        const SizedBox(height: Space.gutter),
         Surface(
           emphasis: true,
           child: Column(
@@ -76,6 +74,14 @@ class GstScreen extends ConsumerWidget {
             label: const Text('Add'),
           ),
         ),
+        if (input.outwardSupplies.isEmpty)
+          Padding(
+            padding: const EdgeInsets.only(bottom: Space.gap),
+            child: Text(
+              'Add each GST rate you billed at this month. Turn on Nil return if you made no sales.',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.ui.textMuted),
+            ),
+          ),
         for (var i = 0; i < input.outwardSupplies.length; i++)
           Padding(
             padding: const EdgeInsets.only(bottom: 10),
@@ -90,26 +96,23 @@ class GstScreen extends ConsumerWidget {
                   outwardSupplies: [...inp.outwardSupplies]..removeAt(i))),
             ),
           ),
-        const SectionHeader('Input tax credit (from GSTR-2B)'),
-        _HeadsEditor(
-          heads: input.itcAvailable,
-          onChanged: (h) => set((i) => copyGstr3b(i, itcAvailable: h)),
-        ),
-        const SizedBox(height: 10),
-        SwitchTile(
-          label: 'Nil return',
-          helper: 'No outward supplies this period (lower late fee)',
-          value: input.isNilReturn,
-          onChanged: (v) => set((i) => copyGstr3b(i, isNilReturn: v)),
-        ),
-        const SizedBox(height: 10),
-        AmountField(
-          label: 'Previous-year turnover',
-          helper: 'Drives the late-fee cap',
-          value: input.annualTurnover,
-          onChanged: (v) => set((i) => copyGstr3b(i, annualTurnover: v)),
-        ),
-        const SizedBox(height: 10),
+        const SectionTitle('Input tax credit from GSTR-2B'),
+        FieldGroup(children: [
+          ..._headRows(input.itcAvailable, (h) => set((i) => copyGstr3b(i, itcAvailable: h))),
+          SwitchTile(
+            label: 'Nil return',
+            helper: 'No outward supplies this period (lower late fee)',
+            value: input.isNilReturn,
+            onChanged: (v) => set((i) => copyGstr3b(i, isNilReturn: v)),
+          ),
+          AmountField(
+            label: 'Previous-year turnover',
+            helper: 'Sets the late-fee cap',
+            value: input.annualTurnover,
+            onChanged: (v) => set((i) => copyGstr3b(i, annualTurnover: v)),
+          ),
+        ]),
+        const SizedBox(height: Space.gap),
         Surface(
           radius: 18,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -195,8 +198,9 @@ class _SupplyCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Segmented<bool>(
+                  center: false,
                   values: const [false, true],
-                  labels: const ['Intra-state', 'Inter-state'],
+                  labels: const ['Within state', 'Other states'],
                   selected: supply.interState,
                   onChanged: (v) => onChanged(OutwardSupply(
                     taxableValue: supply.taxableValue,
@@ -210,40 +214,37 @@ class _SupplyCard extends StatelessWidget {
                   onPressed: onRemove, icon: const Icon(Icons.delete_outline)),
             ],
           ),
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              Expanded(
-                flex: 3,
-                child: AmountField(
-                  label: 'Taxable value',
-                  value: supply.taxableValue,
-                  onChanged: (v) => onChanged(OutwardSupply(
-                    taxableValue: v,
-                    ratePercent: supply.ratePercent,
-                    interState: supply.interState,
-                    cessPercent: supply.cessPercent,
-                  )),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                flex: 2,
-                child: Surface(
-                  radius: 18,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          AmountField(
+            label: 'Taxable value',
+            value: supply.taxableValue,
+            onChanged: (v) => onChanged(OutwardSupply(
+              taxableValue: v,
+              ratePercent: supply.ratePercent,
+              interState: supply.interState,
+              cessPercent: supply.cessPercent,
+            )),
+          ),
+          Divider(height: 1, color: context.ui.hairline),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 6),
+            child: Row(
+              children: [
+                Expanded(child: Text('GST rate', style: TextStyle(fontSize: 16, color: context.ui.text))),
+                Container(
+                  width: 148,
+                  height: 44,
+                  padding: const EdgeInsets.symmetric(horizontal: 14),
+                  decoration: BoxDecoration(
+                    color: context.ui.surface,
+                    borderRadius: BorderRadius.circular(999),
+                    border: Border.all(color: context.ui.border),
+                  ),
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<double>(
-                      value: _rates.contains(supply.ratePercent)
-                          ? supply.ratePercent
-                          : 18,
+                      value: _rates.contains(supply.ratePercent) ? supply.ratePercent : 18,
                       isExpanded: true,
-                      dropdownColor: Theme.of(context).colorScheme.surface,
-                      items: [
-                        for (final r in _rates)
-                          DropdownMenuItem(value: r, child: Text('$r%'))
-                      ],
+                      dropdownColor: context.ui.surface,
+                      items: [for (final r in _rates) DropdownMenuItem(value: r, child: Text('${r % 1 == 0 ? r.toInt() : r}%'))],
                       onChanged: (r) => onChanged(OutwardSupply(
                         taxableValue: supply.taxableValue,
                         ratePercent: r!,
@@ -253,8 +254,8 @@ class _SupplyCard extends StatelessWidget {
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
@@ -262,45 +263,23 @@ class _SupplyCard extends StatelessWidget {
   }
 }
 
-class _HeadsEditor extends StatelessWidget {
-  const _HeadsEditor({required this.heads, required this.onChanged});
-  final GstHeads heads;
-  final ValueChanged<GstHeads> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: AmountField(
-            label: 'IGST',
-            value: heads.igst,
-            onChanged: (v) => onChanged(GstHeads(
-                igst: v, cgst: heads.cgst, sgst: heads.sgst, cess: heads.cess)),
-          ),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: AmountField(
-            label: 'CGST',
-            value: heads.cgst,
-            onChanged: (v) => onChanged(GstHeads(
-                igst: heads.igst, cgst: v, sgst: heads.sgst, cess: heads.cess)),
-          ),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: AmountField(
-            label: 'SGST',
-            value: heads.sgst,
-            onChanged: (v) => onChanged(GstHeads(
-                igst: heads.igst, cgst: heads.cgst, sgst: v, cess: heads.cess)),
-          ),
-        ),
-      ],
-    );
-  }
-}
+List<Widget> _headRows(GstHeads heads, ValueChanged<GstHeads> onChanged) => [
+      AmountField(
+        label: 'IGST',
+        value: heads.igst,
+        onChanged: (v) => onChanged(GstHeads(igst: v, cgst: heads.cgst, sgst: heads.sgst, cess: heads.cess)),
+      ),
+      AmountField(
+        label: 'CGST',
+        value: heads.cgst,
+        onChanged: (v) => onChanged(GstHeads(igst: heads.igst, cgst: v, sgst: heads.sgst, cess: heads.cess)),
+      ),
+      AmountField(
+        label: 'SGST',
+        value: heads.sgst,
+        onChanged: (v) => onChanged(GstHeads(igst: heads.igst, cgst: heads.cgst, sgst: v, cess: heads.cess)),
+      ),
+    ];
 
 class _RegistrationAdvisor extends StatefulWidget {
   const _RegistrationAdvisor();
@@ -329,31 +308,26 @@ class _RegistrationAdvisorState extends State<_RegistrationAdvisor> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Do I need to register?', style: text.titleMedium),
-        const SizedBox(height: 8),
-        AmountField(
-          label: 'Expected annual turnover',
-          value: _turnover,
-          onChanged: (v) => setState(() => _turnover = v),
-        ),
-        const SizedBox(height: 10),
-        Segmented<SupplyNature>(
-          values: SupplyNature.values,
-          labels: const ['Goods', 'Services', 'Both'],
-          selected: _nature,
-          onChanged: (v) => setState(() => _nature = v),
-        ),
-        const SizedBox(height: 10),
-        SwitchTile(
-            label: 'Inter-state supplies',
-            value: _interState,
-            onChanged: (v) => setState(() => _interState = v)),
-        const SizedBox(height: 10),
-        SwitchTile(
-            label: 'Sell via e-commerce',
-            value: _ecommerce,
-            onChanged: (v) => setState(() => _ecommerce = v)),
-        const SizedBox(height: 10),
+        const SectionTitle('Do I need to register?'),
+        FieldGroup(children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: Segmented<SupplyNature>(
+              values: SupplyNature.values,
+              labels: const ['Goods', 'Services', 'Both'],
+              selected: _nature,
+              onChanged: (v) => setState(() => _nature = v),
+            ),
+          ),
+          AmountField(
+            label: 'Expected annual turnover',
+            value: _turnover,
+            onChanged: (v) => setState(() => _turnover = v),
+          ),
+          SwitchTile(label: 'Inter-state supplies', value: _interState, onChanged: (v) => setState(() => _interState = v)),
+          SwitchTile(label: 'Sell via e-commerce', value: _ecommerce, onChanged: (v) => setState(() => _ecommerce = v)),
+        ]),
+        const SizedBox(height: Space.gap),
         Surface(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

@@ -9,15 +9,9 @@ class AppNavItem {
   final String label;
 }
 
-/// Opaque bottom tab bar with a hairline on top. Sits in the scaffold's
-/// bottomNavigationBar slot so the body never renders behind it.
+/// White bottom tab bar; the selected tab is forest green.
 class AppNavBar extends StatelessWidget {
-  const AppNavBar({
-    super.key,
-    required this.items,
-    required this.index,
-    required this.onChanged,
-  });
+  const AppNavBar({super.key, required this.items, required this.index, required this.onChanged});
 
   final List<AppNavItem> items;
   final int index;
@@ -26,7 +20,6 @@ class AppNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = context.ui;
-    final text = Theme.of(context).textTheme;
     return Material(
       color: t.surface,
       child: DecoratedBox(
@@ -34,7 +27,7 @@ class AppNavBar extends StatelessWidget {
         child: SafeArea(
           top: false,
           child: SizedBox(
-            height: 60,
+            height: 62,
             child: Row(
               children: [
                 for (var i = 0; i < items.length; i++)
@@ -47,23 +40,26 @@ class AppNavBar extends StatelessWidget {
                         selected: i == index,
                         button: true,
                         label: items[i].label,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              i == index ? (items[i].selectedIcon ?? items[i].icon) : items[i].icon,
-                              size: 22,
-                              color: i == index ? t.primary : t.textMuted,
-                            ),
-                            const SizedBox(height: 3),
-                            Text(
-                              items[i].label,
-                              style: text.labelSmall?.copyWith(
-                                color: i == index ? t.primary : t.textMuted,
-                                fontWeight: i == index ? FontWeight.w600 : FontWeight.w400,
+                        child: ExcludeSemantics(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                i == index ? (items[i].selectedIcon ?? items[i].icon) : items[i].icon,
+                                size: 24,
+                                color: i == index ? t.heading : t.textMuted,
                               ),
-                            ),
-                          ],
+                              const SizedBox(height: 3),
+                              Text(
+                                items[i].label,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: i == index ? t.heading : t.textMuted,
+                                  fontWeight: i == index ? FontWeight.w700 : FontWeight.w400,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),

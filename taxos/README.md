@@ -1,13 +1,13 @@
-# TaxOS
+# Kardo
 
-ITR and GST filing for India, from a salaried ITR-1 to capital gains, presumptive business and GSTR-3B, with a calm, ClearTax-style interface built in Flutter (Trust Blue light theme by default, Soft Night dark theme). The design goal is to replace the chartered accountant for the ~90% of filers who do not need an audit sign-off, and to explain every rupee rather than just compute it.
+*Taxes, kar do.* ITR and GST filing for India, from a salaried ITR-1 to capital gains, presumptive business and GSTR-3B, built in Flutter with the Evergreen theme: warm off-white ground, forest-green serif headings, white rounded cards and plain-English sentences in place of dashboards. The design goal is to replace the chartered accountant for the ~90% of filers who do not need an audit sign-off, and to explain every rupee rather than just compute it.
 
 ## Layout
 
 ```text
 taxos/
   packages/tax_engine   pure-Dart rules engine (no Flutter): ITR, interest, forms, GST
-  packages/taxos_ui     design system: Trust Blue (light) and Soft Night (dark), one spacing scale, surfaces, controls
+  packages/taxos_ui     design system: Evergreen tokens, Source Serif 4 / Source Sans 3, cards, row fields, pill buttons
   apps/taxos_app        Flutter app (Android, iOS, web)
   services/api          Dart shelf service exposing the same engine over HTTP
   tool/ci.sh            everything CI runs, in one script
@@ -27,6 +27,17 @@ make build-web           # release build in apps/taxos_app/build/web
 ```
 
 `tool/ci.sh engine` runs only the pure-Dart engine and API checks (fast). The Flutter tool is still needed to resolve the workspace.
+
+## Sign-in
+
+The app runs in one of two modes, chosen at build time:
+
+| Build | Sign-in |
+|---|---|
+| default (no `KARDO_API_URL`) | Demo: the 6-digit code is generated on the phone and shown on screen. Nothing leaves the device. |
+| `--dart-define=KARDO_API_URL=https://api.example.in` | Real: the API sends an OTP, verifies it and issues a signed 30-day token. |
+
+The API needs `TAXOS_AUTH_SECRET` (base64, at least 32 bytes). `TAXOS_DEV_OTP=1` returns the code in the response for local testing; never set it in production. OTPs are stored hashed, expire after 5 minutes, allow 5 attempts, and can be resent after 30 seconds.
 
 ## Engine in 30 seconds
 
@@ -61,15 +72,18 @@ Every number carries a `LineItem` with its statutory section, so the UI and the 
 | Interest | ss.234A, 234B, 234C including presumptive single instalment and 12%/36% tolerance |
 | Forms | ITR-1 / 2 / 3 / 4 eligibility with reasons |
 | GST | GSTR-3B with Rule 88A set-off, late fee caps, s.50 interest; GSTR-2B reconciliation; registration and composition advice |
-| App | Dashboard, 8-step ITR wizard with live liability, computation with line items, filing readiness, GST, assistant |
-| API | `/health`, `/v1/itr/{compute,compare,form}`, `/v1/gst/{gstr3b,reconcile,registration}` |
+| Sign-in | Phone OTP, 30-day signed session in secure storage, sign out (revokes the token and clears drafts) |
+| Late filing | s.234F fee (₹1,000 / ₹5,000), belated-return last date, warnings |
+| App | Dashboard, 8-section ITR with live liability, "How we got your tax" ledger, filing checklist, GST, assistant |
+| API | `/health`, `/v1/auth/{otp/request,otp/verify,me,logout}`, `/v1/itr/{compute,compare,form}`, `/v1/gst/{gstr3b,reconcile,registration}` |
 
 ## What is not yet implemented
 
 - ERI submission to the Income Tax Department and GSP connectivity to GSTN (the API has the seams; credentials and partner onboarding are external).
 - Document ingestion: Form 16 / AIS / broker P&L parsing. The capital-gains screen shows where it plugs in.
 - ITR-5/6/7, Schedule FA detail, dividend surcharge carve-out, s.234C relief for late-arising gains.
-- Encrypted on-device storage (drafts currently sit in shared preferences).
+- Encrypted on-device storage for drafts (the session token is in secure storage; drafts still sit in shared preferences).
+- An SMS gateway for OTPs. The API ships a logging sender; plug in a provider behind `OtpSender`.
 - A language-model layer over the assistant. The assistant is template-based on purpose: it never produces a number the engine did not.
 
 ## Tests

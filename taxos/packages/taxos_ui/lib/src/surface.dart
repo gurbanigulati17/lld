@@ -3,17 +3,17 @@ import 'package:flutter/material.dart';
 import 'space.dart';
 import 'tokens.dart';
 
-/// The card: hairline border plus a soft shadow in light mode, hairline
-/// only in dark mode. Default padding is [Space.card] so content in every
-/// card shares one inset. [emphasis] strengthens the border.
+/// The card: white, rounded, softly shadowed. [flat] swaps the shadow for a
+/// hairline border, for secondary cards such as "next steps".
 class Surface extends StatelessWidget {
   const Surface({
     super.key,
     required this.child,
-    this.padding = const EdgeInsets.all(Space.card),
+    this.padding = const EdgeInsets.all(Space.gutter),
     this.margin,
     this.radius,
     this.onTap,
+    this.flat = false,
     this.emphasis = false,
     this.tint,
     this.width,
@@ -26,9 +26,11 @@ class Surface extends StatelessWidget {
   final EdgeInsetsGeometry? margin;
   final double? radius;
   final VoidCallback? onTap;
-  final bool emphasis;
+  final bool flat;
 
-  /// Optional flat wash over the surface colour.
+  /// Kept for call sites that mark the primary card; Evergreen draws every
+  /// card the same, so this only adds a hairline.
+  final bool emphasis;
   final Color? tint;
   final double? width;
   final double? height;
@@ -37,32 +39,23 @@ class Surface extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = context.ui;
-    final r = BorderRadius.circular(radius ?? t.radius);
-    final color = Color.alphaBlend(tint ?? Colors.transparent, t.surface);
-
+    final r = BorderRadius.circular(radius ?? (flat ? 16 : t.radius));
     Widget body = Padding(padding: padding, child: child);
-    if (onTap != null) {
-      body = InkWell(onTap: onTap, borderRadius: r, child: body);
-    }
-
+    if (onTap != null) body = InkWell(onTap: onTap, borderRadius: r, child: body);
     Widget card = Material(
-      color: color,
+      color: tint ?? t.surface,
       borderRadius: r,
       clipBehavior: clipBehavior,
       child: body,
     );
-
     card = DecoratedBox(
       decoration: BoxDecoration(
         borderRadius: r,
-        boxShadow: t.cardShadow,
-        border: t.cardBorder == null
-            ? (emphasis ? Border.all(color: t.border) : null)
-            : Border.all(color: emphasis ? t.border : t.cardBorder!),
+        boxShadow: flat ? null : t.cardShadow,
+        border: flat || emphasis ? Border.all(color: t.hairline) : null,
       ),
       child: card,
     );
-
     if (width != null || height != null) {
       card = SizedBox(width: width, height: height, child: card);
     }

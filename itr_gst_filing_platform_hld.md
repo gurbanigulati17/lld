@@ -1,4 +1,4 @@
-# TaxOS — ITR & GST Filing Platform HLD/LLD
+# Kardo (TaxOS platform) — ITR & GST Filing Platform HLD/LLD
 
 Companion to the code in `taxos/`. Written in the same cram style as the other design docs here.
 
@@ -96,12 +96,12 @@ Interest 18% p.a. on the cash component only (proviso to s.50(1))
 ## Architecture
 ```text
 ┌──────────────────────── Flutter app (iOS / Android / web) ───────────────────────┐
-│ taxos_ui (Trust Blue / Soft Night)   Riverpod state   go_router   DraftStore (local)         │
+│ taxos_ui (Evergreen) · Riverpod · go_router + auth guard · drafts · secure store │
 │                      ┌──────────── tax_engine (pure Dart) ────────────┐           │
 └──────────────────────┼─────────────────────────────────────────────────┼───────────┘
                        │  identical package                              │
 ┌──────────────────────┼───────────── API service (Dart shelf) ──────────┼───────────┐
-│ /v1/itr/*  /v1/gst/* │  authoritative compute, explain, form           │           │
+│ /v1/auth/* /v1/itr/* │  authoritative compute, explain, form           │           │
 │ outbox → filing jobs │  ERI (ITD)  ·  GSP (GSTN)  ·  payments  ·  OCR  │           │
 │ Postgres · Redis · object storage · KMS field encryption · audit log               │
 └────────────────────────────────────────────────────────────────────────────────────┘

@@ -1,6 +1,6 @@
 name: taxos_ui
-description: TaxOS design system — Trust Blue (light) and Soft Night (dark), spacing scale, surfaces and controls.
-version: 0.2.0
+description: Kardo design system (Evergreen) — tokens, spacing scale, surfaces and controls.
+version: 0.3.0
 publish_to: none
 resolution: workspace
 
@@ -20,13 +20,17 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   fonts:
-    - family: Poppins
+    - family: SourceSans3
       fonts:
-        - asset: fonts/Poppins-Regular.ttf
+        - asset: fonts/SourceSans3-Regular.ttf
           weight: 400
-        - asset: fonts/Poppins-Medium.ttf
-          weight: 500
-        - asset: fonts/Poppins-SemiBold.ttf
+        - asset: fonts/SourceSans3-Semibold.ttf
           weight: 600
-        - asset: fonts/Poppins-Bold.ttf
+        - asset: fonts/SourceSans3-Bold.ttf
+          weight: 700
+    - family: SourceSerif4
+      fonts:
+        - asset: fonts/SourceSerif4-Semibold.ttf
+          weight: 600
+        - asset: fonts/SourceSerif4-Bold.ttf
           weight: 700

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
+import 'evergreen_widgets.dart';
 import 'surface.dart';
 import 'tokens.dart';
 
-/// KPI tile: small caption, big tabular number, optional trailing tag.
+/// Small card: mint icon well, caption, figure.
 class StatTile extends StatelessWidget {
   const StatTile({
     super.key,
@@ -25,35 +26,36 @@ class StatTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = context.ui;
-    final text = Theme.of(context).textTheme;
     return Surface(
+      flat: true,
       onTap: onTap,
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
+          if (icon != null) ...[IconWell(icon: icon!), const SizedBox(height: 10)],
           Row(
             children: [
-              if (icon != null) ...[
-                Icon(icon, size: 15, color: t.textMuted),
-                const SizedBox(width: 6),
-              ],
               Expanded(
-                child: Text(
-                  caption,
-                  style: text.labelMedium?.copyWith(color: t.textMuted),
-                  overflow: TextOverflow.ellipsis,
-                ),
+                child: Text(caption, style: TextStyle(fontSize: 15, color: t.textMuted), overflow: TextOverflow.ellipsis),
               ),
               if (trailing != null) trailing!,
             ],
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: 4),
           FittedBox(
             fit: BoxFit.scaleDown,
             alignment: Alignment.centerLeft,
-            child: Text(value, style: text.titleLarge?.copyWith(color: valueColor, fontSize: 22)),
+            child: Text(
+              value,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+                color: valueColor ?? t.text,
+                fontFeatures: const [FontFeature.tabularFigures()],
+              ),
+            ),
           ),
         ],
       ),

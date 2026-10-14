@@ -639,8 +639,33 @@ class ItrComputer {
     interestLine('INT.234C', 'Interest for deferred instalments', interest.section234C, 's.234C');
     warnings.addAll(interest.notes);
 
-    final netPayable =
-        totalTax + interest.total - tds - advance - tp.selfAssessmentTax;
+    // s.234F: fee for filing after the s.139(1) due date. ₹1,000 when total
+    // income is up to ₹5 lakh, ₹5,000 above that. No fee when total income
+    // is within the basic exemption, since filing was not mandatory.
+    var lateFee = 0;
+    if (filingDate.isAfter(rp.dueDateNonAudit) && totalIncome > basicExemption) {
+      lateFee = totalIncome <= rp.lateFeeLowIncomeLimit
+          ? rp.lateFeeLow
+          : rp.lateFeeHigh;
+      lines.add(LineItem(
+        code: 'FEE.234F',
+        label: 'Late filing fee',
+        amount: lateFee,
+        section: 's.234F',
+        note: 'Filed after ${_date(rp.dueDateNonAudit)}.',
+        group: LineGroup.interest,
+      ));
+      warnings.add('Filing after the due date adds a ${formatInr(lateFee)} '
+          'late fee under s.234F. A belated return is allowed until '
+          '${_date(input.assessmentYear.belatedReturnLastDate)}.');
+    }
+
+    final netPayable = totalTax +
+        interest.total +
+        lateFee -
+        tds -
+        advance -
+        tp.selfAssessmentTax;
     lines.add(LineItem(
       code: netPayable >= 0 ? 'NET.PAYABLE' : 'NET.REFUND',
       label: netPayable >= 0 ? 'Tax payable' : 'Refund due',
@@ -674,6 +699,7 @@ class ItrComputer {
       interest234A: interest.section234A,
       interest234B: interest.section234B,
       interest234C: interest.section234C,
+      lateFee234F: lateFee,
       netPayable: netPayable,
       effectiveRatePercent:
           totalIncome == 0 ? 0 : (totalTax * 10000 / totalIncome).round() / 100,
@@ -685,6 +711,9 @@ class ItrComputer {
   // --------------------------------------------------------------------
   // Helpers
   // --------------------------------------------------------------------
+
+  static String _date(DateTime d) =>
+      '${d.day.toString().padLeft(2, '0')}-${d.month.toString().padLeft(2, '0')}-${d.year}';
 
   static int _hraExemption(SalaryIncome s) {
     if (s.hraReceived <= 0 || s.rentPaid <= 0) return 0;

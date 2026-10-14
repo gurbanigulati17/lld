@@ -10,13 +10,10 @@ class TaxosApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(settingsProvider);
     return MaterialApp.router(
-      title: 'TaxOS',
+      title: AppConfig.appName,
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
-      darkTheme: AppTheme.dark(),
-      themeMode: settings.themeMode,
       routerConfig: ref.watch(routerProvider),
     );
   }

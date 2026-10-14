@@ -4,8 +4,8 @@ import 'tokens.dart';
 
 enum TagTone { neutral, primary, positive, negative, warning }
 
-/// Small status pill. Every tone is a solid fill with a contrasting label
-/// so urgency reads at a glance.
+/// Small rounded status label. Urgent tones are solid so they read at a
+/// glance; neutral and primary are soft.
 class Tag extends StatelessWidget {
   const Tag({super.key, required this.label, this.tone = TagTone.neutral, this.icon});
 
@@ -30,18 +30,8 @@ class Tag extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (icon != null) ...[
-              Icon(icon, size: 13, color: fg),
-              const SizedBox(width: 4),
-            ],
-            Text(
-              label,
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: fg,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 12,
-                  ),
-            ),
+            if (icon != null) ...[Icon(icon, size: 14, color: fg), const SizedBox(width: 4)],
+            Text(label, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: fg)),
           ],
         ),
       ),

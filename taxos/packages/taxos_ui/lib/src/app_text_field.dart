@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 
 import 'tokens.dart';
 
-/// Outlined input with the label above it.
+/// Text input with the label above it, on a rounded white field.
 class AppTextField extends StatelessWidget {
   const AppTextField({
     super.key,
@@ -11,6 +11,7 @@ class AppTextField extends StatelessWidget {
     this.controller,
     this.hint,
     this.helper,
+    this.errorText,
     this.keyboardType,
     this.inputFormatters,
     this.onChanged,
@@ -22,12 +23,16 @@ class AppTextField extends StatelessWidget {
     this.maxLength,
     this.autofocus = false,
     this.showLabel = true,
+    this.textAlign = TextAlign.start,
+    this.large = false,
+    this.autofillHints,
   });
 
   final String label;
   final TextEditingController? controller;
   final String? hint;
   final String? helper;
+  final String? errorText;
   final TextInputType? keyboardType;
   final List<TextInputFormatter>? inputFormatters;
   final ValueChanged<String>? onChanged;
@@ -38,32 +43,40 @@ class AppTextField extends StatelessWidget {
   final TextCapitalization textCapitalization;
   final int? maxLength;
   final bool autofocus;
-
-  /// Hide the visible label (it stays as the semantic label).
   final bool showLabel;
+  final TextAlign textAlign;
+
+  /// Bigger type for one-field screens such as phone and OTP.
+  final bool large;
+  final Iterable<String>? autofillHints;
 
   @override
   Widget build(BuildContext context) {
     final t = context.ui;
-    final text = Theme.of(context).textTheme;
+    final style = TextStyle(
+      fontSize: large ? 22 : 17,
+      letterSpacing: large ? 1.5 : 0,
+      color: t.text,
+      fontFeatures: const [FontFeature.tabularFigures()],
+    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (showLabel) ...[
-          Text(label, style: text.labelMedium?.copyWith(color: t.textMuted)),
-          const SizedBox(height: 6),
+          Text(label, style: TextStyle(fontSize: 15, color: t.textMuted)),
+          const SizedBox(height: 8),
         ],
         Container(
-          height: 48,
-          padding: const EdgeInsets.symmetric(horizontal: 14),
+          height: large ? 60 : 52,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           decoration: BoxDecoration(
             color: t.surface,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: t.border),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: errorText != null ? t.negative : t.border),
           ),
           child: Row(
             children: [
-              if (prefix != null) ...[prefix!, const SizedBox(width: 8)],
+              if (prefix != null) ...[prefix!, const SizedBox(width: 10)],
               Expanded(
                 child: Semantics(
                   label: showLabel ? null : label,
@@ -77,13 +90,13 @@ class AppTextField extends StatelessWidget {
                     textCapitalization: textCapitalization,
                     maxLength: maxLength,
                     autofocus: autofocus,
-                    style: text.bodyLarge?.copyWith(
-                      fontFeatures: const [FontFeature.tabularFigures()],
-                    ),
+                    textAlign: textAlign,
+                    autofillHints: autofillHints,
+                    style: style,
                     decoration: InputDecoration(
                       hintText: hint,
                       counterText: '',
-                      hintStyle: text.bodyLarge?.copyWith(color: t.textMuted),
+                      hintStyle: style.copyWith(color: t.textMuted.withValues(alpha: 0.7)),
                     ),
                   ),
                 ),
@@ -92,9 +105,12 @@ class AppTextField extends StatelessWidget {
             ],
           ),
         ),
-        if (helper != null) ...[
+        if (errorText != null) ...[
           const SizedBox(height: 6),
-          Text(helper!, style: text.bodySmall?.copyWith(color: t.textMuted)),
+          Text(errorText!, style: TextStyle(fontSize: 14, color: t.negative)),
+        ] else if (helper != null) ...[
+          const SizedBox(height: 6),
+          Text(helper!, style: TextStyle(fontSize: 14, color: t.textMuted)),
         ],
       ],
     );

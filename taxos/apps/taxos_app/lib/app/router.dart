@@ -1,5 +1,12 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
+import '../core/auth.dart';
+import '../features/auth/name_screen.dart';
+import '../features/auth/splash_screen.dart';
+import '../features/auth/verify_screen.dart';
+import '../features/auth/welcome_screen.dart';
 
 import '../features/assistant/assistant_screen.dart';
 import '../features/dashboard/dashboard_screen.dart';
@@ -19,6 +26,10 @@ import '../features/itr/sections/taxes_paid_section.dart';
 
 /// Route names, so screens never hard-code paths.
 abstract final class Routes {
+  static const splash = '/splash';
+  static const welcome = '/welcome';
+  static const verify = '/welcome/verify';
+  static const name = '/welcome/name';
   static const home = '/';
   static const itr = '/itr';
   static const gst = '/gst';
@@ -36,9 +47,40 @@ abstract final class Routes {
 }
 
 final routerProvider = Provider<GoRouter>((ref) {
+  // Re-run the redirect whenever the session changes, without rebuilding
+  // the router (which would reset navigation).
+  final refresh = ValueNotifier<int>(0);
+  ref.listen(authProvider, (_, __) => refresh.value++);
+  ref.onDispose(refresh.dispose);
+
   return GoRouter(
     initialLocation: Routes.home,
+    refreshListenable: refresh,
+    redirect: (context, state) {
+      final auth = ref.read(authProvider);
+      final loc = state.matchedLocation;
+      final inAuth = loc.startsWith(Routes.welcome);
+      if (auth.isLoading && !auth.hasValue) {
+        return loc == Routes.splash ? null : Routes.splash;
+      }
+      final session = auth.valueOrNull;
+      if (session == null) {
+        return loc == Routes.welcome || loc == Routes.verify ? null : Routes.welcome;
+      }
+      if (session.name.isEmpty) return loc == Routes.name ? null : Routes.name;
+      if (inAuth || loc == Routes.splash) return Routes.home;
+      return null;
+    },
     routes: [
+      GoRoute(path: Routes.splash, builder: (_, __) => const SplashScreen()),
+      GoRoute(
+        path: Routes.welcome,
+        builder: (_, __) => const WelcomeScreen(),
+        routes: [
+          GoRoute(path: 'verify', builder: (_, __) => const VerifyScreen()),
+          GoRoute(path: 'name', builder: (_, __) => const NameScreen()),
+        ],
+      ),
       ShellRoute(
         builder: (context, state, child) => HomeShell(
           location: state.uri.path,

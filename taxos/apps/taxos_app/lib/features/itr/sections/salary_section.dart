@@ -22,7 +22,7 @@ class SalarySection extends ConsumerWidget {
     return SectionScaffold(
       title: 'Salary',
       subtitle:
-          'Copy from Form 16 Part B. HRA and allowances only matter in the old regime; the engine applies the right standard deduction for each.',
+          'Copy from Form 16 Part B. HRA and allowances only matter in the old regime; Kardo applies the right standard deduction for each.',
       actions: [
         IconButton(
           tooltip: 'Remove salary',

@@ -136,10 +136,10 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
               children: [
                 Expanded(
                   child: AppTextField(
-                    label: 'Ask TaxOS',
+                    label: 'Ask Kardo',
                     showLabel: false,
                     controller: _ctrl,
-                    hint: 'Ask TaxOS',
+                    hint: 'Ask Kardo',
                     onSubmitted: _send,
                   ),
                 ),

@@ -4,31 +4,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:taxos_ui/taxos_ui.dart';
 
+Widget wrap(Widget child) => MaterialApp(theme: AppTheme.light(), home: AppScaffold(body: child));
+
+double _lum(Color c) {
+  double ch(double v) => v <= 0.03928 ? v / 12.92 : math.pow((v + 0.055) / 1.055, 2.4).toDouble();
+  return 0.2126 * ch(c.r) + 0.7152 * ch(c.g) + 0.0722 * ch(c.b);
+}
+
+double contrast(Color a, Color b) {
+  final x = _lum(a), y = _lum(b);
+  return (math.max(x, y) + 0.05) / (math.min(x, y) + 0.05);
+}
+
 void main() {
   testWidgets('Surface renders child and reacts to tap', (tester) async {
     var taps = 0;
-    await tester.pumpWidget(MaterialApp(
-      theme: AppTheme.light(),
-      home: AppScaffold(
-        body: Center(child: Surface(onTap: () => taps++, child: const Text('hello'))),
-      ),
-    ));
-    expect(find.text('hello'), findsOneWidget);
+    await tester.pumpWidget(wrap(Center(child: Surface(onTap: () => taps++, child: const Text('hello')))));
     await tester.tap(find.text('hello'));
     await tester.pump(const Duration(milliseconds: 300));
     expect(taps, 1);
-  });
-
-  testWidgets('dark theme outlines cards with a hairline', (tester) async {
-    await tester.pumpWidget(MaterialApp(
-      theme: AppTheme.dark(),
-      home: const AppScaffold(body: Surface(child: Text('flat'))),
-    ));
-    final box = tester.widget<DecoratedBox>(
-      find.ancestor(of: find.text('flat'), matching: find.byType(DecoratedBox)).first,
-    );
-    final deco = box.decoration as BoxDecoration;
-    expect(deco.border, isNotNull);
   });
 
   test('Indian amount formatter', () {
@@ -36,6 +30,16 @@ void main() {
     expect(IndianAmountFormatter.format(999), '999');
     expect(IndianAmountFormatter.parse('12,34,567'), 1234567);
     expect(IndianAmountFormatter.parse(''), 0);
+  });
+
+  testWidgets('AmountField reports parsed rupees', (tester) async {
+    var v = 0;
+    await tester.pumpWidget(wrap(FieldGroup(children: [
+      AmountField(label: 'Basic salary', value: 0, onChanged: (x) => v = x),
+    ])));
+    await tester.enterText(find.byType(TextField), '600000');
+    expect(v, 600000);
+    expect(find.text('6,00,000'), findsOneWidget);
   });
 
   testWidgets('Segmented switches value', (tester) async {
@@ -54,7 +58,7 @@ void main() {
       ),
     ));
     await tester.tap(find.text('B'));
-    await tester.pump(const Duration(milliseconds: 300));
+    await tester.pump();
     expect(value, 'b');
   });
 
@@ -70,63 +74,43 @@ void main() {
             onChanged: (i) => setState(() => idx = i),
             items: const [
               AppNavItem(icon: Icons.home_outlined, label: 'Home'),
-              AppNavItem(icon: Icons.description_outlined, label: 'ITR'),
+              AppNavItem(icon: Icons.description_outlined, label: 'Return'),
             ],
           ),
         ),
       ),
     ));
-    await tester.tap(find.text('ITR'));
+    await tester.tap(find.text('Return'));
     await tester.pump();
     expect(idx, 1);
   });
 
-  testWidgets('LabelBar uppercases and SplitStat shows both figures', (tester) async {
-    await tester.pumpWidget(MaterialApp(
-      theme: AppTheme.dark(),
-      home: const AppScaffold(
-        body: Column(children: [
-          LabelBar('Estimated tax'),
-          SplitStat(
-            left: StatValue(label: 'You pay', value: '₹10,400'),
-            right: StatValue(label: 'Total income', value: '₹12.1L'),
-          ),
-        ]),
-      ),
-    ));
-    expect(find.text('ESTIMATED TAX'), findsOneWidget);
-    expect(find.text('₹10,400'), findsOneWidget);
-    expect(find.text('₹12.1L'), findsOneWidget);
+  testWidgets('Evergreen widgets render', (tester) async {
+    await tester.pumpWidget(wrap(SingleChildScrollView(
+      child: Column(children: [
+        const PageHeading('Good evening', subtitle: 'Here is where your tax stands today.'),
+        const ProgressRow(label: 'New regime', value: '₹41,600', fraction: 0.5),
+        InfoCard(title: 'File by 31 Dec', detail: 'Late fee applies', onTap: () {}),
+        ActionTile(icon: Icons.home_outlined, text: 'Got a home loan?', linkLabel: 'Add house property', onTap: () {}),
+        const LedgerRow(label: 'To pay', amount: '₹43,883', bold: true),
+        HelpLink('How we got these numbers', onTap: () {}),
+      ]),
+    )));
+    expect(find.text('Good evening'), findsOneWidget);
+    expect(find.text('₹43,883'), findsOneWidget);
+    expect(find.text('Add house property'), findsOneWidget);
   });
 
-  test('status tags are solid with contrasting labels', () {
-    for (final t in const [UiTokens.trustBlue, UiTokens.softNight]) {
-    double lum(Color c) {
-      double ch(double v) => v <= 0.03928 ? v / 12.92 : math.pow((v + 0.055) / 1.055, 2.4).toDouble();
-      return 0.2126 * ch(c.r) + 0.7152 * ch(c.g) + 0.0722 * ch(c.b);
-    }
-    double ratio(Color a, Color b) {
-      final x = lum(a), y = lum(b);
-      return (x > y ? x + 0.05 : y + 0.05) / (x > y ? y + 0.05 : x + 0.05);
-    }
-    expect(ratio(t.warning, t.onWarning), greaterThan(4.5));
-    expect(ratio(t.positive, t.onPositive), greaterThan(4.5));
-    expect(ratio(t.negative, t.onNegative), greaterThan(4.5));
-    expect(ratio(t.surface, t.text), greaterThan(7));
-    expect(ratio(t.surface, t.textMuted), greaterThan(4.5));
-    expect(ratio(t.tint, t.onTint), greaterThan(4.5));
-    expect(ratio(t.primary, t.onPrimary), greaterThan(4.5));
-    }
-  });
-
-  testWidgets('GlowBackground paints the ground colour under the glow', (tester) async {
-    await tester.pumpWidget(MaterialApp(
-      theme: AppTheme.dark(),
-      home: const GlowBackground(child: SizedBox.expand()),
-    ));
-    final box = tester.widget<ColoredBox>(
-      find.descendant(of: find.byType(GlowBackground), matching: find.byType(ColoredBox)).first,
-    );
-    expect(box.color, UiTokens.softNight.ground);
+  test('Evergreen colours meet WCAG AA contrast', () {
+    const t = UiTokens.evergreen;
+    expect(contrast(t.surface, t.text), greaterThan(7));
+    expect(contrast(t.surface, t.textMuted), greaterThan(4.5));
+    expect(contrast(t.ground, t.textMuted), greaterThan(4.5));
+    expect(contrast(t.ground, t.heading), greaterThan(7));
+    expect(contrast(t.primary, t.onPrimary), greaterThan(4.5));
+    expect(contrast(t.tint, t.onTint), greaterThan(4.5));
+    expect(contrast(t.warning, t.onWarning), greaterThan(4.5));
+    expect(contrast(t.negative, t.onNegative), greaterThan(4.5));
+    expect(contrast(t.positive, t.onPositive), greaterThan(4.5));
   });
 }

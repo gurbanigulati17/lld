@@ -258,4 +258,58 @@ void main() {
       expect(a.toJson(), b.toJson());
     });
   });
+
+  group('s.234F late filing fee', () {
+    ItrInput sample(DateTime filing, {int basic = 600000, int other = 685000}) => ItrInput(
+          assessmentYear: AssessmentYear.ay2026_27,
+          profile: adult(),
+          salary: SalaryIncome(basic: basic, hraReceived: 0, otherTaxableComponents: other),
+          filingDate: filing,
+        );
+
+    test('no fee when filed by the due date', () {
+      final r = computer.compute(sample(DateTime(2026, 7, 31)), TaxRegime.newRegime);
+      expect(r.lateFee234F, 0);
+    });
+
+    test('₹5,000 above ₹5 lakh total income, added to the payable', () {
+      final onTime = computer.compute(sample(DateTime(2026, 7, 31)), TaxRegime.newRegime);
+      final late = computer.compute(sample(DateTime(2026, 10, 20)), TaxRegime.newRegime);
+      expect(late.lateFee234F, 5000);
+      expect(late.lineItems.any((l) => l.code == 'FEE.234F' && l.amount == 5000), isTrue);
+      expect(late.netPayable, late.totalTaxLiability + late.totalInterest + 5000 - late.tdsAndTcs);
+      expect(onTime.netPayable, onTime.totalTaxLiability + onTime.totalInterest - onTime.tdsAndTcs);
+    });
+
+    test('₹1,000 when total income is up to ₹5 lakh', () {
+      final r = computer.compute(sample(DateTime(2026, 10, 20), basic: 300000, other: 250000), TaxRegime.oldRegime);
+      expect(r.totalIncome, 500000);
+      expect(r.lateFee234F, 1000);
+    });
+
+    test('no fee when income is within the basic exemption', () {
+      final r = computer.compute(sample(DateTime(2026, 10, 20), basic: 300000, other: 0), TaxRegime.oldRegime);
+      expect(r.totalIncome, 250000);
+      expect(r.lateFee234F, 0);
+    });
+  });
+
+  test('worked example used in the Kardo designs', () {
+    final input = ItrInput(
+      assessmentYear: AssessmentYear.ay2026_27,
+      profile: const TaxpayerProfile(name: 'Gurbani Gulati', pan: 'ABCPG1234K', ageCategory: AgeCategory.below60),
+      salary: const SalaryIncome(basic: 600000, hraReceived: 240000, otherTaxableComponents: 445000, rentPaid: 300000, isMetroCity: true, professionalTax: 2400, tdsOnSalary: 6000),
+      otherSources: const OtherSourcesIncome(savingsInterest: 12000, fixedDepositInterest: 18000),
+      deductions: const Deductions(section80C: 150000, section80D: 25000),
+      taxesPaid: const TaxesPaid(tdsOther: 1800),
+      filingDate: DateTime(2026, 10, 20),
+    );
+    final cmp = computer.compare(input);
+    expect(cmp.recommended, TaxRegime.newRegime);
+    expect(cmp.newRegime.totalTaxLiability, 41600);
+    expect(cmp.oldRegime.totalTaxLiability, 83220);
+    expect(cmp.newRegime.totalInterest, 5083);
+    expect(cmp.newRegime.lateFee234F, 5000);
+    expect(cmp.newRegime.netPayable, 43883);
+  });
 }

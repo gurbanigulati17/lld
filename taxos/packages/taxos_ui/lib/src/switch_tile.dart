@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'surface.dart';
 import 'tokens.dart';
 
-/// Boolean row on a surface.
+/// A yes/no row. Place it inside a [FieldGroup].
 class SwitchTile extends StatelessWidget {
   const SwitchTile({
     super.key,
@@ -21,24 +20,30 @@ class SwitchTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = context.ui;
-    final text = Theme.of(context).textTheme;
-    return Surface(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-      onTap: () => onChanged(!value),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(label, style: text.titleSmall),
-                if (helper != null)
-                  Text(helper!, style: text.bodySmall?.copyWith(color: t.textMuted)),
-              ],
-            ),
+    return MergeSemantics(
+      child: InkWell(
+        onTap: () => onChanged(!value),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(label, style: TextStyle(fontSize: 16, color: t.text)),
+                    if (helper != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2),
+                        child: Text(helper!, style: TextStyle(fontSize: 13, color: t.textMuted, height: 1.3)),
+                      ),
+                  ],
+                ),
+              ),
+              Switch.adaptive(value: value, onChanged: onChanged),
+            ],
           ),
-          Switch.adaptive(value: value, onChanged: onChanged),
-        ],
+        ),
       ),
     );
   }

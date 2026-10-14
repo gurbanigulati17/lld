@@ -130,7 +130,7 @@ class BusinessSection extends ConsumerWidget {
           Surface(
             radius: 18,
             child: Text(
-              'Books-of-account cases need ITR-3 and, above the s.44AB turnover limits, a tax audit signed by a chartered accountant. TaxOS routes those to a partner CA for sign-off.',
+              'Books-of-account cases need ITR-3 and, above the s.44AB turnover limits, a tax audit signed by a chartered accountant. Kardo routes those to a partner CA for sign-off.',
               style:
                   Theme.of(context).textTheme.bodySmall?.copyWith(color: muted),
             ),

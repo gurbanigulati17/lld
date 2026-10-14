@@ -1,11 +1,11 @@
 {
-    "name": "TaxOS",
-    "short_name": "TaxOS",
+    "name": "Kardo",
+    "short_name": "Kardo",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "ITR and GST filing for India.",
+    "background_color": "#F7F6F2",
+    "theme_color": "#1F4D2B",
+    "description": "File your ITR and GST in minutes. Taxes, kar do.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

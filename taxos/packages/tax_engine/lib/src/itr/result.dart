@@ -30,6 +30,7 @@ class ItrComputation {
     required this.interest234A,
     required this.interest234B,
     required this.interest234C,
+    this.lateFee234F = 0,
     required this.netPayable,
     required this.effectiveRatePercent,
     required this.lineItems,
@@ -65,6 +66,9 @@ class ItrComputation {
   final int interest234A;
   final int interest234B;
   final int interest234C;
+
+  /// Fee under s.234F for filing after the due date.
+  final int lateFee234F;
 
   /// Positive = pay this much; negative = refund due.
   final int netPayable;
@@ -102,6 +106,7 @@ class ItrComputation {
         'interest234A': interest234A,
         'interest234B': interest234B,
         'interest234C': interest234C,
+        'lateFee234F': lateFee234F,
         'netPayable': netPayable,
         'effectiveRatePercent': effectiveRatePercent,
         'lineItems': lineItems.map((l) => l.toJson()).toList(),

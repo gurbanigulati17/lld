@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:taxos_ui/taxos_ui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tax_engine/tax_engine.dart';
+import 'package:taxos_ui/taxos_ui.dart';
 
 import '../../app/router.dart';
 import 'itr_state.dart';
 
-/// The ITR wizard overview: sections as glass cards with status, live
-/// regime toggle, and the path to the full computation and filing.
+/// "Your income tax return": regime tabs, the figure, and the sections.
 class ItrScreen extends ConsumerWidget {
   const ItrScreen({super.key});
 
@@ -23,17 +22,6 @@ class ItrScreen extends ConsumerWidget {
     'taxesPaid': Routes.taxesPaid,
   };
 
-  static const _icons = {
-    'profile': Icons.person_outline,
-    'salary': Icons.work_outline,
-    'houseProperty': Icons.house_outlined,
-    'capitalGains': Icons.show_chart,
-    'business': Icons.storefront_outlined,
-    'otherSources': Icons.account_balance_outlined,
-    'deductions': Icons.savings_outlined,
-    'taxesPaid': Icons.verified_outlined,
-  };
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final sections = ref.watch(sectionStatusProvider);
@@ -43,129 +31,147 @@ class ItrScreen extends ConsumerWidget {
     final form = ref.watch(formRecommendationProvider);
     final draft = ref.watch(itrDraftProvider);
     final t = context.ui;
-    final text = Theme.of(context).textTheme;
-    final muted =
-        Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.65);
     final top = MediaQuery.paddingOf(context).top;
     final done = sections.where((s) => s.done).length;
+    final regimeName = active.regime == TaxRegime.newRegime ? 'new regime' : 'old regime';
 
     return ListView(
-      padding: EdgeInsets.fromLTRB(
-          Space.gutter, top + 16, Space.gutter, Space.section),
+      padding: EdgeInsets.fromLTRB(Space.gutter, top + 16, Space.gutter, Space.section),
       children: [
         Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-                child: Text('Income tax return', style: text.headlineMedium)),
+              child: PageHeading(
+                'Your income tax return',
+                subtitle: '$done of ${sections.length} sections done · ${form.form.label.split(' ').first}',
+              ),
+            ),
             PopupMenuButton<String>(
-              icon: const Icon(Icons.more_horiz),
+              tooltip: 'More',
+              icon: Icon(Icons.more_horiz, color: t.textMuted),
               onSelected: (v) {
                 if (v == 'reset') ref.read(itrDraftProvider.notifier).reset();
                 if (v.startsWith('ay:')) {
                   ref.read(itrDraftProvider.notifier).update(
-                        (d) => d.copyWith(
-                            assessmentYear:
-                                AssessmentYear.parse(v.substring(3))),
+                        (d) => d.copyWith(assessmentYear: AssessmentYear.parse(v.substring(3))),
                       );
                 }
               },
               itemBuilder: (_) => [
                 for (final ay in AssessmentYear.values)
-                  CheckedPopupMenuItem(
-                    value: 'ay:${ay.name}',
-                    checked: ay == draft.assessmentYear,
-                    child: Text(ay.label),
-                  ),
+                  CheckedPopupMenuItem(value: 'ay:${ay.name}', checked: ay == draft.assessmentYear, child: Text(ay.label)),
                 const PopupMenuDivider(),
                 const PopupMenuItem(value: 'reset', child: Text('Start over')),
               ],
             ),
           ],
         ),
-        Text(
-            '${draft.assessmentYear.label} · $done of ${sections.length} sections',
-            style: text.bodyMedium?.copyWith(color: muted)),
-        const SizedBox(height: 16),
-        Segmented<TaxRegime?>(
-          values: const [null, TaxRegime.oldRegime, TaxRegime.newRegime],
-          labels: const ['Best', 'Old', 'New'],
-          selected: selected,
-          onChanged: (v) => ref.read(selectedRegimeProvider.notifier).state = v,
-        ),
-        const SizedBox(height: 12),
+        const SizedBox(height: Space.gutter),
         Surface(
-          emphasis: true,
-          onTap: () => context.push(Routes.computation),
+          padding: EdgeInsets.zero,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              LabelBar(
-                  '${active.regime == TaxRegime.newRegime ? 'New' : 'Old'} regime · ${form.form.label}'),
-              const SizedBox(height: Space.card),
-              SplitStat(
-                left: StatValue(
-                  label: 'Liability',
-                  value: formatInr(active.totalTaxLiability),
-                  color: t.primary,
-                ),
-                right: StatValue(
-                  label: 'Best regime saves',
-                  value: formatInr(cmp.savings),
-                  color: cmp.savings == 0 ? null : t.positive,
+              Segmented<TaxRegime?>(
+                values: const [null, TaxRegime.oldRegime, TaxRegime.newRegime],
+                labels: const ['Best', 'Old', 'New'],
+                selected: selected,
+                onChanged: (v) => ref.read(selectedRegimeProvider.notifier).state = v,
+              ),
+              InkWell(
+                onTap: () => context.push(Routes.computation),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(Space.gutter, 18, Space.gutter, Space.gutter),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      LabelBar(active.isRefund ? 'Refund due to you' : 'Tax you will pay'),
+                      const SizedBox(height: 4),
+                      Text(
+                        formatInr(active.isRefund ? active.refundDue : active.totalTaxLiability),
+                        style: TextStyle(fontSize: 34, fontWeight: FontWeight.w700, color: t.text, fontFeatures: const [FontFeature.tabularFigures()]),
+                      ),
+                      Text(
+                        cmp.savings == 0
+                            ? '$regimeName, as of today'
+                            : '$regimeName, as of today · ${active.regime == cmp.recommended ? 'saves ${formatInr(cmp.savings)}' : 'costs ${formatInr(cmp.savings)} more'}',
+                        style: TextStyle(fontSize: 14, color: t.textMuted),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 20),
-        for (final s in sections)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: Surface(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: Space.card, vertical: 14),
-              onTap: () => context.push(_routes[s.id]!),
-              child: Row(
+        const SectionTitle('Sections'),
+        Surface(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            children: [
+              for (var i = 0; i < sections.length; i++) ...[
+                if (i > 0) Divider(height: 1, color: t.hairline),
+                _SectionRow(
+                  title: sections[i].title,
+                  summary: sections[i].summary,
+                  done: sections[i].done,
+                  onTap: () => context.push(_routes[sections[i].id]!),
+                ),
+              ],
+            ],
+          ),
+        ),
+        const SizedBox(height: Space.section),
+        AppButton(label: 'Review and file', onPressed: () => context.push(Routes.filing)),
+      ],
+    );
+  }
+}
+
+class _SectionRow extends StatelessWidget {
+  const _SectionRow({required this.title, required this.summary, required this.done, required this.onTap});
+  final String title;
+  final String summary;
+  final bool done;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final t = context.ui;
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        child: Row(
+          children: [
+            Semantics(
+              label: done ? 'Done' : 'Not started',
+              child: Container(
+                width: 24,
+                height: 24,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: done ? t.primary : Colors.transparent,
+                  border: done ? null : Border.all(color: t.border, width: 1.5),
+                ),
+                child: done ? Icon(Icons.check, size: 15, color: t.onPrimary) : null,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: (s.done ? t.positive : t.primary)
-                          .withValues(alpha: 0.14),
-                    ),
-                    child: Icon(
-                      s.done ? Icons.check : _icons[s.id],
-                      size: 20,
-                      color: s.done ? t.positive : t.primary,
-                    ),
-                  ),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(s.title, style: text.titleSmall),
-                        Text(s.summary,
-                            style: text.bodySmall?.copyWith(color: muted),
-                            overflow: TextOverflow.ellipsis),
-                      ],
-                    ),
-                  ),
-                  const Icon(Icons.chevron_right),
+                  Text(title, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: t.text)),
+                  Text(summary, style: TextStyle(fontSize: 14, color: t.textMuted), overflow: TextOverflow.ellipsis),
                 ],
               ),
             ),
-          ),
-        const SizedBox(height: 8),
-        AppButton(
-          label: 'Review and file',
-          icon: Icons.send_outlined,
-          expand: true,
-          onPressed: () => context.push(Routes.filing),
+            Icon(Icons.chevron_right, color: t.textMuted),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

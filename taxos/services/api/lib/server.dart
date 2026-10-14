@@ -4,15 +4,43 @@ import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
 import 'package:tax_engine/tax_engine.dart';
 
+import 'auth.dart';
+
 /// Engine version reported to clients so the app can confirm it ran the
 /// same rules. Bump with the engine package.
 const engineVersion = '0.1.0';
 
 /// Builds the API handler. Kept free of `dart:io` so tests can call it
 /// in-process without opening a socket.
-Handler buildHandler() {
+Handler buildHandler({required AuthService auth}) {
   final router = Router()
     ..get('/health', _health)
+    ..post('/v1/auth/otp/request', (Request req) async {
+      final body = await _body(req);
+      final r = await auth.requestOtp((body['phone'] as String?) ?? '');
+      return _json({
+        'sent': true,
+        'expiresIn': r.expiresIn.inSeconds,
+        if (r.devCode != null) 'devCode': r.devCode,
+      });
+    })
+    ..post('/v1/auth/otp/verify', (Request req) async {
+      final body = await _body(req);
+      final s = auth.verifyOtp((body['phone'] as String?) ?? '', (body['code'] as String?) ?? '');
+      return _json({
+        'token': s.token,
+        'expiresAt': s.expiresAt.toIso8601String(),
+        'user': {'phone': s.phone},
+      });
+    })
+    ..get('/v1/auth/me', (Request req) {
+      final claims = auth.validate(_bearer(req));
+      return _json({'phone': claims.phone, 'expiresAt': claims.expiresAt.toIso8601String()});
+    })
+    ..post('/v1/auth/logout', (Request req) {
+      auth.revoke(_bearer(req));
+      return _json({'signedOut': true});
+    })
     ..post('/v1/itr/compute', _itrCompute)
     ..post('/v1/itr/compare', _itrCompare)
     ..post('/v1/itr/form', _itrForm)
@@ -113,6 +141,14 @@ Future<Map<String, Object?>> _body(Request req) async {
   return decoded;
 }
 
+String _bearer(Request req) {
+  final h = req.headers['authorization'] ?? '';
+  if (!h.startsWith('Bearer ')) {
+    throw const AuthException(401, 'missing_token', 'Sign in first.');
+  }
+  return h.substring(7).trim();
+}
+
 Response _json(Object body, {int status = 200}) => Response(
       status,
       body: jsonEncode(body),
@@ -122,6 +158,8 @@ Response _json(Object body, {int status = 200}) => Response(
 Middleware _jsonErrors() => (inner) => (req) async {
       try {
         return await inner(req);
+      } on AuthException catch (e) {
+        return _json({'error': e.code, 'message': e.message}, status: e.status);
       } on FormatException catch (e) {
         return _json({'error': 'bad_request', 'message': e.message}, status: 400);
       } on ArgumentError catch (e) {

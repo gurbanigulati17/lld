@@ -59,6 +59,9 @@ class ExplanationBuilder {
     if (c.totalInterest > 0) {
       out.add('Interest under sections 234A/B/C adds ${formatInr(c.totalInterest)}.');
     }
+    if (c.lateFee234F > 0) {
+      out.add('Filing after the due date adds a ${formatInr(c.lateFee234F)} late fee under section 234F.');
+    }
     out.add(c.isRefund
         ? 'You are due a refund of ${formatInr(c.refundDue)}.'
         : 'Balance tax payable is ${formatInr(c.netPayable)}.');

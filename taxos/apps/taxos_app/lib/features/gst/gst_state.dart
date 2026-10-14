@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tax_engine/tax_engine.dart';
 
+import '../../core/auth.dart';
 import '../../core/draft_store.dart';
 
 class GstDraftNotifier extends Notifier<Gstr3bInput> {
@@ -8,6 +9,11 @@ class GstDraftNotifier extends Notifier<Gstr3bInput> {
 
   @override
   Gstr3bInput build() {
+    ref.listen(authProvider, (prev, next) {
+      if (prev?.valueOrNull != null && next.valueOrNull == null) ref.invalidateSelf();
+    });
+    _loaded = false;
+    _pending.clear();
     _restore();
     final now = DateTime.now();
     final prev = DateTime(now.year, now.month - 1, 1);
@@ -19,16 +25,33 @@ class GstDraftNotifier extends Notifier<Gstr3bInput> {
     );
   }
 
+  // Edits made before the saved draft has loaded are replayed on top of it,
+  // so neither the draft nor the edit is lost.
+  final _pending = <Gstr3bInput Function(Gstr3bInput)>[];
+  var _loaded = false;
+
   Future<void> _restore() async {
     final json = await _store.loadGst();
-    if (json == null) return;
-    try {
-      state = Gstr3bInput.fromJson(json);
-    } catch (_) {}
+    Gstr3bInput? saved;
+    if (json != null) {
+      try {
+        saved = Gstr3bInput.fromJson(json);
+      } catch (_) {
+        // Corrupt or outdated draft: keep the fresh one.
+      }
+    }
+    _loaded = true;
+    if (saved != null) state = _pending.fold(saved, (s, fn) => fn(s));
+    if (_pending.isNotEmpty) _store.saveGst(state.toJson());
+    _pending.clear();
   }
 
   void update(Gstr3bInput Function(Gstr3bInput) fn) {
     state = fn(state);
+    if (!_loaded) {
+      _pending.add(fn);
+      return;
+    }
     _store.saveGst(state.toJson());
   }
 }

@@ -81,7 +81,16 @@ class ItrRulePack {
     required this.dueDateNonAudit,
     required this.employerNpsCapPercentOld,
     required this.employerNpsCapPercentNew,
+    this.lateFeeLow = 1000,
+    this.lateFeeHigh = 5000,
+    this.lateFeeLowIncomeLimit = 500000,
   });
+
+  /// s.234F late-filing fee: [lateFeeLow] when total income is up to
+  /// [lateFeeLowIncomeLimit], otherwise [lateFeeHigh].
+  final int lateFeeLow;
+  final int lateFeeHigh;
+  final int lateFeeLowIncomeLimit;
 
   final AssessmentYear assessmentYear;
   final Map<AgeCategory, List<Slab>> oldRegimeSlabs;

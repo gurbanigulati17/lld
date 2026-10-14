@@ -80,20 +80,20 @@ jobs:
         run: |
           out=taxos/apps/taxos_app/build/app/outputs/flutter-apk
           n=${{ github.run_number }}
-          cp "$out/app-release.apk" "TaxOS-$n-universal.apk"
-          cp "$out/app-arm64-v8a-release.apk" "TaxOS-$n-arm64-v8a.apk"
-          cp "$out/app-armeabi-v7a-release.apk" "TaxOS-$n-armeabi-v7a.apk"
-          cp "$out/app-x86_64-release.apk" "TaxOS-$n-x86_64.apk"
-          ls -la TaxOS-*.apk
+          cp "$out/app-release.apk" "Kardo-$n-universal.apk"
+          cp "$out/app-arm64-v8a-release.apk" "Kardo-$n-arm64-v8a.apk"
+          cp "$out/app-armeabi-v7a-release.apk" "Kardo-$n-armeabi-v7a.apk"
+          cp "$out/app-x86_64-release.apk" "Kardo-$n-x86_64.apk"
+          ls -la Kardo-*.apk
       # Every CI build on a branch publishes a pre-release so the APK has a
       # stable download link without needing a GitHub login.
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: apk-build-${{ github.run_number }}
-          name: TaxOS APK build ${{ github.run_number }}
+          name: Kardo APK build ${{ github.run_number }}
           prerelease: true
           body: |
-            Debug-signed release build of the TaxOS Flutter app from `${{ github.sha }}` on `${{ github.ref_name }}`.
+            Debug-signed release build of the Kardo Flutter app from `${{ github.sha }}` on `${{ github.ref_name }}`.
             Most phones: install the `arm64-v8a` APK. Older 32-bit phones: `armeabi-v7a`. Emulators: `x86_64`. The `universal` APK works everywhere but is three times larger.
             Android 5.0+; allow installs from unknown sources.
-          files: TaxOS-${{ github.run_number }}-*.apk
+          files: Kardo-${{ github.run_number }}-*.apk

@@ -2,11 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-/// Semantic colour and shape tokens, attached to [ThemeData] as an
-/// extension. Light is "Trust Blue" (the default), dark is "Soft Night".
-///
-/// Both avoid pure black and pure white text, saturated gradients and
-/// glows, so long sessions stay easy on the eyes.
+/// Semantic colours and shape for the Evergreen theme, attached to
+/// [ThemeData] as an extension.
 class UiTokens extends ThemeExtension<UiTokens> {
   const UiTokens({
     required this.ground,
@@ -16,11 +13,15 @@ class UiTokens extends ThemeExtension<UiTokens> {
     required this.border,
     required this.text,
     required this.textMuted,
+    required this.heading,
     required this.primary,
     required this.onPrimary,
     required this.tint,
     required this.onTint,
-    required this.glow,
+    required this.info,
+    required this.chartPrimary,
+    required this.chartSecondary,
+    required this.track,
     required this.splitDivider,
     required this.positive,
     required this.onPositive,
@@ -30,38 +31,43 @@ class UiTokens extends ThemeExtension<UiTokens> {
     required this.onWarning,
     required this.radius,
     required this.cardShadow,
-    required this.cardBorder,
   });
 
-  /// Page background.
+  /// Warm off-white page background.
   final Color ground;
 
   /// Card background.
   final Color surface;
 
-  /// Inset fills, neutral pills, segmented track.
+  /// Neutral pills and inset fills.
   final Color surfaceAlt;
 
-  /// 1px dividers.
+  /// 1px dividers inside cards.
   final Color hairline;
 
-  /// Input and secondary-button outlines.
+  /// Input and outlined-button borders.
   final Color border;
   final Color text;
   final Color textMuted;
 
-  /// The one accent: buttons, selected states, headline figures.
+  /// Forest green for serif headings and emphasised figures.
+  final Color heading;
+
+  /// The green pill button and selected states.
   final Color primary;
   final Color onPrimary;
 
-  /// Soft accent wash for label bars and icon wells.
+  /// Pale mint wells behind icons, and soft tags.
   final Color tint;
   final Color onTint;
 
-  /// Optional radial light behind pages; transparent in both themes.
-  final Color glow;
+  /// Information icons and notices.
+  final Color info;
 
-  /// Vertical divider inside a split stat.
+  /// Progress bars and charts.
+  final Color chartPrimary;
+  final Color chartSecondary;
+  final Color track;
   final Color splitDivider;
   final Color positive;
   final Color onPositive;
@@ -71,59 +77,36 @@ class UiTokens extends ThemeExtension<UiTokens> {
   final Color onWarning;
   final double radius;
   final List<BoxShadow> cardShadow;
-  final Color? cardBorder;
 
-  static const trustBlue = UiTokens(
-    ground: Color(0xFFF5F7FB),
+  static const evergreen = UiTokens(
+    ground: Color(0xFFF7F6F2),
     surface: Color(0xFFFFFFFF),
-    surfaceAlt: Color(0xFFEEF2F8),
-    hairline: Color(0xFFE8EDF4),
-    border: Color(0xFFD8E0EB),
-    text: Color(0xFF1B2A41),
-    textMuted: Color(0xFF5F6B7E),
-    primary: Color(0xFF2F6FED),
+    surfaceAlt: Color(0xFFF1EFE9),
+    hairline: Color(0xFFECEAE4),
+    border: Color(0xFFDEDBD3),
+    text: Color(0xFF2B2B2B),
+    textMuted: Color(0xFF65655F),
+    heading: Color(0xFF1F4D2B),
+    primary: Color(0xFF3B7A2C),
     onPrimary: Color(0xFFFFFFFF),
-    tint: Color(0xFFE8F0FE),
-    onTint: Color(0xFF1E4FC2),
-    glow: Color(0x002F6FED),
-    splitDivider: Color(0xFFE1E7F0),
-    positive: Color(0xFF12805C),
+    tint: Color(0xFFDCEFD8),
+    onTint: Color(0xFF1F4D2B),
+    info: Color(0xFF2C5BA8),
+    chartPrimary: Color(0xFF1F3A5F),
+    chartSecondary: Color(0xFF3B82C4),
+    track: Color(0xFFECEAE4),
+    splitDivider: Color(0xFFECEAE4),
+    positive: Color(0xFF2B7A30),
     onPositive: Color(0xFFFFFFFF),
-    negative: Color(0xFFCF3B3B),
+    negative: Color(0xFFB3261E),
     onNegative: Color(0xFFFFFFFF),
-    warning: Color(0xFFF5C451),
-    onWarning: Color(0xFF3D2800),
-    radius: 16,
+    warning: Color(0xFFF5D27A),
+    onWarning: Color(0xFF3F2C00),
+    radius: 20,
     cardShadow: [
-      BoxShadow(color: Color(0x0D1B2A41), blurRadius: 2, offset: Offset(0, 1)),
-      BoxShadow(color: Color(0x0F1B2A41), blurRadius: 16, offset: Offset(0, 6), spreadRadius: -4),
+      BoxShadow(color: Color(0x0A000000), blurRadius: 2, offset: Offset(0, 1)),
+      BoxShadow(color: Color(0x0F000000), blurRadius: 24, offset: Offset(0, 8)),
     ],
-    cardBorder: Color(0xFFE8EDF4),
-  );
-
-  static const softNight = UiTokens(
-    ground: Color(0xFF141922),
-    surface: Color(0xFF1C2330),
-    surfaceAlt: Color(0xFF262F3F),
-    hairline: Color(0xFF2A3344),
-    border: Color(0xFF364154),
-    text: Color(0xFFE4E9F2),
-    textMuted: Color(0xFF9AA5B8),
-    primary: Color(0xFF8AB0FF),
-    onPrimary: Color(0xFF0F1A33),
-    tint: Color(0xFF23324F),
-    onTint: Color(0xFFB9CDFF),
-    glow: Color(0x008AB0FF),
-    splitDivider: Color(0xFF2F3A4E),
-    positive: Color(0xFF6FCF9F),
-    onPositive: Color(0xFF0B2A1C),
-    negative: Color(0xFFF08080),
-    onNegative: Color(0xFF2A0B0B),
-    warning: Color(0xFFE9C46A),
-    onWarning: Color(0xFF2A1D00),
-    radius: 16,
-    cardShadow: [],
-    cardBorder: Color(0xFF262F3F),
   );
 
   @override
@@ -135,11 +118,15 @@ class UiTokens extends ThemeExtension<UiTokens> {
         border: border,
         text: text,
         textMuted: textMuted,
+        heading: heading,
         primary: primary ?? this.primary,
         onPrimary: onPrimary,
         tint: tint,
         onTint: onTint,
-        glow: glow,
+        info: info,
+        chartPrimary: chartPrimary,
+        chartSecondary: chartSecondary,
+        track: track,
         splitDivider: splitDivider,
         positive: positive,
         onPositive: onPositive,
@@ -149,7 +136,6 @@ class UiTokens extends ThemeExtension<UiTokens> {
         onWarning: onWarning,
         radius: radius,
         cardShadow: cardShadow,
-        cardBorder: cardBorder,
       );
 
   @override
@@ -164,11 +150,15 @@ class UiTokens extends ThemeExtension<UiTokens> {
       border: c(border, other.border),
       text: c(text, other.text),
       textMuted: c(textMuted, other.textMuted),
+      heading: c(heading, other.heading),
       primary: c(primary, other.primary),
       onPrimary: c(onPrimary, other.onPrimary),
       tint: c(tint, other.tint),
       onTint: c(onTint, other.onTint),
-      glow: c(glow, other.glow),
+      info: c(info, other.info),
+      chartPrimary: c(chartPrimary, other.chartPrimary),
+      chartSecondary: c(chartSecondary, other.chartSecondary),
+      track: c(track, other.track),
       splitDivider: c(splitDivider, other.splitDivider),
       positive: c(positive, other.positive),
       onPositive: c(onPositive, other.onPositive),
@@ -178,13 +168,10 @@ class UiTokens extends ThemeExtension<UiTokens> {
       onWarning: c(onWarning, other.onWarning),
       radius: lerpDouble(radius, other.radius, t)!,
       cardShadow: t < 0.5 ? cardShadow : other.cardShadow,
-      cardBorder: Color.lerp(cardBorder, other.cardBorder, t),
     );
   }
 }
 
 extension UiThemeX on BuildContext {
-  UiTokens get ui =>
-      Theme.of(this).extension<UiTokens>() ??
-      (Theme.of(this).brightness == Brightness.dark ? UiTokens.softNight : UiTokens.trustBlue);
+  UiTokens get ui => Theme.of(this).extension<UiTokens>() ?? UiTokens.evergreen;
 }

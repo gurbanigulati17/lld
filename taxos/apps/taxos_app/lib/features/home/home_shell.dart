@@ -17,9 +17,8 @@ class HomeShell extends StatelessWidget {
   Widget build(BuildContext context) {
     final index =
         _tabs.indexWhere((t) => t == location).clamp(0, _tabs.length - 1);
-    return GlowBackground(
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
+    return Scaffold(
+        backgroundColor: context.ui.ground,
         body: child,
         bottomNavigationBar: AppNavBar(
           index: index,
@@ -32,7 +31,7 @@ class HomeShell extends StatelessWidget {
             AppNavItem(
                 icon: Icons.description_outlined,
                 selectedIcon: Icons.description,
-                label: 'ITR'),
+                label: 'Return'),
             AppNavItem(
                 icon: Icons.receipt_long_outlined,
                 selectedIcon: Icons.receipt_long,
@@ -40,10 +39,9 @@ class HomeShell extends StatelessWidget {
             AppNavItem(
                 icon: Icons.chat_bubble_outline,
                 selectedIcon: Icons.chat_bubble,
-                label: 'Assist'),
+                label: 'Ask'),
           ],
         ),
-      ),
     );
   }
 }

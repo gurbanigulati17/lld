@@ -4,8 +4,8 @@ import 'tokens.dart';
 
 enum AppButtonStyle { primary, secondary, ghost }
 
-/// Primary is a filled block in the one strong colour; secondary is an
-/// outlined surface; ghost is text only.
+/// Pill buttons. Primary is the green pill; secondary is outlined; ghost is
+/// text only.
 class AppButton extends StatelessWidget {
   const AppButton({
     super.key,
@@ -15,6 +15,7 @@ class AppButton extends StatelessWidget {
     this.style = AppButtonStyle.primary,
     this.expand = false,
     this.loading = false,
+    this.destructive = false,
   });
 
   final String label;
@@ -24,85 +25,76 @@ class AppButton extends StatelessWidget {
   final bool expand;
   final bool loading;
 
+  /// Red text for sign out and deletes (secondary and ghost only).
+  final bool destructive;
+
   @override
   Widget build(BuildContext context) {
     final t = context.ui;
     final enabled = onPressed != null && !loading;
     final fg = switch (style) {
       AppButtonStyle.primary => t.onPrimary,
-      AppButtonStyle.secondary => t.text,
-      AppButtonStyle.ghost => t.text,
+      _ => destructive ? t.negative : t.text,
     };
     final content = Row(
       mainAxisSize: expand ? MainAxisSize.max : MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         if (loading)
-          SizedBox(
-            width: 18,
-            height: 18,
-            child: CircularProgressIndicator(strokeWidth: 2, color: fg),
-          )
+          SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: fg))
         else if (icon != null)
           Icon(icon, size: 20, color: fg),
         if (icon != null || loading) const SizedBox(width: 10),
-        Text(
-          label,
-          style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                color: fg,
-                fontSize: 15,
-                fontWeight: FontWeight.w600,
-              ),
+        Flexible(
+          child: Text(
+            label,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: fg),
+          ),
         ),
       ],
     );
-    final shape = RoundedRectangleBorder(borderRadius: BorderRadius.circular(12));
-    const pad = EdgeInsets.symmetric(horizontal: 20, vertical: 14);
-
+    const shape = StadiumBorder();
+    const pad = EdgeInsets.symmetric(horizontal: 32, vertical: 14);
     final button = switch (style) {
-      AppButtonStyle.primary => Opacity(
-          opacity: enabled ? 1 : 0.45,
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              color: t.primary,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                borderRadius: BorderRadius.circular(12),
-                onTap: enabled ? onPressed : null,
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(minHeight: 52),
-                  child: Padding(padding: pad, child: Center(widthFactor: expand ? null : 1, child: content)),
-                ),
-              ),
-            ),
+      AppButtonStyle.primary => FilledButton(
+          onPressed: enabled ? onPressed : null,
+          style: FilledButton.styleFrom(
+            backgroundColor: t.primary,
+            foregroundColor: t.onPrimary,
+            disabledBackgroundColor: t.primary.withValues(alpha: 0.4),
+            disabledForegroundColor: t.onPrimary,
+            shape: shape,
+            padding: pad,
+            minimumSize: const Size(200, 50),
+            elevation: 0,
           ),
+          child: content,
         ),
       AppButtonStyle.secondary => OutlinedButton(
           onPressed: enabled ? onPressed : null,
           style: OutlinedButton.styleFrom(
             backgroundColor: t.surface,
-            foregroundColor: t.text,
+            foregroundColor: fg,
             side: BorderSide(color: t.border),
             shape: shape,
             padding: pad,
-            minimumSize: const Size(0, 48),
+            minimumSize: const Size(200, 50),
           ),
           child: content,
         ),
       AppButtonStyle.ghost => TextButton(
           onPressed: enabled ? onPressed : null,
           style: TextButton.styleFrom(
-            foregroundColor: t.text,
+            foregroundColor: fg,
             shape: shape,
-            padding: pad,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             minimumSize: const Size(0, 44),
           ),
           child: content,
         ),
     };
-    return expand ? SizedBox(width: double.infinity, child: button) : button;
+    if (expand) return SizedBox(width: double.infinity, child: button);
+    return Center(child: button);
   }
 }
