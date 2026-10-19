@@ -7,6 +7,9 @@ on:
       - '.github/workflows/build-calm-pop-apk.yml'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -30,8 +33,20 @@ jobs:
       - run: flutter analyze
       - run: flutter test
       - run: flutter build apk --release
+      - run: cp build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/CalmPop.apk
 
       - uses: actions/upload-artifact@v4
         with:
           name: calm-pop-apk
-          path: calm_pop/build/app/outputs/flutter-apk/app-release.apk
+          path: calm_pop/build/app/outputs/flutter-apk/CalmPop.apk
+
+      - name: Publish APK as a release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: calm-pop-v${{ github.run_number }}
+          name: Calm Pop (build ${{ github.run_number }})
+          target_commitish: ${{ github.sha }}
+          body: |
+            Download **CalmPop.apk** below and open it on your Android phone.
+            Allow "install unknown apps" if Android asks.
+          files: calm_pop/build/app/outputs/flutter-apk/CalmPop.apk
