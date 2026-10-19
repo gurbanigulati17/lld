@@ -105,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   _FeaturedCard(
                     tag: 'ARCADE',
                     title: 'Star Dash',
-                    blurb: 'Blast asteroids, grab power-ups, beat your best.',
+                    blurb: '10 levels, 5 worlds, 2 bosses and 4 ships to unlock.',
                     icon: Icons.rocket_launch_rounded,
                     colors: const [Color(0xFF231C4D), Color(0xFF5B3F8C), Color(0xFFB77AA8)],
                     builder: (_) => const StarDashGame(),

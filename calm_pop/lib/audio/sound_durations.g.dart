@@ -2,6 +2,8 @@
 
 /// Length of each sound in milliseconds.
 const soundDurationsMs = <String, int>{
+  'beam': 900,
+  'beam_charge': 1100,
   'breathe_hold': 1500,
   'breathe_in': 3250,
   'breathe_out': 3250,
@@ -15,11 +17,13 @@ const soundDurationsMs = <String, int>{
   'drop_5': 829,
   'drop_6': 829,
   'drop_7': 829,
+  'enemy_shot': 160,
   'explode_big': 800,
   'explode_small': 349,
   'gameover': 1660,
   'hit': 500,
   'laser': 110,
+  'music_boss': 13714,
   'music_calm': 24000,
   'music_dash': 17777,
   'music_fairy': 10080,
@@ -32,5 +36,7 @@ const soundDurationsMs = <String, int>{
   'spin_tick': 20,
   'start': 569,
   'tap': 40,
+  'victory': 1980,
+  'warning': 1199,
   'whoosh': 450,
 };

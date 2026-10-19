@@ -63,22 +63,34 @@ void main() {
     expect(find.text('0 rpm'), findsNothing);
   });
 
-  testWidgets('star dash starts, plays and can pause', (tester) async {
+  testWidgets('star dash: map opens level 1, which plays and pauses', (tester) async {
     await openGame(tester, 'Star Dash');
-    expect(find.text('Play'), findsOneWidget);
-    await tester.tap(find.text('Play'));
-    for (var i = 0; i < 300; i++) {
+    await tester.pump(const Duration(milliseconds: 100));
+    expect(find.text('Galaxy Map'), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('level-1')));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+    await tester.ensureVisible(find.text('Launch'));
+    await tester.pump();
+    await tester.tap(find.text('Launch'));
+    for (var i = 0; i < 240; i++) {
       await tester.pump(const Duration(milliseconds: 16));
     }
-    expect(find.text('Play'), findsNothing);
-    expect(find.textContaining('Level'), findsOneWidget);
-    await tester.drag(find.byType(CustomPaint).last, const Offset(-60, 0));
+    expect(find.text('Launch'), findsNothing);
+    expect(find.textContaining('asteroids'), findsWidgets);
+    await tester.dragFrom(const Offset(200, 700), const Offset(-60, 0));
     await tester.pump(const Duration(milliseconds: 16));
-    if (find.text('Game over').evaluate().isEmpty) {
+    if (find.text('Ship down!').evaluate().isEmpty) {
       await tester.tap(find.byTooltip('Pause'));
       await tester.pump(const Duration(milliseconds: 16));
       expect(find.text('Paused'), findsOneWidget);
     }
+  });
+
+  testWidgets('star dash: later levels start locked', (tester) async {
+    await openGame(tester, 'Star Dash');
+    await tester.pump(const Duration(milliseconds: 100));
+    expect(find.bySemanticsLabel('Level 2 (locked)'), findsOneWidget);
   });
 
   testWidgets('fairy glow starts and the glow drains over time', (tester) async {
