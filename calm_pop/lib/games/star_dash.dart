@@ -5,6 +5,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../audio/sfx.dart';
 import '../theme.dart';
 
 /// Star Dash: an arcade space shooter. Drag to steer, the ship fires on its
@@ -187,6 +188,7 @@ class _World extends ChangeNotifier {
     _fireCooldown = rapid > 0 ? 0.08 : 0.2;
     final nose = player.translate(0, -playerRadius);
     bullets.add(_Bullet(nose));
+    Sfx.instance.play('laser', volume: 0.22, minGapMs: 70);
     if (rapid > 0) {
       bullets.add(_Bullet(nose.translate(-10, 6)));
       bullets.add(_Bullet(nose.translate(10, 6)));
@@ -273,7 +275,11 @@ class _World extends ChangeNotifier {
           r.hp--;
           r.flash = 1;
           _burst(b.p, 4, Colors.white, 120, 2);
-          if (r.hp <= 0) _destroyRock(r);
+          if (r.hp <= 0) {
+            _destroyRock(r);
+          } else {
+            Sfx.instance.play('spin_tick', volume: 0.5, minGapMs: 40);
+          }
           break;
         }
       }
@@ -305,6 +311,7 @@ class _World extends ChangeNotifier {
 
   void _destroyRock(_Rock r) {
     HapticFeedback.lightImpact();
+    Sfx.instance.play(r.r > 28 ? 'explode_big' : 'explode_small', volume: r.r > 20 ? 1 : 0.75);
     combo++;
     final int points = (r.r > 28 ? 30 : (r.r > 20 ? 20 : 10)) * min(1 + combo ~/ 5, 5);
     score += points;
@@ -324,9 +331,12 @@ class _World extends ChangeNotifier {
     combo = 0;
     invuln = 1.8;
     shake = 1;
+    Sfx.instance.play('hit');
     _burst(player, 24, CalmColors.rose, 260, 4);
     if (lives <= 0) {
       phase = _Phase.over;
+      Sfx.instance.pauseMusic();
+      Sfx.instance.play('gameover');
       _burst(player, 60, CalmColors.lemon, 320, 5);
       if (score > best) {
         best = score;
@@ -337,6 +347,7 @@ class _World extends ChangeNotifier {
 
   void _collect(_Pickup p) {
     HapticFeedback.mediumImpact();
+    Sfx.instance.play(p.kind == _PickupKind.star ? 'coin' : 'powerup');
     switch (p.kind) {
       case _PickupKind.star:
         score += 50;
@@ -398,6 +409,9 @@ class _StarDashGameState extends State<StarDashGame> with SingleTickerProviderSt
     super.initState();
     _ticker = createTicker(_tick)..start();
     _loadBest();
+    Sfx.instance.preload(const [
+      'laser', 'explode_small', 'explode_big', 'hit', 'coin', 'powerup', 'start', 'gameover', 'spin_tick',
+    ]);
   }
 
   Future<void> _loadBest() async {
@@ -412,6 +426,7 @@ class _StarDashGameState extends State<StarDashGame> with SingleTickerProviderSt
 
   @override
   void dispose() {
+    Sfx.instance.stopMusic();
     _ticker.dispose();
     _world.dispose();
     super.dispose();
@@ -430,6 +445,8 @@ class _StarDashGameState extends State<StarDashGame> with SingleTickerProviderSt
 
   void _start() {
     HapticFeedback.mediumImpact();
+    Sfx.instance.play('start');
+    Sfx.instance.playMusic('music_dash', volume: 0.45);
     setState(_world.reset);
   }
 
@@ -438,6 +455,12 @@ class _StarDashGameState extends State<StarDashGame> with SingleTickerProviderSt
     setState(() {
       _world.phase = _world.phase == _Phase.paused ? _Phase.playing : _Phase.paused;
     });
+    Sfx.instance.play('tap');
+    if (_world.phase == _Phase.paused) {
+      Sfx.instance.pauseMusic();
+    } else {
+      Sfx.instance.playMusic('music_dash', volume: 0.45);
+    }
   }
 
   @override
@@ -528,6 +551,7 @@ class _Hud extends StatelessWidget {
                 color: i < world.lives ? CalmColors.rose : Colors.white.withValues(alpha: 0.15),
               ),
             ),
+          const SoundToggle(color: Colors.white),
           if (world.phase == _Phase.playing)
             IconButton(
               tooltip: 'Pause',

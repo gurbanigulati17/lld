@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
+import '../audio/sfx.dart';
 import '../theme.dart';
 import '../widgets/game_scaffold.dart';
 
@@ -57,10 +58,13 @@ class _RipplePondGameState extends State<RipplePondGame>
       setState(() {});
     })
       ..start();
+    Sfx.instance.preload([for (var i = 0; i < 8; i++) 'drop_$i']);
+    Sfx.instance.playMusic('music_calm', volume: 0.3);
   }
 
   @override
   void dispose() {
+    Sfx.instance.stopMusic();
     _ticker.dispose();
     super.dispose();
   }
@@ -75,10 +79,18 @@ class _RipplePondGameState extends State<RipplePondGame>
     ));
   }
 
+  /// Left side of the pond plays low notes, right side plays high ones.
+  void _drop(Offset p, double volume, int minGapMs) {
+    final w = context.size?.width ?? 1;
+    final i = (p.dx / w * 8).floor().clamp(0, 7);
+    Sfx.instance.play('drop_$i', volume: volume, minGapMs: minGapMs);
+  }
+
   void _tap(Offset p) {
     HapticFeedback.lightImpact();
     _touches++;
     _add(p, size: 1.4);
+    _drop(p, 0.9, 0);
   }
 
   void _drag(Offset p) {
@@ -86,6 +98,7 @@ class _RipplePondGameState extends State<RipplePondGame>
       _lastDrag = p;
       _touches++;
       _add(p, size: 0.7);
+      _drop(p, 0.45, 90);
     }
   }
 

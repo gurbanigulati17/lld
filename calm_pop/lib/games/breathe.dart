@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../audio/sfx.dart';
 import '../theme.dart';
 import '../widgets/game_scaffold.dart';
 
@@ -64,7 +65,15 @@ class _BreatheGameState extends State<BreatheGame>
   _Phase get _phase => _pattern.phases[_phaseIndex];
 
   @override
+  void initState() {
+    super.initState();
+    Sfx.instance.preload(const ['breathe_in', 'breathe_out', 'breathe_hold']);
+    Sfx.instance.playMusic('music_calm', volume: 0.35);
+  }
+
+  @override
   void dispose() {
+    Sfx.instance.stopMusic();
     _ticker?.cancel();
     _size.dispose();
     super.dispose();
@@ -90,6 +99,11 @@ class _BreatheGameState extends State<BreatheGame>
 
   void _enterPhase() {
     HapticFeedback.selectionClick();
+    Sfx.instance.play(switch (_phase.label) {
+      'Breathe in' => 'breathe_in',
+      'Breathe out' => 'breathe_out',
+      _ => 'breathe_hold',
+    });
     _secondsLeft = _phase.seconds;
     _size.animateTo(_phase.scale,
         duration: Duration(seconds: _phase.seconds),

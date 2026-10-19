@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../audio/sfx.dart';
 import '../theme.dart';
 import '../widgets/game_scaffold.dart';
 
@@ -26,15 +27,22 @@ class _BubbleWrapGameState extends State<BubbleWrapGame> {
 
   int get _remaining => _popped.where((p) => !p).length;
 
+  @override
+  void initState() {
+    super.initState();
+    Sfx.instance.preload(const ['pop_0', 'pop_1', 'pop_2', 'sheet']);
+  }
+
   void _pop(int i) {
     if (_popped[i]) return;
     HapticFeedback.mediumImpact();
-    SystemSound.play(SystemSoundType.click);
+    Sfx.instance.play('pop_${_rand.nextInt(3)}', volume: 0.8 + _rand.nextDouble() * 0.2);
     setState(() {
       _popped[i] = true;
       _totalPops++;
     });
     if (_remaining == 0) {
+      Sfx.instance.play('sheet');
       Future.delayed(const Duration(milliseconds: 700), _newSheet);
     }
   }
@@ -57,7 +65,10 @@ class _BubbleWrapGameState extends State<BubbleWrapGame> {
       action: IconButton(
         tooltip: 'New sheet',
         icon: const Icon(Icons.refresh_rounded, color: CalmColors.ink),
-        onPressed: _newSheet,
+        onPressed: () {
+          Sfx.instance.play('tap');
+          _newSheet();
+        },
       ),
       child: Column(
         children: [

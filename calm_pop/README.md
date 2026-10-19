@@ -21,6 +21,12 @@ A small, friendly stress-relief app built with Flutter. An arcade space shooter 
 
 The home screen also shows a calming tip. Tap it to see another one.
 
+## Sound
+
+Every game has sound effects: bubble pops, musical water drops (low notes on the left of the pond, high on the right), breathing bells, spinner ticks and whooshes, and lasers, explosions and power-ups in Star Dash. Star Dash has its own background music, and Breathe and Ripple Pond play a soft ambient track. Tap the speaker icon on the home screen or in any game to mute; the choice is remembered.
+
+All sounds are synthesised from scratch by `tool/gen_sounds.py` (no samples, nothing to license). To tweak them, edit the script and run `python3 tool/gen_sounds.py` (needs numpy).
+
 ## Get the APK
 
 **From GitHub (no setup needed):** every push that changes `calm_pop/` runs the
@@ -47,8 +53,11 @@ Or plug in a phone and run `flutter run`.
 ## Project layout
 
 ```
+assets/sounds/           generated WAV effects and music loops
+tool/gen_sounds.py       synthesiser that makes those sounds
 lib/
   main.dart              app entry + theme
+  audio/sfx.dart         sound effects, music and mute toggle
   theme.dart             pastel colour palette
   home_screen.dart       greeting, tip card, game grid
   widgets/game_scaffold.dart  shared header + stat pills
@@ -60,4 +69,4 @@ lib/
     fidget_spinner.dart
 ```
 
-The only package used is `shared_preferences` (to save the Star Dash best score). Everything is drawn with Flutter widgets and `CustomPainter`.
+Packages: `audioplayers` for sound and `shared_preferences` to remember the best score and mute setting. Everything is drawn with Flutter widgets and `CustomPainter`.

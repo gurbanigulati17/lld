@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'audio/sfx.dart';
 import 'games/breathe.dart';
 import 'games/bubble_wrap.dart';
 import 'games/fidget_spinner.dart';
@@ -62,6 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _nextTip() {
     HapticFeedback.selectionClick();
+    Sfx.instance.play('tap');
     setState(() {
       var next = _tip;
       while (next == _tip) {
@@ -83,7 +85,15 @@ class _HomeScreenState extends State<HomeScreen> {
               SliverPadding(
                 padding: const EdgeInsets.fromLTRB(24, 24, 24, 8),
                 sliver: SliverList.list(children: [
-                  Text('$_greeting 🌿', style: text.bodyMedium?.copyWith(fontSize: 16)),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text('$_greeting 🌿',
+                            style: text.bodyMedium?.copyWith(fontSize: 16)),
+                      ),
+                      const SoundToggle(color: CalmColors.ink),
+                    ],
+                  ),
                   const SizedBox(height: 4),
                   Text('What would help\nyou unwind?', style: text.headlineMedium),
                   const SizedBox(height: 20),
@@ -170,6 +180,7 @@ class _TipCard extends StatelessWidget {
 
 void _openGame(BuildContext context, WidgetBuilder builder) {
   HapticFeedback.lightImpact();
+  Sfx.instance.play('tap');
   Navigator.of(context).push(PageRouteBuilder(
     transitionDuration: const Duration(milliseconds: 350),
     pageBuilder: (context, _, _) => builder(context),

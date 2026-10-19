@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../audio/sfx.dart';
 import '../theme.dart';
 
 /// Common shell for every mini game: gradient background, back button,
@@ -66,6 +67,7 @@ class GameScaffold extends StatelessWidget {
                         ],
                       ),
                     ),
+                    SoundToggle(color: fg),
                     ?action,
                   ],
                 ),

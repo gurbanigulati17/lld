@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
+import '../audio/sfx.dart';
 import '../theme.dart';
 import '../widgets/game_scaffold.dart';
 
@@ -40,6 +41,7 @@ class _FidgetSpinnerGameState extends State<FidgetSpinnerGame>
   void initState() {
     super.initState();
     _ticker = createTicker(_onTick)..start();
+    Sfx.instance.preload(const ['spin_tick', 'whoosh']);
   }
 
   @override
@@ -66,6 +68,7 @@ class _FidgetSpinnerGameState extends State<FidgetSpinnerGame>
       _spinAccumulator -= 2 * pi;
       _spins++;
       if (_rpm < 200) HapticFeedback.selectionClick();
+      Sfx.instance.play('spin_tick', volume: 0.6, minGapMs: 45);
     }
     _bestRpm = max(_bestRpm, _rpm);
     if (_velocity != 0) setState(() {});
@@ -108,6 +111,7 @@ class _FidgetSpinnerGameState extends State<FidgetSpinnerGame>
     final v = d.velocity.pixelsPerSecond;
     final boost = v.distance / 120;
     if (boost > 0.5) {
+      Sfx.instance.play('whoosh', volume: (boost / 15).clamp(0.3, 1.0));
       _velocity = (_velocity + _velocity.sign * boost)
           .clamp(-_maxVelocity, _maxVelocity);
     }
@@ -115,6 +119,7 @@ class _FidgetSpinnerGameState extends State<FidgetSpinnerGame>
 
   void _changeColor() {
     HapticFeedback.selectionClick();
+    Sfx.instance.play('tap');
     setState(() => _colorIndex = (_colorIndex + 1) % CalmColors.pastels.length);
   }
 

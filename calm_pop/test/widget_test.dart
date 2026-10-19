@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:calm_pop/audio/sfx.dart';
 import 'package:calm_pop/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
-  setUp(() => SharedPreferences.setMockInitialValues({}));
+  setUp(() {
+    Sfx.disabled = true;
+    SharedPreferences.setMockInitialValues({});
+  });
 
   Future<void> openGame(WidgetTester tester, String title) async {
     await tester.binding.setSurfaceSize(const Size(400, 860));

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'audio/sfx.dart';
 import 'home_screen.dart';
 import 'theme.dart';
 
@@ -11,6 +12,7 @@ void main() {
     statusBarColor: Colors.transparent,
     statusBarIconBrightness: Brightness.dark,
   ));
+  Sfx.instance.init();
   runApp(const CalmPopApp());
 }
 
