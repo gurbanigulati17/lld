@@ -1,12 +1,18 @@
 # Calm Pop 🌿
 
-A small, friendly stress-relief app built with Flutter. Four calming mini games, soft pastel UI, haptic feedback, no ads, no sign-up, works offline.
+A small, friendly stress-relief app built with Flutter. An arcade space shooter plus four calming mini games, soft pastel UI, haptic feedback, no ads, no sign-up, works offline.
 
 | Home | Bubble Wrap | Breathe | Ripple Pond | Fidget Spinner |
 |---|---|---|---|---|
 | ![](screenshots/1_home.png) | ![](screenshots/2_bubble.png) | ![](screenshots/3_breathe.png) | ![](screenshots/4_ripple.png) | ![](screenshots/5_spinner.png) |
 
+| Star Dash | Star Dash (playing) |
+|---|---|
+| ![](screenshots/0_star_dash_menu.png) | ![](screenshots/0_star_dash_play.png) |
+
 ## Games
+
+- **Star Dash (arcade)** – drag to fly your ship; it fires on its own. Blast asteroids (big ones split in two), build combos, and grab power-ups: ⭐ +50 points, ⚡ triple shot, 🛡 shield, ❤ extra life. It speeds up every level, and your best score is saved.
 
 - **Bubble Wrap** – tap bubbles to pop them (with a click and a vibration). A new sheet in a new colour appears when you finish one.
 - **Breathe** – a guided breathing circle with three patterns: Calm (4-6), Box (4-4-4-4) and Relax (4-7-8).
@@ -47,10 +53,11 @@ lib/
   home_screen.dart       greeting, tip card, game grid
   widgets/game_scaffold.dart  shared header + stat pills
   games/
+    star_dash.dart
     bubble_wrap.dart
     breathe.dart
     ripple_pond.dart
     fidget_spinner.dart
 ```
 
-No third-party packages are needed. Everything is drawn with Flutter widgets and `CustomPainter`.
+The only package used is `shared_preferences` (to save the Star Dash best score). Everything is drawn with Flutter widgets and `CustomPainter`.

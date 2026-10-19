@@ -7,6 +7,7 @@ import 'games/breathe.dart';
 import 'games/bubble_wrap.dart';
 import 'games/fidget_spinner.dart';
 import 'games/ripple_pond.dart';
+import 'games/star_dash.dart';
 import 'theme.dart';
 
 class _GameInfo {
@@ -88,6 +89,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 20),
                   _TipCard(tip: _tip, onTap: _nextTip),
                   const SizedBox(height: 24),
+                  Text('Play a game', style: text.titleMedium),
+                  const SizedBox(height: 12),
+                  const _FeaturedCard(),
+                  const SizedBox(height: 24),
                   Text('Pick a calm activity', style: text.titleMedium),
                   const SizedBox(height: 12),
                 ]),
@@ -163,6 +168,97 @@ class _TipCard extends StatelessWidget {
   }
 }
 
+void _openGame(BuildContext context, WidgetBuilder builder) {
+  HapticFeedback.lightImpact();
+  Navigator.of(context).push(PageRouteBuilder(
+    transitionDuration: const Duration(milliseconds: 350),
+    pageBuilder: (context, _, _) => builder(context),
+    transitionsBuilder: (_, anim, _, child) => FadeTransition(
+      opacity: anim,
+      child: ScaleTransition(
+        scale: Tween(begin: 0.96, end: 1.0)
+            .animate(CurvedAnimation(parent: anim, curve: Curves.easeOut)),
+        child: child,
+      ),
+    ),
+  ));
+}
+
+/// Big banner for the arcade game.
+class _FeaturedCard extends StatelessWidget {
+  const _FeaturedCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => _openGame(context, (_) => const StarDashGame()),
+      child: Container(
+        height: 150,
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(26),
+          gradient: const LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFF231C4D), Color(0xFF5B3F8C), Color(0xFFB77AA8)],
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF5B3F8C).withValues(alpha: 0.45),
+              blurRadius: 20,
+              offset: const Offset(0, 10),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: CalmColors.lemon,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const Text('ARCADE',
+                        style: TextStyle(
+                            color: CalmColors.ink,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 1)),
+                  ),
+                  const SizedBox(height: 10),
+                  const Text('Star Dash',
+                      style: TextStyle(
+                          color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),
+                  const SizedBox(height: 4),
+                  Text('Blast asteroids, grab power-ups, beat your best.',
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(color: Colors.white.withValues(alpha: 0.8), fontSize: 13)),
+                ],
+              ),
+            ),
+            const SizedBox(width: 12),
+            Container(
+              width: 64,
+              height: 64,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withValues(alpha: 0.15),
+              ),
+              child: const Icon(Icons.rocket_launch_rounded, color: Colors.white, size: 34),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _GameCard extends StatefulWidget {
   const _GameCard({required this.info});
 
@@ -175,21 +271,7 @@ class _GameCard extends StatefulWidget {
 class _GameCardState extends State<_GameCard> {
   bool _pressed = false;
 
-  void _open() {
-    HapticFeedback.lightImpact();
-    Navigator.of(context).push(PageRouteBuilder(
-      transitionDuration: const Duration(milliseconds: 350),
-      pageBuilder: (context, _, _) => widget.info.builder(context),
-      transitionsBuilder: (_, anim, _, child) => FadeTransition(
-        opacity: anim,
-        child: ScaleTransition(
-          scale: Tween(begin: 0.96, end: 1.0)
-              .animate(CurvedAnimation(parent: anim, curve: Curves.easeOut)),
-          child: child,
-        ),
-      ),
-    ));
-  }
+  void _open() => _openGame(context, widget.info.builder);
 
   @override
   Widget build(BuildContext context) {
