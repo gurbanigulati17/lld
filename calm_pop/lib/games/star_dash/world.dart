@@ -124,7 +124,7 @@ class DashWorld extends ChangeNotifier {
 
   static const playerRadius = 18.0;
   static const maxLives = 5;
-  static const introTime = 2.4;
+  static const introTime = 3.0;
 
   final LevelSpec level;
   final ShipSpec ship;
@@ -306,13 +306,13 @@ class DashWorld extends ChangeNotifier {
         warning -= dt;
         if (warning <= 0) {
           warning = -1;
-          boss = Boss(level.boss, Offset(size.width / 2, -60), level.boss == 1 ? 70 : 190);
+          boss = Boss(level.boss, Offset(size.width / 2, -60), level.boss == 1 ? 120 : 300);
         }
       }
     } else {
       _spawnCd -= dt;
       if (_spawnCd <= 0) {
-        final ramp = level.goal == Goal.endless ? max(0.35, 1 - time * 0.008) : max(0.7, 1 - time * 0.004);
+        final ramp = level.goal == Goal.endless ? max(0.35, 1 - time * 0.008) : max(0.8, 1 - time * 0.002);
         _spawnCd = level.spawnEvery * ramp * (0.7 + _rand.nextDouble() * 0.6);
         _spawnFoe(_pickFoe());
       }
@@ -371,7 +371,7 @@ class DashWorld extends ChangeNotifier {
         final x = _rand.nextDouble() * w;
         final target = Offset(player.dx + (_rand.nextDouble() - 0.5) * 160, size.height);
         final dir = (target - Offset(x, -20));
-        final v = dir / dir.distance * (300 + _rand.nextDouble() * 80) * _speed;
+        final v = dir / dir.distance * (250 + _rand.nextDouble() * 70) * _speed;
         enemies.add(Enemy(Foe.comet, Offset(x, -20), v, 11, 1, const Color(0xFFBFF3FF)));
       case Foe.ufo:
         final e = Enemy(Foe.ufo, at ?? Offset(40 + _rand.nextDouble() * (w - 80), -24), Offset.zero, 22, 3,
@@ -425,8 +425,8 @@ class DashWorld extends ChangeNotifier {
           e.p = Offset(x, y);
           e.fireCd -= dt;
           if (e.fireCd <= 0 && e.p.dy > 0 && !leaving) {
-            e.fireCd = 1.6 + _rand.nextDouble() * 1.4;
-            _aimedShot(e.p.translate(0, 12), 230);
+            e.fireCd = 2.0 + _rand.nextDouble() * 1.6;
+            _aimedShot(e.p.translate(0, 12), 200);
           }
         case Foe.mine:
           final toPlayer = player - e.p;

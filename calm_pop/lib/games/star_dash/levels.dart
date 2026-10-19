@@ -128,15 +128,15 @@ class LevelSpec {
 }
 
 const levels = <LevelSpec>[
-  LevelSpec(number: 1, sector: 0, goal: Goal.destroy, target: 20, mix: {Foe.rock: 1}, spawnEvery: 1.0),
-  LevelSpec(number: 2, sector: 0, goal: Goal.survive, target: 40, mix: {Foe.rock: 1}, spawnEvery: 0.6, speed: 1.25),
-  LevelSpec(number: 3, sector: 1, goal: Goal.destroy, target: 25, mix: {Foe.rock: 0.6, Foe.comet: 0.4}, spawnEvery: 0.85),
-  LevelSpec(number: 4, sector: 1, goal: Goal.collect, target: 8, mix: {Foe.rock: 0.4, Foe.comet: 0.6}, spawnEvery: 0.75, speed: 1.15),
-  LevelSpec(number: 5, sector: 2, goal: Goal.destroy, target: 12, mix: {Foe.ufo: 1}, spawnEvery: 1.6),
+  LevelSpec(number: 1, sector: 0, goal: Goal.destroy, target: 40, mix: {Foe.rock: 1}, spawnEvery: 1.1, speed: 0.85),
+  LevelSpec(number: 2, sector: 0, goal: Goal.survive, target: 75, mix: {Foe.rock: 1}, spawnEvery: 0.8, speed: 1.0),
+  LevelSpec(number: 3, sector: 1, goal: Goal.destroy, target: 50, mix: {Foe.rock: 0.6, Foe.comet: 0.4}, spawnEvery: 0.95, speed: 0.9),
+  LevelSpec(number: 4, sector: 1, goal: Goal.collect, target: 15, mix: {Foe.rock: 0.4, Foe.comet: 0.6}, spawnEvery: 0.9, speed: 0.95),
+  LevelSpec(number: 5, sector: 2, goal: Goal.destroy, target: 20, mix: {Foe.ufo: 1}, spawnEvery: 1.8),
   LevelSpec(number: 6, sector: 2, goal: Goal.boss, target: 1, mix: {}, boss: 1),
-  LevelSpec(number: 7, sector: 3, goal: Goal.destroy, target: 30, mix: {Foe.rock: 0.35, Foe.mine: 0.45, Foe.comet: 0.2}, spawnEvery: 0.8),
-  LevelSpec(number: 8, sector: 3, goal: Goal.survive, target: 60, mix: {Foe.rock: 0.3, Foe.mine: 0.3, Foe.comet: 0.2, Foe.ufo: 0.2}, spawnEvery: 0.7, speed: 1.15),
-  LevelSpec(number: 9, sector: 4, goal: Goal.destroy, target: 40, mix: {Foe.rock: 0.3, Foe.comet: 0.25, Foe.ufo: 0.25, Foe.mine: 0.2}, spawnEvery: 0.6, speed: 1.2),
+  LevelSpec(number: 7, sector: 3, goal: Goal.destroy, target: 60, mix: {Foe.rock: 0.35, Foe.mine: 0.45, Foe.comet: 0.2}, spawnEvery: 0.9, speed: 0.95),
+  LevelSpec(number: 8, sector: 3, goal: Goal.survive, target: 100, mix: {Foe.rock: 0.3, Foe.mine: 0.3, Foe.comet: 0.2, Foe.ufo: 0.2}, spawnEvery: 0.85, speed: 1.0),
+  LevelSpec(number: 9, sector: 4, goal: Goal.destroy, target: 80, mix: {Foe.rock: 0.3, Foe.comet: 0.25, Foe.ufo: 0.25, Foe.mine: 0.2}, spawnEvery: 0.75, speed: 1.0),
   LevelSpec(number: 10, sector: 4, goal: Goal.boss, target: 1, mix: {}, boss: 2),
 ];
 
