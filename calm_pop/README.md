@@ -1,19 +1,20 @@
 # Calm Pop 🌿
 
-A small, friendly stress-relief app built with Flutter. An arcade space shooter plus four calming mini games, soft pastel UI, haptic feedback, no ads, no sign-up, works offline.
+A small, friendly stress-relief app built with Flutter. An arcade space shooter, a cozy fairy game, plus four calming mini games, soft pastel UI, haptic feedback, no ads, no sign-up, works offline.
 
 | Home | Bubble Wrap | Breathe | Ripple Pond | Fidget Spinner |
 |---|---|---|---|---|
 | ![](screenshots/1_home.png) | ![](screenshots/2_bubble.png) | ![](screenshots/3_breathe.png) | ![](screenshots/4_ripple.png) | ![](screenshots/5_spinner.png) |
 
-| Star Dash | Star Dash (playing) |
-|---|---|
-| ![](screenshots/0_star_dash_menu.png) | ![](screenshots/0_star_dash_play.png) |
+| Star Dash | Star Dash (playing) | Fairy Glow | Fairy Glow (playing) |
+|---|---|---|---|
+| ![](screenshots/0_star_dash_menu.png) | ![](screenshots/0_star_dash_play.png) | ![](screenshots/0_fairy_glow_menu.png) | ![](screenshots/0_fairy_glow_play.png) |
 
 ## Games
 
 - **Star Dash (arcade)** – drag to fly your ship; it fires on its own. Blast asteroids (big ones split in two), build combos, and grab power-ups: ⭐ +50 points, ⚡ triple shot, 🛡 shield, ❤ extra life. It speeds up every level, and your best score is saved.
 
+- **Fairy Glow (cozy)** – a little fairy shelters under a purple flower umbrella topped with a glowing star, in a lavender meadow at night. Slide her to catch falling stars (each one in a row plays the next note), grab fireflies for a big boost, and dodge gloom drops. The star lamp slowly dims, so keep catching! Music-box lullaby, best score saved. The fairy is drawn entirely in code.
 - **Bubble Wrap** – tap bubbles to pop them (with a click and a vibration). A new sheet in a new colour appears when you finish one.
 - **Breathe** – a guided breathing circle with three patterns: Calm (4-6), Box (4-4-4-4) and Relax (4-7-8).
 - **Ripple Pond** – tap or swipe the night-time pond to make glowing coloured ripples.
@@ -63,6 +64,7 @@ lib/
   widgets/game_scaffold.dart  shared header + stat pills
   games/
     star_dash.dart
+    fairy_glow.dart
     bubble_wrap.dart
     breathe.dart
     ripple_pond.dart

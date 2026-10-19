@@ -14,7 +14,8 @@ void main() {
   Future<void> openGame(WidgetTester tester, String title) async {
     await tester.binding.setSurfaceSize(const Size(400, 860));
     await tester.pumpWidget(const CalmPopApp());
-    await tester.ensureVisible(find.text(title));
+    await tester.scrollUntilVisible(find.text(title), 150,
+        scrollable: find.byType(Scrollable).first);
     await tester.pump();
     await tester.tap(find.text(title));
     await tester.pump();
@@ -24,7 +25,7 @@ void main() {
   testWidgets('home lists all the games', (tester) async {
     await tester.binding.setSurfaceSize(const Size(400, 860));
     await tester.pumpWidget(const CalmPopApp());
-    for (final t in ['Star Dash', 'Bubble Wrap', 'Breathe', 'Ripple Pond', 'Fidget Spinner']) {
+    for (final t in ['Star Dash', 'Fairy Glow', 'Bubble Wrap', 'Breathe', 'Ripple Pond', 'Fidget Spinner']) {
       expect(find.text(t, skipOffstage: false), findsOneWidget);
     }
   });
@@ -78,5 +79,20 @@ void main() {
       await tester.pump(const Duration(milliseconds: 16));
       expect(find.text('Paused'), findsOneWidget);
     }
+  });
+
+  testWidgets('fairy glow starts and the glow drains over time', (tester) async {
+    await openGame(tester, 'Fairy Glow');
+    expect(find.text('Play'), findsOneWidget);
+    await tester.ensureVisible(find.text('Play'));
+    await tester.pump();
+    await tester.tap(find.text('Play'));
+    for (var i = 0; i < 120; i++) {
+      await tester.pump(const Duration(milliseconds: 16));
+    }
+    expect(find.text('Play'), findsNothing);
+    expect(find.text('Star glow'), findsOneWidget);
+    await tester.dragFrom(const Offset(200, 600), const Offset(-80, 0));
+    await tester.pump(const Duration(milliseconds: 16));
   });
 }

@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'audio/sfx.dart';
 import 'games/breathe.dart';
 import 'games/bubble_wrap.dart';
+import 'games/fairy_glow.dart';
 import 'games/fidget_spinner.dart';
 import 'games/ripple_pond.dart';
 import 'games/star_dash.dart';
@@ -101,7 +102,23 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 24),
                   Text('Play a game', style: text.titleMedium),
                   const SizedBox(height: 12),
-                  const _FeaturedCard(),
+                  _FeaturedCard(
+                    tag: 'ARCADE',
+                    title: 'Star Dash',
+                    blurb: 'Blast asteroids, grab power-ups, beat your best.',
+                    icon: Icons.rocket_launch_rounded,
+                    colors: const [Color(0xFF231C4D), Color(0xFF5B3F8C), Color(0xFFB77AA8)],
+                    builder: (_) => const StarDashGame(),
+                  ),
+                  const SizedBox(height: 16),
+                  _FeaturedCard(
+                    tag: 'COZY',
+                    title: 'Fairy Glow',
+                    blurb: 'Help the little fairy catch falling stars.',
+                    icon: Icons.auto_awesome_rounded,
+                    colors: const [Color(0xFF2A2366), Color(0xFF6F5BD6), Color(0xFFE7B86A)],
+                    builder: (_) => const FairyGlowGame(),
+                  ),
                   const SizedBox(height: 24),
                   Text('Pick a calm activity', style: text.titleMedium),
                   const SizedBox(height: 12),
@@ -197,25 +214,39 @@ void _openGame(BuildContext context, WidgetBuilder builder) {
 
 /// Big banner for the arcade game.
 class _FeaturedCard extends StatelessWidget {
-  const _FeaturedCard();
+  const _FeaturedCard({
+    required this.tag,
+    required this.title,
+    required this.blurb,
+    required this.icon,
+    required this.colors,
+    required this.builder,
+  });
+
+  final String tag;
+  final String title;
+  final String blurb;
+  final IconData icon;
+  final List<Color> colors;
+  final WidgetBuilder builder;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => _openGame(context, (_) => const StarDashGame()),
+      onTap: () => _openGame(context, builder),
       child: Container(
-        height: 150,
+        constraints: const BoxConstraints(minHeight: 150),
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(26),
-          gradient: const LinearGradient(
+          gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Color(0xFF231C4D), Color(0xFF5B3F8C), Color(0xFFB77AA8)],
+            colors: colors,
           ),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF5B3F8C).withValues(alpha: 0.45),
+              color: colors[1].withValues(alpha: 0.45),
               blurRadius: 20,
               offset: const Offset(0, 10),
             ),
@@ -225,6 +256,7 @@ class _FeaturedCard extends StatelessWidget {
           children: [
             Expanded(
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -234,7 +266,7 @@ class _FeaturedCard extends StatelessWidget {
                       color: CalmColors.lemon,
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: const Text('ARCADE',
+                    child: Text(tag,
                         style: TextStyle(
                             color: CalmColors.ink,
                             fontSize: 11,
@@ -242,11 +274,11 @@ class _FeaturedCard extends StatelessWidget {
                             letterSpacing: 1)),
                   ),
                   const SizedBox(height: 10),
-                  const Text('Star Dash',
+                  Text(title,
                       style: TextStyle(
                           color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),
                   const SizedBox(height: 4),
-                  Text('Blast asteroids, grab power-ups, beat your best.',
+                  Text(blurb,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(color: Colors.white.withValues(alpha: 0.8), fontSize: 13)),
@@ -261,7 +293,7 @@ class _FeaturedCard extends StatelessWidget {
                 shape: BoxShape.circle,
                 color: Colors.white.withValues(alpha: 0.15),
               ),
-              child: const Icon(Icons.rocket_launch_rounded, color: Colors.white, size: 34),
+              child: Icon(icon, color: Colors.white, size: 34),
             ),
           ],
         ),
